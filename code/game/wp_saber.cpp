@@ -28902,14 +28902,17 @@ int IsPressingDashButton(const gentity_t* self)
 {
 	if (g_SerenityJediEngineMode->integer)
 	{
+		if (self->client->ps.communicatingflags & 1 << DASHING)
+		{
+			return qfalse;
+		}
 		if (PM_RunningAnim(self->client->ps.legsAnim)
 			&& !PM_SaberInAttack(self->client->ps.saber_move)
 			&& self->client->pers.cmd.upmove == 0
-			&& !(self->client->buttons & BUTTON_KICK)
-			//&& !Mandalorian_Character(self)
 			&& !self->client->hookhasbeenfired
-			&& self->client->buttons & BUTTON_USE
-			&& self->client->ps.pm_flags & PMF_USE_HELD)
+			&& (!(self->client->buttons & BUTTON_KICK))
+			&& (!(self->client->buttons & BUTTON_USE))
+			&& self->client->buttons & BUTTON_DASH)
 		{
 			return qtrue;
 		}
@@ -28978,6 +28981,12 @@ void ForceSpeedDash(gentity_t* self)
 {
 	if (self->health <= 0)
 	{
+		return;
+	}
+
+	if (self->client->ps.groundEntityNum == ENTITYNUM_NONE)
+	{
+		//can't dash in mid-air
 		return;
 	}
 
@@ -29067,30 +29076,12 @@ void ForceSpeedDash(gentity_t* self)
 	if (self->client->ps.groundEntityNum != ENTITYNUM_NONE)
 	{
 		vec3_t dir;
-		if (self->client->ps.forcePowerLevel[FP_SPEED] > FORCE_LEVEL_2)
-		{
-			AngleVectors(self->client->ps.viewangles, dir, nullptr, nullptr);
-			self->client->ps.velocity[0] = self->client->ps.velocity[0] * 7;
-			self->client->ps.velocity[1] = self->client->ps.velocity[1] * 7;
 
-			ForceDashAnimDash(self);
-		}
-		else if (self->client->ps.forcePowerLevel[FP_SPEED] > FORCE_LEVEL_1)
-		{
-			AngleVectors(self->client->ps.viewangles, dir, nullptr, nullptr);
-			self->client->ps.velocity[0] = self->client->ps.velocity[0] * 5;
-			self->client->ps.velocity[1] = self->client->ps.velocity[1] * 5;
+		AngleVectors(self->client->ps.viewangles, dir, nullptr, nullptr);
+		self->client->ps.velocity[0] = self->client->ps.velocity[0] * 5;
+		self->client->ps.velocity[1] = self->client->ps.velocity[1] * 5;
 
-			ForceDashAnimDash(self);
-		}
-		else
-		{
-			AngleVectors(self->client->ps.viewangles, dir, nullptr, nullptr);
-			self->client->ps.velocity[0] = self->client->ps.velocity[0] * 3;
-			self->client->ps.velocity[1] = self->client->ps.velocity[1] * 3;
-
-			ForceDashAnimDash(self);
-		}
+		ForceDashAnimDash(self);
 	}
 	else if (self->client->ps.groundEntityNum == ENTITYNUM_NONE)
 	{
@@ -39108,7 +39099,7 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t force_power, userc
 				//invalid or freed ent
 				WP_ForcePowerStop(self, FP_GRIP);
 				return;
-			}
+	}
 #ifndef JK2_RAGDOLL_GRIPNOHEALTH
 			if (grip_ent->health <= 0 && grip_ent->takedamage)
 			{//either invalid ent, or dead ent
@@ -39574,8 +39565,8 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t force_power, userc
 					}
 				}
 			}
-		}
 	}
+}
 
 	if (self->client->ps.forcePowersActive & 1 << FP_GRIP)
 	{
@@ -39961,7 +39952,7 @@ static void wp_force_power_run(gentity_t* self, forcePowers_t force_power, userc
 				//invalid or freed ent
 				WP_ForcePowerStop(self, FP_GRASP);
 				return;
-			}
+	}
 #ifndef JK2_RAGDOLL_GRIPNOHEALTH
 			if (grip_ent->health <= 0 && grip_ent->takedamage)
 			{//either invalid ent, or dead ent
@@ -40565,14 +40556,7 @@ void WP_CheckForcedPowers(gentity_t* self, usercmd_t* ucmd)
 				//nothing
 				break;
 			case FP_SPEED:
-				if (self->client->ps.communicatingflags & 1 << DASHING)
-				{
-					ForceSpeedDash(self);
-				}
-				else
-				{
-					ForceSpeed(self);
-				}
+				ForceSpeed(self);
 				//do only once
 				self->client->ps.forcePowersForced &= ~(1 << force_power);
 				break;
@@ -40863,7 +40847,7 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 	}
 
 	if (self->client->ps.communicatingflags & 1 << DASHING)
-	{
+	{//dash is one of the powers with its own button.. if it's held, call the specific dash power function.
 		ForceSpeedDash(self);
 	}
 

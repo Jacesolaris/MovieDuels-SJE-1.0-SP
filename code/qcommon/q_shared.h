@@ -2166,7 +2166,6 @@ public:
 	int surrenderstartTime;
 	int surrenderlaststartTime;
 
-	int dashtimeplayer;
 	int dashstartTime;
 	int dashlaststartTime;
 
@@ -2443,7 +2442,6 @@ public:
 		saved_game.write<int32_t>(surrenderstartTime);
 		saved_game.write<int32_t>(surrenderlaststartTime);
 
-		saved_game.write<int32_t>(dashtimeplayer);
 		saved_game.write<int32_t>(dashstartTime);
 		saved_game.write<int32_t>(dashlaststartTime);
 
@@ -2720,7 +2718,6 @@ public:
 		saved_game.read<int32_t>(surrenderstartTime);
 		saved_game.read<int32_t>(surrenderlaststartTime);
 
-		saved_game.read<int32_t>(dashtimeplayer);
 		saved_game.read<int32_t>(dashstartTime);
 		saved_game.read<int32_t>(dashlaststartTime);
 
@@ -3043,7 +3040,6 @@ using entityState_t = struct entityState_s
 	int surrenderstartTime;
 	int surrenderlaststartTime;
 
-	int dashtimeplayer;
 	int dashstartTime;
 	int dashlaststartTime;
 
@@ -3161,7 +3157,6 @@ using entityState_t = struct entityState_s
 		saved_game.write<int32_t>(surrenderstartTime);
 		saved_game.write<int32_t>(surrenderlaststartTime);
 
-		saved_game.write<int32_t>(dashtimeplayer);
 		saved_game.write<int32_t>(dashstartTime);
 		saved_game.write<int32_t>(dashlaststartTime);
 
@@ -3281,7 +3276,6 @@ using entityState_t = struct entityState_s
 		saved_game.read<int32_t>(surrenderstartTime);
 		saved_game.read<int32_t>(surrenderlaststartTime);
 
-		saved_game.read<int32_t>(dashtimeplayer);
 		saved_game.read<int32_t>(dashstartTime);
 		saved_game.read<int32_t>(dashlaststartTime);
 

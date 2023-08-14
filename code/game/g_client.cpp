@@ -1246,6 +1246,11 @@ qboolean G_StandardHumanoid(const char* gla_name)
 {
 	if (gla_name)
 	{
+		if (!Q_stricmp("_humanoid_mp", gla_name))
+		{
+			// only _humanoid skeleton is expected to have these
+			return qtrue;
+		}
 		if (!Q_stricmp("_humanoid", gla_name))
 		{
 			// only _humanoid skeleton is expected to have these
