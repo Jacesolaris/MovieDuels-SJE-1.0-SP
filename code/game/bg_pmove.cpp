@@ -10515,7 +10515,7 @@ static void PM_Footsteps()
 			if (PM_CrouchAnim(pm->gent->client->ps.legsAnim) && (pm->ps->client_num < MAX_CLIENTS ||
 				PM_ControlledByPlayer()) &&
 				(g_SerenityJediEngineMode->integer &&
-					(pm->cmd.buttons & BUTTON_USE && pm->ps->pm_flags & PMF_USE_HELD)))
+					(pm->cmd.buttons & BUTTON_USE && pm->ps->pm_flags & PMF_USE_HELD) || pm->cmd.buttons & BUTTON_DASH))
 			{
 				//roll!
 				rolled = pm_try_roll_md();
@@ -23519,6 +23519,15 @@ void Pmove(pmove_t* pmove)
 	else
 	{
 		pm->ps->pm_flags &= ~PMF_USE_HELD;
+	}
+
+	if (pm->cmd.buttons & BUTTON_DASH && !(pm->cmd.buttons & BUTTON_KICK))
+	{
+		pm->ps->pm_flags |= PMF_DASH_HELD;
+	}
+	else
+	{
+		pm->ps->pm_flags &= ~PMF_DASH_HELD;
 	}
 
 	if (pm->cmd.buttons & BUTTON_BLOCK)

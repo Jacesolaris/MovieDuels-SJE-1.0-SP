@@ -2914,10 +2914,10 @@ qboolean G_FlyVehicleDestroySurface(gentity_t* veh, int surface)
 
 	if (!veh->m_pVehicle->m_iRemovedSurfaces)
 	{//first time something got blown off
-		if (veh->m_pVehicle->m_pPilot)
-		{//make the pilot scream to his death
-			G_EntitySound((gentity_t*)veh->m_pVehicle->m_pPilot, CHAN_VOICE, G_SoundIndex("*falling1.wav"));
-		}
+		//if (veh->m_pVehicle->m_pPilot)
+		//{//make the pilot scream to his death
+		//	G_EntitySound((gentity_t*)veh->m_pVehicle->m_pPilot, CHAN_VOICE, G_SoundIndex("*falling1.wav"));
+		//}
 	}
 	//so we can check what's broken
 	veh->m_pVehicle->m_iRemovedSurfaces |= smashedBits;

@@ -977,7 +977,6 @@ qboolean sab_beh_attack_vs_block(gentity_t* attacker, gentity_t* blocker, const 
 					{
 						G_StartStasisEffect_FORCE_LEVEL_1(attacker, MEF_NO_SPIN, 200, 0.3f, 0);
 					}
-					CGCam_BlockShakeSP(0.45f, 100);
 				}
 
 				if (g_SerenityJediEngineMode->integer && (blocker->NPC && !G_ControlledByPlayer(blocker)))
@@ -1042,7 +1041,7 @@ qboolean sab_beh_attack_vs_block(gentity_t* attacker, gentity_t* blocker, const 
 	return qtrue;
 }
 
-qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const int saber_num, const int blade_num,	vec3_t hit_loc)
+qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const int saber_num, const int blade_num, vec3_t hit_loc)
 {
 	//-(Im the blocker)
 	const qboolean accurate_parry = g_accurate_blocking(blocker, attacker, hit_loc); // Perfect Normal Blocking

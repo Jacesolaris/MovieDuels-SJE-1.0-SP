@@ -4842,7 +4842,6 @@ void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, cons
 		}
 		else
 		{
-
 			if (attacker->client && !attacker->s.number)
 			{
 				if (self->client)
@@ -6087,6 +6086,21 @@ void G_Slapdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, flo
 
 		G_CheckLedgeDive(self, 72, push_dir, qfalse, qfalse);
 
+		if (self->client->ps.SaberActive())
+		{
+			if (self->client->ps.saber[1].Active())
+			{
+				//turn off second saber
+				G_Sound(self, self->client->ps.saber[1].soundOff);
+			}
+			else if (self->client->ps.saber[0].Active())
+			{
+				//turn off first
+				G_Sound(self, self->client->ps.saber[0].soundOff);
+			}
+			self->client->ps.SaberDeactivate();
+		}
+
 		if (!PM_RollingAnim(self->client->ps.legsAnim)
 			&& !PM_InKnockDown(&self->client->ps))
 		{
@@ -6286,6 +6300,21 @@ void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, fl
 
 		G_CheckLedgeDive(self, 72, push_dir, qfalse, qfalse);
 
+		if (self->client->ps.SaberActive())
+		{
+			if (self->client->ps.saber[1].Active())
+			{
+				//turn off second saber
+				G_Sound(self, self->client->ps.saber[1].soundOff);
+			}
+			else if (self->client->ps.saber[0].Active())
+			{
+				//turn off first
+				G_Sound(self, self->client->ps.saber[0].soundOff);
+			}
+			self->client->ps.SaberDeactivate();
+		}
+
 		if (!PM_RollingAnim(self->client->ps.legsAnim)
 			&& !PM_InKnockDown(&self->client->ps))
 		{
@@ -6477,6 +6506,21 @@ void G_KnockOver(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, co
 
 		G_CheckLedgeDive(self, 72, push_dir, qfalse, qfalse);
 
+		if (self->client->ps.SaberActive())
+		{
+			if (self->client->ps.saber[1].Active())
+			{
+				//turn off second saber
+				G_Sound(self, self->client->ps.saber[1].soundOff);
+			}
+			else if (self->client->ps.saber[0].Active())
+			{
+				//turn off first
+				G_Sound(self, self->client->ps.saber[0].soundOff);
+			}
+			self->client->ps.SaberDeactivate();
+		}
+
 		if (!PM_RollingAnim(self->client->ps.legsAnim)
 			&& !PM_InKnockDown(&self->client->ps))
 		{
@@ -6661,6 +6705,21 @@ void G_BlastDown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, fl
 		}
 
 		G_CheckLedgeDive(self, 72, push_dir, qfalse, qfalse);
+
+		if (self->client->ps.SaberActive())
+		{
+			if (self->client->ps.saber[1].Active())
+			{
+				//turn off second saber
+				G_Sound(self, self->client->ps.saber[1].soundOff);
+			}
+			else if (self->client->ps.saber[0].Active())
+			{
+				//turn off first
+				G_Sound(self, self->client->ps.saber[0].soundOff);
+			}
+			self->client->ps.SaberDeactivate();
+		}
 
 		if (!PM_RollingAnim(self->client->ps.legsAnim)
 			&& !PM_InKnockDown(&self->client->ps))

@@ -5428,7 +5428,6 @@ Adds a piece with modifications or duplications for powerups
 extern vmCvar_t cg_thirdPersonAlpha;
 extern qboolean npc_is_mando(const gentity_t* self);
 extern qboolean NPC_IsOversized(const gentity_t* self);
-extern int IsPressingDashButton(const gentity_t* self);
 
 void CG_AddRefEntityWithPowerups(refEntity_t* ent, int powerups, centity_t* cent)
 {
@@ -5700,7 +5699,7 @@ void CG_AddRefEntityWithPowerups(refEntity_t* ent, int powerups, centity_t* cent
 
 	// FORCE speed does blur trails
 	//------------------------------------------------------
-	if (!doing_dash_action && !IsPressingDashButton(cent->gent)
+	if (!doing_dash_action
 		&& cg_speedTrail.integer
 		&& (gent->client->ps.forcePowersActive & 1 << FP_SPEED //in force speed
 			|| cent->gent->client->ps.legsAnim == BOTH_FORCELONGLEAP_START

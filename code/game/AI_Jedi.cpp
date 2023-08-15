@@ -119,7 +119,7 @@ extern qboolean IsSurrendering(const gentity_t* self);
 extern qboolean IsRESPECTING(const gentity_t* self);
 extern qboolean IsCowering(const gentity_t* self);
 extern qboolean is_anim_requires_responce(const gentity_t* self);
-extern qboolean WP_AbsorbKick(gentity_t* self, const gentity_t* pusher, const vec3_t push_dir);
+extern qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t push_dir);
 extern qboolean BG_InKnockDown(int anim);
 extern void ForceGrasp(gentity_t* ent);
 extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps);

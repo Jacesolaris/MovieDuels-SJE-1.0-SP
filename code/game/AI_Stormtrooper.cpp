@@ -49,7 +49,7 @@ extern qboolean PM_CrouchAnim(int anim);
 extern void npc_check_evasion();
 extern cvar_t* g_SerenityJediEngineMode;
 extern cvar_t* g_allowgunnerbash;
-extern qboolean WP_AbsorbKick(gentity_t* self, const gentity_t* pusher, const vec3_t push_dir);
+extern qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t push_dir);
 extern void speaker_speech(const gentity_t* self, int speech_type, float fail_chance);
 
 extern cvar_t* d_asynchronousGroupAI;

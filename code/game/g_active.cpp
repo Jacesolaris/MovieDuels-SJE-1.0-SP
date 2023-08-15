@@ -2595,6 +2595,11 @@ qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t
 			else
 			{
 				NPC_SetAnim(hit_ent, SETANIM_BOTH, Q_irand(BOTH_KNOCKDOWN1, BOTH_KNOCKDOWN2), SETANIM_AFLAG_PACE);
+
+				if (hit_ent->client->ps.SaberActive())
+				{
+					WP_DeactivateSaber(hit_ent, qtrue);
+				}
 			}
 
 			if (g_SerenityJediEngineMode->integer == 2)
@@ -2643,6 +2648,11 @@ qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t
 			else
 			{
 				NPC_SetAnim(hit_ent, SETANIM_BOTH, Q_irand(BOTH_KNOCKDOWN1, BOTH_KNOCKDOWN5), SETANIM_AFLAG_PACE);
+
+				if (hit_ent->client->ps.SaberActive())
+				{
+					WP_DeactivateSaber(hit_ent, qtrue);
+				}
 			}
 
 			if (g_SerenityJediEngineMode->integer == 2)
@@ -2672,6 +2682,11 @@ qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t
 			else
 			{
 				NPC_SetAnim(hit_ent, SETANIM_BOTH, BOTH_KNOCKDOWN3, SETANIM_AFLAG_PACE);
+
+				if (hit_ent->client->ps.SaberActive())
+				{
+					WP_DeactivateSaber(hit_ent, qtrue);
+				}
 			}
 
 			if (g_SerenityJediEngineMode->integer == 2)
@@ -2713,6 +2728,11 @@ qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t
 			else
 			{
 				NPC_SetAnim(hit_ent, SETANIM_BOTH, BOTH_SLAPDOWNRIGHT, SETANIM_AFLAG_PACE);
+
+				if (hit_ent->client->ps.SaberActive())
+				{
+					WP_DeactivateSaber(hit_ent, qtrue);
+				}
 			}
 
 			if (g_SerenityJediEngineMode->integer == 2)
@@ -2754,6 +2774,11 @@ qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t
 			else
 			{
 				NPC_SetAnim(hit_ent, SETANIM_BOTH, BOTH_SLAPDOWNLEFT, SETANIM_AFLAG_PACE);
+
+				if (hit_ent->client->ps.SaberActive())
+				{
+					WP_DeactivateSaber(hit_ent, qtrue);
+				}
 			}
 
 			if (g_SerenityJediEngineMode->integer == 2)
@@ -2789,6 +2814,11 @@ qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t
 			else
 			{
 				NPC_SetAnim(hit_ent, SETANIM_BOTH, Q_irand(BOTH_SLAPDOWNRIGHT, BOTH_SLAPDOWNLEFT), SETANIM_AFLAG_PACE);
+
+				if (hit_ent->client->ps.SaberActive())
+				{
+					WP_DeactivateSaber(hit_ent, qtrue);
+				}
 			}
 
 			if (g_SerenityJediEngineMode->integer == 2)
@@ -2839,6 +2869,11 @@ qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t
 			else
 			{
 				NPC_SetAnim(hit_ent, SETANIM_BOTH, Q_irand(BOTH_KNOCKDOWN1, BOTH_KNOCKDOWN2), SETANIM_AFLAG_PACE);
+
+				if (hit_ent->client->ps.SaberActive())
+				{
+					WP_DeactivateSaber(hit_ent, qtrue);
+				}
 			}
 
 			if (g_SerenityJediEngineMode->integer == 2)
