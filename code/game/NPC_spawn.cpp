@@ -32,7 +32,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "g_vehicles.h"
 
 extern qboolean G_CheckInSolid(gentity_t* self, qboolean fix);
-extern void ClientUserinfoChanged(int client_num);
+extern void client_userinfo_changed(int client_num);
 extern qboolean SpotWouldTelefrag2(const gentity_t* mover, vec3_t dest);
 extern void jedi_cloak(gentity_t* self);
 extern void Saboteur_Cloak(gentity_t* self);

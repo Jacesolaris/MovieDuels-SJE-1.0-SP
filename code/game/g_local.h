@@ -459,8 +459,6 @@ void G_Sound(const gentity_t* ent, int sound_index);
 void G_FreeEntity(gentity_t* ent);
 
 void G_TouchTriggers(gentity_t* ent);
-void G_TouchTeamClients(gentity_t* ent);
-void G_TouchSolids(gentity_t* ent);
 
 char* vtos(const vec3_t v);
 
@@ -624,7 +622,7 @@ extern void G_SoundIndexOnEnt(const gentity_t* ent, soundChannel_t channel, int 
 // g_client.c
 //
 char* ClientConnect(int client_num, qboolean first_time, SavedGameJustLoaded_e e_saved_game_just_loaded);
-void ClientUserinfoChanged(int client_num);
+void client_userinfo_changed(int client_num);
 void ClientDisconnect(int client_num);
 void ClientBegin(int client_num, const usercmd_t* cmd, SavedGameJustLoaded_e e_saved_game_just_loaded);
 void ClientCommand(int client_num);

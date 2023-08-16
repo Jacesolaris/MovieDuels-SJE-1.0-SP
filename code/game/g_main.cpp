@@ -1158,7 +1158,7 @@ extern "C" Q_EXPORT game_export_t * QDECL GetGameAPI(const game_import_t * impor
 
 	globals.ClientThink = ClientThink;
 	globals.ClientConnect = ClientConnect;
-	globals.ClientUserinfoChanged = ClientUserinfoChanged;
+	globals.client_userinfo_changed = client_userinfo_changed;
 	globals.ClientDisconnect = ClientDisconnect;
 	globals.ClientBegin = ClientBegin;
 	globals.ClientCommand = ClientCommand;

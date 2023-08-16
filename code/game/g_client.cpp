@@ -573,7 +573,7 @@ static void ClientCleanName(const char* in, char* out, const int out_size)
 
 /*
 ===========
-ClientUserInfoChanged
+client_userinfo_changed
 
 Called from ClientConnect when the player first connects and
 directly by the server system when the player updates a userinfo variable.
@@ -582,7 +582,7 @@ The game can override any of the settings and call gi.SetUserinfo
 if desired.
 ============
 */
-void ClientUserinfoChanged(const int client_num)
+void client_userinfo_changed(const int client_num)
 {
 	const gentity_t* ent = g_entities + client_num;
 	gclient_t* client = ent->client;
@@ -675,7 +675,7 @@ char* ClientConnect(const int client_num, const qboolean first_time,
 	if (e_saved_game_just_loaded == eFULL)
 	{
 		// get and distribute relevent paramters
-		ClientUserinfoChanged(client_num);
+		client_userinfo_changed(client_num);
 	}
 	else
 	{
@@ -687,7 +687,7 @@ char* ClientConnect(const int client_num, const qboolean first_time,
 		G_ReadSessionData(client);
 
 		// get and distribute relevent paramters
-		ClientUserinfoChanged(client_num);
+		client_userinfo_changed(client_num);
 
 		// don't do the "xxx connected" messages if they were caried over from previous level
 		if (first_time)
@@ -2595,7 +2595,7 @@ void G_InitPlayerFromCvars(gentity_t* ent)
 	if (!ent->s.number)
 	{
 		//the actual player, not an NPC pretending to be a player
-		ClientUserinfoChanged(ent->s.number);
+		client_userinfo_changed(ent->s.number);
 	}
 	//color tinting
 	//FIXME: the customRGBA shouldn't be set if the shader this guys .skin is using doesn't have the tinting on it
@@ -2782,7 +2782,7 @@ void G_ChangePlayerModel(gentity_t* ent, const char* new_model)
 				NPC_SetAnim(ent, SETANIM_LEGS, ent->client->ps.legsAnim, SETANIM_FLAG_NORMAL | SETANIM_FLAG_RESTART);
 				NPC_SetAnim(ent, SETANIM_TORSO, ent->client->ps.torsoAnim, SETANIM_FLAG_NORMAL | SETANIM_FLAG_RESTART);
 
-				ClientUserinfoChanged(ent->s.number);
+				client_userinfo_changed(ent->s.number);
 
 				if (ent->client->NPC_class == CLASS_BOBAFETT
 					|| ent->client->NPC_class == CLASS_MANDALORIAN
@@ -2962,7 +2962,7 @@ void G_ChangePlayerModel(gentity_t* ent, const char* new_model)
 				NPC_SetAnim(ent, SETANIM_LEGS, ent->client->ps.legsAnim, SETANIM_FLAG_NORMAL | SETANIM_FLAG_RESTART);
 				NPC_SetAnim(ent, SETANIM_TORSO, ent->client->ps.torsoAnim, SETANIM_FLAG_NORMAL | SETANIM_FLAG_RESTART);
 
-				ClientUserinfoChanged(ent->s.number);
+				client_userinfo_changed(ent->s.number);
 
 				if (ent->client->NPC_class == CLASS_BOBAFETT
 					|| ent->client->NPC_class == CLASS_MANDALORIAN
