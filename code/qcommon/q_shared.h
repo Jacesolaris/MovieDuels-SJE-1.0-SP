@@ -2004,7 +2004,7 @@ public:
 	int ManualblockStartTime; //Blocking 2
 	int ManualblockLastStartTime; //Blocking 3
 	int BoltblockStartTime; //Blocking 4
-	int ManualMBlockingTime; // MBlocking 1
+	int Manual_m_blockingTime; // MBlocking 1
 	int BoltstasisStartTime; //Blocking 6
 	int saberBlockingTime; // SaberBlockingTime 1
 	int damageTime;
@@ -2413,7 +2413,7 @@ public:
 		saved_game.write<int32_t>(ManualblockStartTime); //Blocking 2
 		saved_game.write<int32_t>(ManualblockLastStartTime); //Blocking 3
 		saved_game.write<int32_t>(BoltblockStartTime); //Blocking 4
-		saved_game.write<int32_t>(ManualMBlockingTime); //MBlocking 1
+		saved_game.write<int32_t>(Manual_m_blockingTime); //MBlocking 1
 		saved_game.write<int32_t>(BoltstasisStartTime); //Blocking 6
 		saved_game.write<int32_t>(saberBlockingTime); //SaberBlockingTime 1
 		saved_game.write<int32_t>(damageTime);
@@ -2689,7 +2689,7 @@ public:
 		saved_game.read<int32_t>(ManualblockStartTime); //Blocking 2
 		saved_game.read<int32_t>(ManualblockLastStartTime); //Blocking 3
 		saved_game.read<int32_t>(BoltblockStartTime); //Blocking 4
-		saved_game.read<int32_t>(ManualMBlockingTime); //MBlocking 1
+		saved_game.read<int32_t>(Manual_m_blockingTime); //MBlocking 1
 		saved_game.read<int32_t>(BoltstasisStartTime); //Blocking 6
 		saved_game.read<int32_t>(saberBlockingTime); //SaberBlockingTime 1
 		saved_game.read<int32_t>(damageTime);
@@ -3021,7 +3021,7 @@ using entityState_t = struct entityState_s
 	int ManualblockStartTime; //Blocking 2
 	int ManualblockLastStartTime; //Blocking 3
 	int BoltblockStartTime; //Blocking 4
-	int ManualMBlockingTime; // MBlocking 1
+	int Manual_m_blockingTime; // MBlocking 1
 	int BoltstasisStartTime; //Blocking 6
 	int saberBlockingTime; // SaberBlockingTime 1
 
@@ -3129,7 +3129,7 @@ using entityState_t = struct entityState_s
 		saved_game.write<int32_t>(ManualblockStartTime); //Blocking 2
 		saved_game.write<int32_t>(ManualblockLastStartTime); //Blocking 3
 		saved_game.write<int32_t>(BoltblockStartTime); //Blocking 4
-		saved_game.write<int32_t>(ManualMBlockingTime); //MBlocking 1
+		saved_game.write<int32_t>(Manual_m_blockingTime); //MBlocking 1
 		saved_game.write<int32_t>(BoltstasisStartTime); //Blocking 6
 		saved_game.write<int32_t>(saberBlockingTime); //SaberBlockingTime 1
 
@@ -3248,7 +3248,7 @@ using entityState_t = struct entityState_s
 		saved_game.read<int32_t>(ManualblockStartTime); //Blocking 2
 		saved_game.read<int32_t>(ManualblockLastStartTime); //Blocking 3
 		saved_game.read<int32_t>(BoltblockStartTime); //Blocking 4
-		saved_game.read<int32_t>(ManualMBlockingTime); //MBlocking 1
+		saved_game.read<int32_t>(Manual_m_blockingTime); //MBlocking 1
 		saved_game.read<int32_t>(BoltstasisStartTime); //Blocking 6
 		saved_game.read<int32_t>(saberBlockingTime); //SaberBlockingTime 1
 
@@ -3506,11 +3506,11 @@ using ForceReload_e = enum
 
 using ManualBlockingFlag_e = enum
 {
-	MBF_BLOCKING,
-	MBF_PROJBLOCKING,
+	HOLDINGBLOCK,
+	HOLDINGBLOCKANDATTACK,
 	MBF_LIGHTNINGBLOCKING,
 	MBF_NPCBLOCKING,
-	MBF_MBLOCKING,
+	PERFECTBLOCKING,
 	MBF_JKAMODENPCBLOCKING,
 	MBF_NPCKICKBLOCK,
 	MBF_MELEEDODGE,

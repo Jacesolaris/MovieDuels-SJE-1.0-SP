@@ -524,11 +524,11 @@ static void CG_DrawJK2blockingMode(const centity_t* cent)
 
 	cgi_R_SetColor(colorTable[CT_WHITE]);
 
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_PROJBLOCKING)
+	if (cg.predicted_player_state.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK)
 	{
 		blockindex = OHB_JK2MBLOCKINGMODE;
 	}
-	else if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_BLOCKING)
+	else if (cg.predicted_player_state.ManualBlockingFlags & 1 << HOLDINGBLOCK)
 	{
 		blockindex = OHB_JK2BLOCKINGMODE;
 	}
@@ -1224,7 +1224,7 @@ static void CG_DrawJK2blockPoints(const int x, const int y)
 	//	Outer block circular
 	//==========================================================================================================//
 
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		//blockingflag is on
 		memcpy(calc_color, colorTable[CT_GREEN], sizeof(vec4_t));
@@ -1272,7 +1272,7 @@ static void CG_DrawJK2blockPoints(const int x, const int y)
 
 	cgi_R_SetColor(calc_color);
 
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		//blockingflag is on
 		CG_DrawPic(x, y, 35, 35, cgs.media.HUDblockpointMB1);
@@ -1293,7 +1293,7 @@ static void CG_DrawJK2blockPoints(const int x, const int y)
 		block_percent = static_cast<float>(cg.snap->ps.blockPoints) / (static_cast<float>(BLOCK_POINTS_MAX) / 2);
 	}
 
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		//blockingflag is on
 		memcpy(calc_color, colorTable[CT_GREEN], sizeof(vec4_t));
@@ -1309,7 +1309,7 @@ static void CG_DrawJK2blockPoints(const int x, const int y)
 
 	cgi_R_SetColor(calc_color);
 
-	if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+	if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 	{
 		//blockingflag is on
 		CG_DrawPic(x, y, 35, 35, cgs.media.HUDblockpointMB2);
@@ -1389,7 +1389,7 @@ static void CG_DrawClassicblockPoints(const centity_t* cent, const float hud_rat
 		}
 		else if (value < inc) // partial tic
 		{
-			if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+			if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 			{
 				//blockingflag is on
 				memcpy(calc_color, colorTable[CT_GREEN], sizeof(vec4_t));
@@ -1404,7 +1404,7 @@ static void CG_DrawClassicblockPoints(const centity_t* cent, const float hud_rat
 		}
 		else
 		{
-			if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+			if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 			{
 				//blockingflag is on
 				memcpy(calc_color, colorTable[CT_GREEN], sizeof(vec4_t));
@@ -4797,7 +4797,7 @@ static void CG_DrawHUD(const centity_t* cent)
 
 			if (cent->currentState.weapon == WP_SABER)
 			{
-				if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_BLOCKING)
+				if (cg.predicted_player_state.ManualBlockingFlags & 1 << HOLDINGBLOCK)
 				{
 					// right hud block
 					if (cg_SerenityJediEngineHudMode.integer == 4) // vertical
@@ -4810,7 +4810,7 @@ static void CG_DrawHUD(const centity_t* cent)
 					}
 				}
 
-				if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MBLOCKING)
+				if (cg.predicted_player_state.ManualBlockingFlags & 1 << PERFECTBLOCKING)
 				{
 					// right hud mblock
 					if (cg_SerenityJediEngineHudMode.integer == 4) // vertical
@@ -8456,8 +8456,8 @@ static void CG_Draw2D()
 	//if (cg.predicted_player_state.communicatingflags & (1 << DASHING))
 		//if (cg.predicted_player_state.communicatingflags & (1 << CF_SABERLOCKING))
 		//if (cg.predicted_player_state.communicatingflags & (1 << PROJECTING))
-		//if (cg.predicted_player_state.pm_flags & PMF_BLOCK_HELD)
-		//if (cg.predicted_player_state.ManualBlockingFlags & (1 << MBF_PROJBLOCKING))
+		//if (cg.predicted_player_state.pm_flags & PMF_DASH_HELD)
+		//if (cg.predicted_player_state.ManualBlockingFlags & (1 << HOLDINGBLOCKANDATTACK))
 		//if (cg_entities[cg.snap->ps.client_num].currentState.userInt3 & (1 << FLAG_ATTACKFAKE))
 		//if (cent->currentState.eFlags & EF2_DUAL_WEAPONS)
 		//if (cent->currentState.eFlags & EF2_DUAL_PISTOLS)
@@ -8465,8 +8465,8 @@ static void CG_Draw2D()
 		//if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_NPCBLOCKSTANCE)
 		//if (cg.predicted_player_state.ManualBlockingFlags & 1 << MBF_MISSILESTASIS)
 	//{//test for all sorts of shit... does it work? show me.
-		//CG_DrawPic(0, 0, 640, 480, cgi_R_RegisterShader("gfx/2d/jsense"));
-		//CG_DrawPic(0, 0, 640, 480, cgi_R_RegisterShader("gfx/2d/droid_view"));
+	//	CG_DrawPic(0, 0, 640, 480, cgi_R_RegisterShader("gfx/2d/jsense"));
+	//	CG_DrawPic(0, 0, 640, 480, cgi_R_RegisterShader("gfx/2d/droid_view"));
 	//}
 
 	if (cg_debugHealthBars.integer)

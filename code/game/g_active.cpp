@@ -126,7 +126,7 @@ extern qboolean PM_SaberInTransition(int move);
 extern int IsPressingDestructButton(const gentity_t* self);
 extern qboolean PM_Dyinganim(const playerState_t* ps);
 extern qboolean npc_is_projected(const gentity_t* self);
-extern qboolean Manual_MeleeDodging(const gentity_t* defender);
+extern qboolean manual_melee_dodging(const gentity_t* defender);
 extern cvar_t* g_DebugSaberCombat;
 extern int G_FindLocalInterestPoint(gentity_t* self);
 extern float G_CanJumpToEnemyVeh(Vehicle_t* p_veh, const usercmd_t* pUmcd);
@@ -2047,7 +2047,7 @@ void ClientTimerActions(gentity_t* ent, const int msec)
 				&& ent->client->ps.saberBlockingTime < level.time
 				&& ent->client->ps.groundEntityNum != ENTITYNUM_NONE)
 			{
-				if (!(ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
+				if (!(ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 				{
 					if (ent->client->ps.saberFatigueChainCount > MISHAPLEVEL_HEAVY)
 					{
@@ -2083,7 +2083,7 @@ void ClientTimerActions(gentity_t* ent, const int msec)
 					&& !(ent->client->ps.forcePowersActive & 1 << FP_RAGE))
 				&& ent->client->ps.forceRageRecoveryTime < level.time
 				&& !PM_SaberInAttack(ent->client->ps.saber_move)
-				&& !(ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING)
+				&& !(ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK)
 				&& ent->client->NPC_class != CLASS_PROJECTION)
 			{
 				//you heal 1 hp every 1 second.
@@ -3100,7 +3100,7 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kick_dir, const float kick_dist, v
 						}
 						if ((hit_ent->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY ||
 							hit_ent->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_HEAVY)
-							&& !(hit_ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
+							&& !(hit_ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 						{
 							//knockdown
 							if (hit_ent->client->ps.saber_anim_level == SS_STAFF)
@@ -3122,7 +3122,7 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kick_dir, const float kick_dist, v
 						else if (ent->client->ps.saber_anim_level == SS_DESANN
 							&& (hit_ent->client->ps.saberFatigueChainCount >= MISHAPLEVEL_HEAVY ||
 								hit_ent->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_HEAVY)
-							&& !(hit_ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
+							&& !(hit_ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 						{
 							//knockdown
 							if (kick_push >= 150.0f && !Q_irand(0, 2))
@@ -8160,6 +8160,12 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		G_HeldByMonster(ent, &ucmd);
 	}
 
+	if (ent->client && ent->client->ps.Manual_m_blockingTime <= level.time && ent->client->ps.Manual_m_blockingTime > 0)
+	{
+		ent->client->ps.userInt3 &= ~(1 << FLAG_BLOCKING);
+		ent->client->ps.Manual_m_blockingTime = 0;
+	}
+
 	if (ent->client && ent->client->ps.powerups[PW_GALAK_SHIELD] && !droideka_npc(ent))
 	{
 		if (ent->client->ps.weapon == WP_SABER)
@@ -8708,18 +8714,18 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 	{
 		if (Manual_RunningAndSaberblocking(ent))
 		{
-			if (!(client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
+			if (!(client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 			{
-				client->ps.ManualBlockingFlags |= 1 << MBF_BLOCKING;
+				client->ps.ManualBlockingFlags |= 1 << HOLDINGBLOCK;
 				client->ps.userInt3 |= 1 << FLAG_BLOCKING;
 				client->ps.ManualBlockingTime = level.time; //Blocking time 1 on
 			}
 		}
 		else if (manual_saberblocking(ent))
 		{
-			if (!(client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING))
+			if (!(client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 			{
-				client->ps.ManualBlockingFlags |= 1 << MBF_BLOCKING;
+				client->ps.ManualBlockingFlags |= 1 << HOLDINGBLOCK;
 				client->ps.userInt3 |= 1 << FLAG_BLOCKING;
 				client->ps.ManualBlockingTime = level.time; //Blocking time 1 on
 
@@ -8740,10 +8746,10 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 
 			if (client->usercmd.buttons & BUTTON_ATTACK)
 			{
-				if (!(client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING))
+				if (!(client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK))
 				{
-					client->ps.ManualBlockingFlags |= 1 << MBF_PROJBLOCKING;
-					client->ps.ManualMBlockingTime = level.time;
+					client->ps.ManualBlockingFlags |= 1 << HOLDINGBLOCKANDATTACK;
+					client->ps.Manual_m_blockingTime = level.time;
 				}
 				client->usercmd.buttons &= ~BUTTON_ATTACK;
 
@@ -8752,9 +8758,9 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 					// They just pressed block. Mark the time...
 					client->ps.ManualblockStartTime = level.time;
 
-					if (!(client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING))
+					if (!(client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING))
 					{
-						client->ps.ManualBlockingFlags |= 1 << MBF_MBLOCKING; // activate the function
+						client->ps.ManualBlockingFlags |= 1 << PERFECTBLOCKING; // activate the function
 					}
 					if (d_combatinfo->integer || g_DebugSaberCombat->integer)
 					{
@@ -8766,11 +8772,11 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 				{
 					if (g_spskill->integer == 0) //easy blocking
 					{
-						if (client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING && level.time - client->ps.
+						if (client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING && level.time - client->ps.
 							ManualblockStartTime >= g_SaberPerfectBlockingTimerEasy->integer)
 						{
 							// Been holding block for too long....Turn off
-							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+							client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 							if (d_combatinfo->integer)
 							{
 								Com_Printf(S_COLOR_ORANGE"MBlocking has Deactivated because you hit the timer limit\n");
@@ -8779,11 +8785,11 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 					}
 					else if (g_spskill->integer == 1) //medium blocking
 					{
-						if (client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING && level.time - client->ps.
+						if (client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING && level.time - client->ps.
 							ManualblockStartTime >= g_SaberPerfectBlockingTimerNormal->integer)
 						{
 							// Been holding block for too long....Turn off
-							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+							client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 							if (d_combatinfo->integer)
 							{
 								Com_Printf(S_COLOR_ORANGE"MBlocking has Deactivated because you hit the timer limit\n");
@@ -8792,11 +8798,11 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 					}
 					else
 					{
-						if (client->ps.ManualBlockingFlags & 1 << MBF_MBLOCKING && level.time - client->ps.
+						if (client->ps.ManualBlockingFlags & 1 << PERFECTBLOCKING && level.time - client->ps.
 							ManualblockStartTime >= g_SaberPerfectBlockingTimerHard->integer)
 						{
 							// Been holding block for too long....Turn off
-							client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+							client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 							if (d_combatinfo->integer)
 							{
 								Com_Printf(S_COLOR_ORANGE"MBlocking has Deactivated because you hit the timer limit\n");
@@ -8836,31 +8842,31 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 			{
 				// No longer pressed, but we still need to make sure they are not spamming.
 				client->ps.ManualblockStartTime = 0;
-				client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
-				client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+				client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
+				client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 				client->ps.ManualBlockingFlags &= ~(1 << MBF_ACCURATEMISSILEBLOCKING);
 				client->IsBlockingLightning = qfalse;
 			}
 		}
 		else
 		{
-			client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-			client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
-			client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+			client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+			client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
+			client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 			client->ps.ManualBlockingFlags &= ~(1 << MBF_ACCURATEMISSILEBLOCKING);
 			client->ps.userInt3 &= ~(1 << FLAG_BLOCKING);
 			client->ps.ManualBlockingTime = 0; //Blocking time 1 on
-			client->ps.ManualMBlockingTime = 0;
+			client->ps.Manual_m_blockingTime = 0;
 			client->IsBlockingLightning = qfalse;
 			client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKWALKING);
 		}
 	}
 
-	if (client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING && !client->ps.SaberActive())
+	if (client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK && !client->ps.SaberActive())
 	{
-		client->ps.ManualBlockingFlags &= ~(1 << MBF_BLOCKING);
-		client->ps.ManualBlockingFlags &= ~(1 << MBF_PROJBLOCKING);
-		client->ps.ManualBlockingFlags &= ~(1 << MBF_MBLOCKING);
+		client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
+		client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
+		client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 	}
 
 	if (client->ps.ManualBlockingFlags & 1 << MBF_MISSILESTASIS)
@@ -8884,7 +8890,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		client->ps.ManualBlockingFlags &= ~(1 << MBF_MISSILESTASIS);
 	}
 
-	if (Manual_MeleeDodging(ent))
+	if (manual_melee_dodging(ent))
 	{
 		if (client->ps.DodgeStartTime <= 0 && level.time - client->ps.DodgeLastStartTime >= 1300)
 		{
@@ -9093,9 +9099,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 				}
 			}
 		}
-		else if (IsPressingDashButton(ent)
-			&& !PM_KickMove(ent->client->ps.saber_move)
-			&& !PM_SaberInAttack(ent->client->ps.saber_move))
+		else if (IsPressingDashButton(ent))
 		{
 			if (client->Dash_Count <= 2)
 			{
@@ -9438,17 +9442,17 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		}
 		if (client->ps.viewangles[PITCH] > 0)
 		{
-			cg.overrides.thirdPersonPitchOffset = ent->client->ps.viewangles[PITCH] * -0.75;
-			cg.overrides.thirdPersonVertOffset = 300 + ent->client->ps.viewangles[PITCH] * -10;
+			cg.overrides.thirdPersonPitchOffset = client->ps.viewangles[PITCH] * -0.75;
+			cg.overrides.thirdPersonVertOffset = 300 + client->ps.viewangles[PITCH] * -10;
 			if (cg.overrides.thirdPersonVertOffset < 0)
 			{
 				cg.overrides.thirdPersonVertOffset = 0;
 			}
 		}
-		else if (ent->client->ps.viewangles[PITCH] < 0)
+		else if (client->ps.viewangles[PITCH] < 0)
 		{
-			cg.overrides.thirdPersonPitchOffset = ent->client->ps.viewangles[PITCH] * -0.75;
-			cg.overrides.thirdPersonVertOffset = 300 + ent->client->ps.viewangles[PITCH] * -5;
+			cg.overrides.thirdPersonPitchOffset = client->ps.viewangles[PITCH] * -0.75;
+			cg.overrides.thirdPersonVertOffset = 300 + client->ps.viewangles[PITCH] * -5;
 			if (cg.overrides.thirdPersonVertOffset > 300)
 			{
 				cg.overrides.thirdPersonVertOffset = 300;

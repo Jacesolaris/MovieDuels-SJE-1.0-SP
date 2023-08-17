@@ -316,7 +316,6 @@ using overrides_t = struct
 	float thirdPersonHorzOffset; //NOTE: could put Alpha and HorzOffset and the target & camera damps, but no-one is trying to override those, so... YES WE ARE
 	float thirdPersonAlpha; //how tightly to move the camera pos behind the player
 	float fov; //what fov to use
-	
 };
 
 //======================================================================
@@ -1282,8 +1281,7 @@ void trap_Com_SetOrgAngles(vec3_t org, vec3_t angles);
 void trap_R_GetLightStyle(int style, color4ub_t color);
 void trap_R_SetLightStyle(int style, int color);
 
-int trap_CIN_PlayCinematic(const char* arg0, int xpos, int ypos, int width, int height, int bits,
-	const char* psAudioFile = nullptr);
+int trap_CIN_PlayCinematic(const char* arg0, int xpos, int ypos, int width, int height, int bits, const char* psAudioFile = nullptr);
 e_status trap_CIN_StopCinematic(int handle);
 e_status trap_CIN_RunCinematic(int handle);
 void trap_CIN_DrawCinematic(int handle);

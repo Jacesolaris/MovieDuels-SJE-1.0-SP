@@ -64,6 +64,7 @@ extern void PM_AddFatigue(playerState_t* ps, int fatigue);
 extern qboolean PM_InLedgeMove(int anim);
 extern qboolean PM_SaberInMassiveBounce(int move);
 extern qboolean PM_SaberInBashedAnim(int anim);
+extern qboolean PM_CrouchAnim(int anim);
 
 extern qboolean cg_usingInFrontOf;
 extern qboolean player_locked;
@@ -1496,15 +1497,16 @@ qboolean G_OkayToLean(const playerState_t* ps, const usercmd_t* cmd, const qbool
 {
 	if ((ps->client_num < MAX_CLIENTS || G_ControlledByPlayer(&g_entities[ps->client_num])) //player
 		&& ps->groundEntityNum != ENTITYNUM_NONE //on ground
-		&& (interrupt_okay
-			&& PM_DodgeAnim(ps->torsoAnim) //already leaning
+		&& (interrupt_okay //okay to interrupt a lean
+			&& !PM_CrouchAnim(ps->legsAnim)
+			&& PM_DodgeAnim(ps->torsoAnim)
+			|| PM_BlockAnim(ps->torsoAnim) || PM_BlockDualAnim(ps->torsoAnim) || PM_BlockStaffAnim(ps->torsoAnim)
 			|| !ps->weaponTime //not attacking or being prevented from attacking
 			&& !ps->legsAnimTimer //not in any held legs anim
 			&& !ps->torsoAnimTimer) //not in any held torso anim
-		&& !(cmd->buttons & (BUTTON_ATTACK | BUTTON_ALT_ATTACK | BUTTON_FORCE_LIGHTNING | BUTTON_USE_FORCE |
-			BUTTON_FORCE_DRAIN | BUTTON_DASH | BUTTON_BLOCK | BUTTON_FORCEGRIP | BUTTON_REPULSE | BUTTON_FORCEGRASP |
-			BUTTON_LIGHTNING_STRIKE | BUTTON_PROJECTION)) //not trying to attack
-		&& !(ps->ManualBlockingFlags & 1 << MBF_BLOCKING)
+		&& !(cmd->buttons & (BUTTON_ATTACK | BUTTON_ALT_ATTACK | BUTTON_FORCE_LIGHTNING | BUTTON_USE_FORCE | BUTTON_DASH
+			| BUTTON_FORCE_DRAIN | BUTTON_FORCEGRIP | BUTTON_REPULSE | BUTTON_FORCEGRASP)) //not trying to attack
+		&& !(ps->ManualBlockingFlags & 1 << HOLDINGBLOCK)
 		&& VectorCompare(ps->velocity, vec3_origin) //not moving
 		&& !cg_usingInFrontOf) //use button wouldn't be used for anything else
 	{
@@ -1717,7 +1719,7 @@ void PM_UpdateViewAngles(int saber_anim_level, playerState_t* ps, usercmd_t* cmd
 
 	if (gent
 		&& gent->client && gent->client->NPC_class != CLASS_DROIDEKA
-		&& (cmd->buttons & BUTTON_USE && !(cmd->buttons & BUTTON_BLOCK) && !(cmd->buttons & BUTTON_ATTACK)))
+		&& gent->client->ps.ManualBlockingFlags & 1 << MBF_MELEEDODGE)
 	{
 		//check leaning
 		if (G_OkayToLean(ps, cmd, qtrue) && (cmd->rightmove || cmd->forwardmove)) //pushing a direction
@@ -1976,7 +1978,7 @@ void PM_UpdateViewAngles(int saber_anim_level, playerState_t* ps, usercmd_t* cmd
 	if (g_SerenityJediEngineMode->integer
 		&& gent
 		&& gent->client
-		&& ~gent->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING
+		&& ~gent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK
 		&& ~gent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKWALKING
 		&& gent->s.weapon == WP_SABER
 		&& pm->ps->SaberActive()

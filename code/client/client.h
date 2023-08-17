@@ -393,8 +393,7 @@ void SCR_DrawCinematic();
 void SCR_RunCinematic();
 void SCR_StopCinematic(qboolean b_allow_refusal = qfalse);
 
-int CIN_PlayCinematic(const char* arg, int x, int y, int w, int h, int systemBits,
-	const char* ps_audio_file /* = NULL */);
+int CIN_PlayCinematic(const char* arg, int x, int y, int w, int h, int systemBits, const char* ps_audio_file);
 e_status CIN_StopCinematic(int handle);
 e_status CIN_RunCinematic(int handle);
 void CIN_DrawCinematic(int handle);

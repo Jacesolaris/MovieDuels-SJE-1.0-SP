@@ -3004,8 +3004,6 @@ void Noghri_StickTracennew(gentity_t* self)
 NPC_BSST_Attack
 -------------------------
 */
-
-extern qboolean PM_CrouchAnim(int anim);
 constexpr auto MELEE_DIST_SQUARED = 6400;
 extern qboolean PM_InOnGroundAnims(int anim);
 extern float NPC_EnemyRangeFromBolt(int bolt_index);

@@ -2756,6 +2756,7 @@ void FS_Startup(const char* gameName) {
 	}
 	fs_homepath = Cvar_Get("fs_homepath", homePath, CVAR_USER_CREATED);
 	fs_gamedirvar = Cvar_Get("fs_game", "MD", CVAR_INIT | CVAR_SYSTEMINFO);
+	//fs_gamedirvar = Cvar_Get("fs_game", "MD-MP", CVAR_INIT | CVAR_SYSTEMINFO);
 
 	fs_dirbeforepak = Cvar_Get("fs_dirbeforepak", "0", CVAR_INIT | CVAR_PROTECTED);
 

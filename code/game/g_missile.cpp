@@ -3512,9 +3512,9 @@ void wp_handle_bolt_block_sje_blockpoints(gentity_t* ent, gentity_t* missile, ve
 		blocker = ent->owner;
 	}
 
-	const qboolean manual_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean manual_blocking = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	const qboolean manual_proj_blocking =
-		blocker->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
+		blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	const qboolean np_cis_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING ? qtrue : qfalse;
 	float slop_factor = (FATIGUE_AUTOBOLTBLOCK - 6) * (static_cast<float>(FORCE_LEVEL_3) - blocker->client->ps.forcePowerLevel[
 		FP_SABER_DEFENSE]) / FORCE_LEVEL_3;
@@ -4002,9 +4002,9 @@ void wp_handle_bolt_block_sje_forcepoints(gentity_t* ent, gentity_t* missile, ve
 		blocker = ent->owner;
 	}
 
-	const qboolean manual_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean manual_blocking = blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	const qboolean manual_proj_blocking =
-		blocker->client->ps.ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
+		blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	const qboolean np_cis_blocking = blocker->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING ? qtrue : qfalse;
 	const qboolean accurate_missile_blocking =
 		blocker->client->ps.ManualBlockingFlags & 1 << MBF_ACCURATEMISSILEBLOCKING ? qtrue : qfalse;

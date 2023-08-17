@@ -3805,31 +3805,25 @@ static void S_MenuMusic_f()
 		S_StartBackgroundTrack("music/mainMenu/main/md_menu_both.mp3", "music/mainMenu/main/md_menu_both.mp3", qfalse);
 		break;
 	case 2:
-		S_StartBackgroundTrack("music/mainMenu/main/md_menu_padme.mp3", "music/mainMenu/main/md_menu_padme.mp3",
-			qfalse);
+		S_StartBackgroundTrack("music/mainMenu/main/md_menu_padme.mp3", "music/mainMenu/main/md_menu_padme.mp3", qfalse);
 		break;
 	case 3:
 		S_StartBackgroundTrack("music/mainMenu/main/md_menu_boc.mp3", "music/mainMenu/main/md_menu_boc.mp3", qfalse);
 		break;
 	case 4:
-		S_StartBackgroundTrack("music/mainMenu/main/md_menu_rotsgame.mp3", "music/mainMenu/main/md_menu_rotsgame.mp3",
-			qfalse);
+		S_StartBackgroundTrack("music/mainMenu/main/md_menu_rotsgame.mp3", "music/mainMenu/main/md_menu_rotsgame.mp3", qfalse);
 		break;
 	case 5:
-		S_StartBackgroundTrack("music/mainMenu/main/md_menu_rogueshadow.mp3",
-			"music/mainMenu/main/md_menu_rogueshadow.mp3", qfalse);
+		S_StartBackgroundTrack("music/mainMenu/main/md_menu_rogueshadow.mp3", "music/mainMenu/main/md_menu_rogueshadow.mp3", qfalse);
 		break;
 	case 6:
-		S_StartBackgroundTrack("music/mainMenu/main/md_menu_goodbyeoldfriend.mp3",
-			"music/mainMenu/main/md_menu_goodbyeoldfriend.mp3", qfalse);
+		S_StartBackgroundTrack("music/mainMenu/main/md_menu_goodbyeoldfriend.mp3", "music/mainMenu/main/md_menu_goodbyeoldfriend.mp3", qfalse);
 		break;
 	case 7:
-		S_StartBackgroundTrack("music/mainMenu/main/md_menu_starwars.mp3", "music/mainMenu/main/md_menu_starwars.mp3",
-			qfalse);
+		S_StartBackgroundTrack("music/mainMenu/main/md_menu_starwars.mp3", "music/mainMenu/main/md_menu_starwars.mp3", qfalse);
 		break;
 	case 8:
-		S_StartBackgroundTrack("music/mainMenu/main/md_menu_podracing.mp3", "music/mainMenu/main/md_menu_podracing.mp3",
-			qfalse);
+		S_StartBackgroundTrack("music/mainMenu/main/md_menu_podracing.mp3", "music/mainMenu/main/md_menu_podracing.mp3", qfalse);
 		break;
 	default:
 		S_StartBackgroundTrack("music/mainMenu/main/md_menu.mp3", "music/mainMenu/main/md_menu.mp3", qfalse);
@@ -5315,8 +5309,8 @@ static int SND_FreeSFXMem(sfx_t* sfx)
 		{
 			iBytesFreed += Z_Free(sfx->lipSyncData);
 			sfx->lipSyncData = nullptr;
+			}
 		}
-	}
 #endif
 
 	if (sfx->pSoundData)
@@ -5334,7 +5328,7 @@ static int SND_FreeSFXMem(sfx_t* sfx)
 	}
 
 	return iBytesFreed;
-}
+	}
 
 void S_DisplayFreeMemory()
 {
@@ -6069,12 +6063,12 @@ static void UpdateEAXListener()
 							NULL, &s_eaxLPCur, sizeof(EAXREVERBPROPERTIES));
 
 						s_EnvironmentID = lID;
-					}
 				}
 			}
+		}
 
 			return;
-		}
+	}
 
 		// Convert Listener position and orientation to left-handed system
 		ListPos.fX = listener_pos[0];
@@ -6204,7 +6198,7 @@ static void UpdateEAXListener()
 				}
 				s_FXSlotInfo[i].lEnvID = -1;
 			}
-		}
+}
 
 		// Make sure all the reverbs we want are being rendered, if not, find an empty slot
 		// and apply appropriate reverb settings
@@ -6466,7 +6460,7 @@ static void UpdateEAXListener()
 			if (s_eaxSet(&s_FXSlotInfo[i].FXSlotGuid, EAXFXSLOT_VOLUME, NULL, &lVolume, sizeof(long)) != AL_NO_ERROR)
 				OutputDebugString("Failed to set FX Slot Volume to 0\n");
 		}
-	}
+}
 }
 
 /*

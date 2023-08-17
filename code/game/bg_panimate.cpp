@@ -6312,7 +6312,7 @@ bool TorsoAgainstWindTest(gentity_t* ent)
 				if (DotProduct(fwd, wind_dir) > 0.65f)
 				{
 					if (ent->client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING || ent->client->ps.ManualBlockingFlags &
-						1 << MBF_BLOCKING)
+						1 << HOLDINGBLOCK)
 					{
 						// Dont do this if sprinting it looks shit
 					}
@@ -6331,7 +6331,7 @@ bool TorsoAgainstWindTest(gentity_t* ent)
 							// ok i have a saber
 							if (g_SerenityJediEngineMode->integer)
 							{
-								if (!(ent->client->ps.ManualBlockingFlags & 1 << MBF_BLOCKING) && !(ent->client->ps.
+								if (!(ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK) && !(ent->client->ps.
 									PlayerEffectFlags & 1 << PEF_SPRINTING))
 								{
 									if (ent->client && ent->client->ps.torsoAnim != BOTH_WIND)
@@ -6422,9 +6422,9 @@ void PM_TorsoAnimLightsaber()
 	// WEAPON_READY
 	// *********************************************************
 
-	const qboolean holding_block = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKING ? qtrue : qfalse;
+	const qboolean holding_block = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Holding Block Button
-	const qboolean active_blocking = pm->ps->ManualBlockingFlags & 1 << MBF_PROJBLOCKING ? qtrue : qfalse;
+	const qboolean active_blocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	//Active Blocking
 	const qboolean walking_blocking = pm->ps->ManualBlockingFlags & 1 << MBF_BLOCKWALKING ? qtrue : qfalse;
 	//Walking Blocking

@@ -2011,8 +2011,7 @@ static void PlayCinematic(const char* arg, const char* s, const qboolean qb_in_g
 		// work out associated audio-overlay file, if any...
 		//
 		extern cvar_t* s_language;
-		const auto b_is_foreign = static_cast<qboolean>(s_language && Q_stricmp(s_language->string, "english") &&
-			Q_stricmp(s_language->string, ""));
+		const auto b_is_foreign = static_cast<qboolean>(s_language && Q_stricmp(s_language->string, "english") && Q_stricmp(s_language->string, ""));
 		const char* ps_audio_file = nullptr;
 		qhandle_t hCrawl = 0;
 		if (!Q_stricmp(arg, "video/jk0101_sw.roq"))
@@ -2054,8 +2053,7 @@ static void PlayCinematic(const char* arg, const char* s, const qboolean qb_in_g
 			}
 		}
 
-		float ratio = static_cast<float>(SCREEN_WIDTH * cls.glconfig.vidHeight) / static_cast<float>(SCREEN_HEIGHT *
-			cls.glconfig.vidWidth);
+		float ratio = static_cast<float>(SCREEN_WIDTH * cls.glconfig.vidHeight) / static_cast<float>(SCREEN_HEIGHT * cls.glconfig.vidWidth);
 		ratio = Com_Clamp(0.75f, 1.0f, ratio);
 		const float new_height = SCREEN_HEIGHT / ratio;
 		const float offset = (SCREEN_HEIGHT - SCREEN_HEIGHT / ratio) / 2.0f;
