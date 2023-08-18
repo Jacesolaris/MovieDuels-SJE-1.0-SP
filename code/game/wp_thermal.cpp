@@ -65,7 +65,7 @@ void thermalDetonatorExplode(gentity_t* ent)
 		G_RadiusDamage(ent->currentOrigin, ent->owner, weaponData[WP_THERMAL].splashDamage,
 			weaponData[WP_THERMAL].splashRadius, nullptr, MOD_EXPLOSIVE_SPLASH);
 
-		/*if (ent->owner && ent->owner->client->NPC_class == CLASS_GRAN && g_SerenityJediEngineMode->integer == 2)
+		if (ent->owner && ent->owner->client->NPC_class == CLASS_JAN && g_SerenityJediEngineMode->integer == 2)
 		{
 			switch (thermal_effect)
 			{
@@ -86,8 +86,7 @@ void thermalDetonatorExplode(gentity_t* ent)
 		else
 		{
 			G_PlayEffect("thermal/explosion", ent->currentOrigin);
-		}*/
-		G_PlayEffect("thermal/explosion", ent->currentOrigin);
+		}
 
 		G_PlayEffect("thermal/shockwave", ent->currentOrigin);
 

@@ -167,7 +167,7 @@ extern int PlayerCanAbsorbKick(const gentity_t* defender, const vec3_t push_dir)
 extern qboolean G_InScriptedCinematicSaberAnim(const gentity_t* self);
 extern qboolean jedi_is_kick_resistant(gentity_t* self);
 extern void jedi_play_blocked_push_sound(const gentity_t* self);
-
+extern void WP_DeactivateLightSaber(const gentity_t* self, qboolean clear_length = qfalse);
 extern qboolean PlayerAffectedByStasis();
 extern qboolean PM_DodgeAnim(int anim);
 extern qboolean PM_DodgeHoldAnim(int anim);
@@ -2598,7 +2598,7 @@ qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t
 
 				if (hit_ent->client->ps.SaberActive())
 				{
-					WP_DeactivateSaber(hit_ent, qtrue);
+					WP_DeactivateLightSaber(hit_ent, qtrue);
 				}
 			}
 
@@ -2651,7 +2651,7 @@ qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t
 
 				if (hit_ent->client->ps.SaberActive())
 				{
-					WP_DeactivateSaber(hit_ent, qtrue);
+					WP_DeactivateLightSaber(hit_ent, qtrue);
 				}
 			}
 
@@ -2685,7 +2685,7 @@ qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t
 
 				if (hit_ent->client->ps.SaberActive())
 				{
-					WP_DeactivateSaber(hit_ent, qtrue);
+					WP_DeactivateLightSaber(hit_ent, qtrue);
 				}
 			}
 
@@ -2731,7 +2731,7 @@ qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t
 
 				if (hit_ent->client->ps.SaberActive())
 				{
-					WP_DeactivateSaber(hit_ent, qtrue);
+					WP_DeactivateLightSaber(hit_ent, qtrue);
 				}
 			}
 
@@ -2777,7 +2777,7 @@ qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t
 
 				if (hit_ent->client->ps.SaberActive())
 				{
-					WP_DeactivateSaber(hit_ent, qtrue);
+					WP_DeactivateLightSaber(hit_ent, qtrue);
 				}
 			}
 
@@ -2817,7 +2817,7 @@ qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t
 
 				if (hit_ent->client->ps.SaberActive())
 				{
-					WP_DeactivateSaber(hit_ent, qtrue);
+					WP_DeactivateLightSaber(hit_ent, qtrue);
 				}
 			}
 
@@ -2872,7 +2872,7 @@ qboolean WP_AbsorbKick(gentity_t* hit_ent, const gentity_t* pusher, const vec3_t
 
 				if (hit_ent->client->ps.SaberActive())
 				{
-					WP_DeactivateSaber(hit_ent, qtrue);
+					WP_DeactivateLightSaber(hit_ent, qtrue);
 				}
 			}
 

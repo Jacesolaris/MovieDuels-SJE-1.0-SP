@@ -68,7 +68,6 @@ extern qboolean WP_ForcePowerAvailable(const gentity_t* self, forcePowers_t forc
 extern void WP_ForcePowerStop(gentity_t* self, forcePowers_t force_power);
 extern void WP_KnockdownTurret(gentity_t* pas);
 extern void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length = qfalse);
-extern void WP_DeactivateLightSaber(const gentity_t* self, qboolean clear_length = qfalse);
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern qboolean PM_SaberInStart(int move);
 extern qboolean pm_saber_in_special_attack(int anim);
@@ -754,7 +753,7 @@ void tavion_scepter_damage()
 			if (d_saberCombat->integer > 1)
 			{
 				G_DebugLine(base, tip, 1000, 0x000000ff, qtrue);
-		}
+			}
 #endif
 			gi.trace(&trace, base, vec3_origin, vec3_origin, tip, NPC->s.number, MASK_SHOT, G2_RETURNONHIT, 10);
 			if (trace.fraction < 1.0f)
@@ -795,8 +794,8 @@ void tavion_scepter_damage()
 					last_hit = trace.entity_num;
 				}
 			}
+		}
 	}
-}
 }
 
 void tavion_scepter_slam()

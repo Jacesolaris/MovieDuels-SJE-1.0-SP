@@ -34267,6 +34267,7 @@ void WP_DeactivateLightSaber(const gentity_t* self, const qboolean clear_length)
 	self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
 	self->client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
 	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_NPCBLOCKING);
+
 	//keep my saber off!
 	if (self->client->ps.SaberActive())
 	{
@@ -34274,14 +34275,14 @@ void WP_DeactivateLightSaber(const gentity_t* self, const qboolean clear_length)
 		if (clear_length)
 		{
 			self->client->ps.SetSaberLength(0);
-			PM_SetSaberMove(LS_DRAW);
 		}
 		G_SoundIndexOnEnt(self, CHAN_WEAPON, self->client->ps.saber[0].soundOff);
 	}
-	self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCK);
-	self->client->ps.ManualBlockingFlags &= ~(1 << HOLDINGBLOCKANDATTACK);
-	self->client->ps.ManualBlockingFlags &= ~(1 << PERFECTBLOCKING);
-	self->client->ps.ManualBlockingFlags &= ~(1 << MBF_NPCBLOCKING);
+
+	//if (self->NPC && !G_ControlledByPlayer(self)) //NPC only
+	//{
+	//	self->client->usercmd.buttons &= ~BUTTON_ATTACK;
+	//}
 }
 
 void ForceDrainGrabStart(gentity_t* self)
@@ -40816,7 +40817,7 @@ void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd)
 		ForceProjection(self);
 	}
 
-	if (self->client->ps.communicatingflags & 1 << DASHING)
+	if ((self->client->ps.communicatingflags & 1 << DASHING) || (IsPressingDashButton(self)))
 	{//dash is one of the powers with its own button.. if it's held, call the specific dash power function.
 		ForceSpeedDash(self);
 	}
