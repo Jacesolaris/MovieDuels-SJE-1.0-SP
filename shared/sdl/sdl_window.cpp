@@ -90,8 +90,9 @@ constexpr vidmode_t r_vidModes[] =
 	{"Mode 15: 1680x1050", 1680, 1050},
 	{"Mode 16: 1920x1080", 1920, 1080}, //1080p
 	{"Mode 17: 2048x1536", 2048, 1536},
-	{"Mode 18: 2560x1440", 2560, 1440},
-	{"Mode 19: 3840x2160", 3840, 2160} //4K Video mode
+	{"Mode 18: 2400x600", 2400, 600},
+	{"Mode 19: 2560x1440", 2560, 1440},
+	{"Mode 20: 3840x2160", 3840, 2160} //4K Video mode
 };
 static constexpr int s_numVidModes = ARRAY_LEN(r_vidModes);
 

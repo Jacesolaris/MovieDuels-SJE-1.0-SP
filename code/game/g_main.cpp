@@ -822,10 +822,10 @@ void G_InitCvars()
 
 	g_speederControlScheme = gi.cvar("g_speederControlScheme", "2", CVAR_ARCHIVE); //2 is default, 1 is alternate
 
-	g_char_model = gi.cvar("g_char_model", "jedi_tf", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
-	g_char_skin_head = gi.cvar("g_char_skin_head", "head_a1", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
-	g_char_skin_torso = gi.cvar("g_char_skin_torso", "torso_a1", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
-	g_char_skin_legs = gi.cvar("g_char_skin_legs", "lower_a1", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
+	g_char_model = gi.cvar("g_char_model", "jedi_hm", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
+	g_char_skin_head = gi.cvar("g_char_skin_head", "head_b1", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
+	g_char_skin_torso = gi.cvar("g_char_skin_torso", "torso_b1", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
+	g_char_skin_legs = gi.cvar("g_char_skin_legs", "lower_b1", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
 	g_char_color_red = gi.cvar("g_char_color_red", "255", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
 	g_char_color_green = gi.cvar("g_char_color_green", "255", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
 	g_char_color_blue = gi.cvar("g_char_color_blue", "255", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
