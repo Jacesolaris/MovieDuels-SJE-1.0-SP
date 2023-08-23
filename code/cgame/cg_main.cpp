@@ -3217,6 +3217,7 @@ void CG_Init(const int serverCommandSequence)
 	cgs.media.whiteShader = cgi_R_RegisterShader("white");
 	cgs.media.loadTick = cgi_R_RegisterShaderNoMip("gfx/hud/load_tick");
 	cgs.media.loadTickCap = cgi_R_RegisterShaderNoMip("gfx/hud/load_tick_cap");
+	cgs.media.load_SerenitySaberSystems = cgi_R_RegisterShaderNoMip("gfx/hud/load_SerenitySaberSystems");
 
 	const char* force_icon_files[NUM_FORCE_POWERS] =
 	{

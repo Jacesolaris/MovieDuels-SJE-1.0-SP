@@ -282,6 +282,7 @@ using cgMedia_t = struct
 	qhandle_t numberShaders[11];
 	qhandle_t smallnumberShaders[11];
 	qhandle_t chunkyNumberShaders[11];
+	qhandle_t load_SerenitySaberSystems;
 
 	qhandle_t loadTick;
 	qhandle_t loadTickCap;
