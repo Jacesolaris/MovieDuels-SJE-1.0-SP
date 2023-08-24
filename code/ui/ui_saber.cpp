@@ -2433,9 +2433,65 @@ saberType_t TranslateSaberType(const char* name)
 	{
 		return SABER_CUSTOMSFX;
 	}
+	if (!Q_stricmp(name, "SABER_BACKHAND"))
+	{
+		return SABER_BACKHAND;
+	}
+	if (!Q_stricmp(name, "SABER_YODA"))
+	{
+		return SABER_YODA;
+	}
+	if (!Q_stricmp(name, "SABER_DOOKU"))
+	{
+		return SABER_DOOKU;
+	}
+	if (!Q_stricmp(name, "SABER_PALP"))
+	{
+		return SABER_PALP;
+	}
+	if (!Q_stricmp(name, "SABER_ANAKIN"))
+	{
+		return SABER_ANAKIN;
+	}
 	if (!Q_stricmp(name, "SABER_GRIE"))
 	{
 		return SABER_GRIE;
+	}
+	if (!Q_stricmp(name, "SABER_GRIE4"))
+	{
+		return SABER_GRIE4;
+	}
+	if (!Q_stricmp(name, "SABER_OBIWAN"))
+	{
+		return SABER_OBIWAN;
+	}
+	if (!Q_stricmp(name, "SABER_ASBACKHAND"))
+	{
+		return SABER_ASBACKHAND;
+	}
+	if (!Q_stricmp(name, "SABER_ELECTROSTAFF"))
+	{
+		return SABER_ELECTROSTAFF;
+	}
+	if (!Q_stricmp(name, "SABER_WINDU"))
+	{
+		return SABER_WINDU;
+	}
+	if (!Q_stricmp(name, "SABER_VADER"))
+	{
+		return SABER_VADER;
+	}
+	if (!Q_stricmp(name, "SABER_STAFF_MAUL"))
+	{
+		return SABER_STAFF_MAUL;
+	}
+	if (!Q_stricmp(name, "SABER_KENOBI"))
+	{
+		return SABER_KENOBI;
+	}
+	if (!Q_stricmp(name, "SABER_REY"))
+	{
+		return SABER_REY;
 	}
 	return SABER_SINGLE;
 }
