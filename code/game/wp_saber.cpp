@@ -2647,6 +2647,7 @@ qboolean WP_SaberApplyDamageJKA(gentity_t* ent, const float base_damage, const i
 	qboolean did_damage = qfalse;
 	float max_dmg;
 	const saberType_t saber_type = ent->client->ps.saber[saber_num].type;
+	const int index = Q_irand(1, 3);
 
 	if (!numVictims)
 	{
@@ -2732,7 +2733,7 @@ qboolean WP_SaberApplyDamageJKA(gentity_t* ent, const float base_damage, const i
 						{
 							d_flags |= DAMAGE_NO_DAMAGE;
 							G_Beskar_Attack_Bounce(ent, victim);
-							G_Sound(ent, G_SoundIndex("sound/weapons/impacts/beskar_impact1.mp3"));
+							G_Sound(victim, G_SoundIndex(va("sound/weapons/impacts/beskar_impact%d.mp3", index)));
 						}
 						//clamp the dmg
 						if (victim->s.weapon != WP_SABER)
@@ -3185,6 +3186,7 @@ qboolean WP_SaberApplyDamageMD(gentity_t* ent, const float base_damage, const in
 							static_cast<saberMoveName_t>(ent->client->ps.saber_move));
 						const qboolean saber_in_lunge_stab = PM_SaberInLungeStab(
 							static_cast<saberMoveName_t>(ent->client->ps.saber_move));
+						const int index = Q_irand(1, 3);
 
 						if (victim->client
 							&& (victim->s.weapon == WP_SABER
@@ -3212,7 +3214,7 @@ qboolean WP_SaberApplyDamageMD(gentity_t* ent, const float base_damage, const in
 						{
 							d_flags |= DAMAGE_NO_DAMAGE;
 							G_Beskar_Attack_Bounce(ent, victim);
-							G_Sound(ent, G_SoundIndex("sound/weapons/impacts/beskar_impact1.mp3"));
+							G_Sound(victim, G_SoundIndex(va("sound/weapons/impacts/beskar_impact%d.mp3", index)));
 						}
 
 						if (!saber_in_special) // not doing a special move

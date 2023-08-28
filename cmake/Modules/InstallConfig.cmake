@@ -99,7 +99,7 @@ if(WIN32)
 	endif()
 
 	if(BuildSPEngine)
-		string(REPLACE "/" "\\\\" ICON "${SPDir}/win32/starwars.ico")
+		string(REPLACE "/" "\\\\" ICON "${SPDir}/win32/MovieDuels-SP.ico")
 		set(CPACK_NSIS_CREATE_ICONS_EXTRA
 			"${CPACK_NSIS_CREATE_ICONS_EXTRA}
 			CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Jedi Academy SP.lnk' \\\\
@@ -122,7 +122,7 @@ if(WIN32)
 
 	# Don't run this for now until we have JK2 SP working
 	if(FALSE AND BuildJK2SPEngine)
-		string(REPLACE "/" "\\\\" ICON "${SPDir}/win32/starwars.ico")
+		string(REPLACE "/" "\\\\" ICON "${SPDir}/win32/MovieDuels-SP.ico")
 		set(CPACK_NSIS_CREATE_ICONS_EXTRA
 			"${CPACK_NSIS_CREATE_ICONS_EXTRA}
 			CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Jedi Outcast SP.lnk' \\\\

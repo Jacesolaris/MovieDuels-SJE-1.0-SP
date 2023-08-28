@@ -307,13 +307,7 @@ gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, const 
 	//FIXME: allow to set a targetname/script_targetname and animation info?
 	object->s.frame = object->start_frame = object->end_frame = frame;
 	object->owner = owner;
-	//object->damage = 100;
-	//object->splashDamage = 200;
-	//object->splashRadius = 200;
-	//object->methodOfDeath = MOD_EXPLOSIVE;
-	//object->splashMethodOfDeath = MOD_EXPLOSIVE_SPLASH;
-	object->clipmask = MASK_SOLID; //?
-	//object->e_TouchFunc = touchF_charge_stick;
+	object->clipmask = MASK_SOLID;
 
 	// The effect to play.
 	object->count = effect_id;
