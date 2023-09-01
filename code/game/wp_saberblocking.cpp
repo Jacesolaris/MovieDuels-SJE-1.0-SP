@@ -1270,8 +1270,7 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 					}
 					else if ((accurate_parry || npc_blocking)) //Other types and npc,s
 					{
-						if (attacker->client->ps.saber_anim_level == SS_DESANN || attacker->client->ps.saber_anim_level ==
-							SS_STRONG)
+						if (attacker->client->ps.saber_anim_level == SS_DESANN || attacker->client->ps.saber_anim_level == SS_STRONG)
 						{
 							WP_SaberFatiguedParry(blocker, attacker, saber_num, blade_num, hit_loc);
 						}
@@ -1317,13 +1316,16 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 								}
 
 								PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_THREE);
-
-								G_Sound(blocker, G_SoundIndex(va("sound/weapons/saber/saber_goodparry%d.mp3",
-									Q_irand(1, 3))));
 							}
 						}
+
+						//just so blocker knows that he has parried the attacker
+						blocker->client->ps.saberEventFlags |= SEF_PARRIED;
 						//just so attacker knows that he was blocked
 						attacker->client->ps.saberEventFlags |= SEF_BLOCKED;
+						//since it was parried, take away any damage done
+
+						G_Sound(blocker, G_SoundIndex(va("sound/weapons/saber/saber_goodparry%d.mp3", Q_irand(1, 3))));
 					}
 					else
 					{

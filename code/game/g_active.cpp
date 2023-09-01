@@ -178,9 +178,6 @@ extern int IsPressingDashButton(const gentity_t* self);
 extern cvar_t* g_SaberPerfectBlockingTimerEasy;
 extern cvar_t* g_SaberPerfectBlockingTimerNormal;
 extern cvar_t* g_SaberPerfectBlockingTimerHard;
-extern cvar_t* g_SaberMBlockingTimerwaitEasy;
-extern cvar_t* g_SaberMBlockingTimerwaitNormal;
-extern cvar_t* g_SaberMBlockingTimerwaitHard;
 
 extern bool in_camera;
 extern qboolean player_locked;

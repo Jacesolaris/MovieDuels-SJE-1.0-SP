@@ -264,10 +264,6 @@ cvar_t* g_SaberPerfectBlockingTimerEasy;
 cvar_t* g_SaberPerfectBlockingTimerNormal;
 cvar_t* g_SaberPerfectBlockingTimerHard;
 
-cvar_t* g_SaberMBlockingTimerwaitEasy;
-cvar_t* g_SaberMBlockingTimerwaitNormal;
-cvar_t* g_SaberMBlockingTimerwaitHard;
-
 cvar_t* g_SaberAttackSpeedMD;
 
 cvar_t* g_VaderBreath;
@@ -878,19 +874,12 @@ void G_InitCvars()
 	g_SaberPerfectBlockingTimerMissile = gi.cvar("g_SaberPerfectBlockingTimerMissile", "750", CVAR_ARCHIVE);
 	//Alternate saber combat system 3 sec
 
-	g_SaberPerfectBlockingTimerEasy = gi.cvar("g_SaberPerfectBlockingTimerEasy", "500", CVAR_ARCHIVE);
+	g_SaberPerfectBlockingTimerEasy = gi.cvar("g_SaberPerfectBlockingTimerEasy", "250", CVAR_ARCHIVE);
 	//Alternate saber combat system 2 sec
-	g_SaberPerfectBlockingTimerNormal = gi.cvar("g_SaberPerfectBlockingTimerNormal", "200", CVAR_ARCHIVE);
+	g_SaberPerfectBlockingTimerNormal = gi.cvar("g_SaberPerfectBlockingTimerNormal", "150", CVAR_ARCHIVE);
 	//Alternate saber combat system 1.5 sec
-	g_SaberPerfectBlockingTimerHard = gi.cvar("g_SaberPerfectBlockingTimerHard", "80", CVAR_ARCHIVE);
+	g_SaberPerfectBlockingTimerHard = gi.cvar("g_SaberPerfectBlockingTimerHard", "50", CVAR_ARCHIVE);
 	//Alternate saber combat system 1 sec
-
-	g_SaberMBlockingTimerwaitEasy = gi.cvar("g_SaberMBlockingTimerwaitEasy", "1000", CVAR_ARCHIVE);
-	//wait time between Mblocks
-	g_SaberMBlockingTimerwaitNormal = gi.cvar("g_SaberMBlockingTimerwaitNormal", "2000", CVAR_ARCHIVE);
-	//wait time between Mblocks
-	g_SaberMBlockingTimerwaitHard = gi.cvar("g_SaberMBlockingTimerwaitHard", "4000", CVAR_ARCHIVE);
-	//wait time between Mblocks
 
 	g_SaberAttackSpeedMD = gi.cvar("g_SaberAttackSpeedMD", "0", CVAR_ARCHIVE); //how fast saber animations run
 
