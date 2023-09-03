@@ -45,7 +45,6 @@ extern void wp_saber_start_missile_block_check_md(gentity_t* self, const usercmd
 extern void WP_ForcePowersUpdate(gentity_t* self, usercmd_t* ucmd);
 extern qboolean PM_SaberInMassiveBounce(int move);
 extern qboolean InFront(vec3_t spot, vec3_t from, vec3_t fromAngles, float threshHold = 0.0f);
-extern float DotToSpot(vec3_t spot, vec3_t from, vec3_t fromAngles);
 extern void NPC_SetLookTarget(const gentity_t* self, int ent_num, int clearTime);
 extern qboolean PM_LockAngles(gentity_t* ent, usercmd_t* ucmd);
 extern qboolean PM_AdjustAnglesToGripper(gentity_t* gent, usercmd_t* cmd);

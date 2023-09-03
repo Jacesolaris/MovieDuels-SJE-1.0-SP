@@ -3120,8 +3120,20 @@ saberMoveName_t PM_SaberLungeAttackMove(const qboolean fallback_to_normal_lunge)
 	{
 	case SS_DUAL:
 		return LS_SPINATTACK_DUAL;
+		break;
 	case SS_STAFF:
 		return LS_SPINATTACK;
+		break;
+	case SS_TAVION:
+		if (pm->ps->forcePower < BLOCKPOINTS_KNOCKAWAY)
+		{
+			return LS_A_LUNGE;
+		}
+		else
+		{
+			return LS_PULL_ATTACK_STAB;
+		}
+		break;
 	case SS_FAST:
 	{
 		if (pm->ps->dualSabers)
@@ -3725,7 +3737,7 @@ saberMoveName_t PM_SaberFlipOverAttackMove()
 			}
 		}
 	}
-	//no overrides, cancelled?
+	//no overrides, canceled?
 	if (pm->ps->saber[0].jumpAtkFwdMove == LS_NONE)
 	{
 		return LS_NONE;

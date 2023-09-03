@@ -122,23 +122,6 @@ qboolean InFront(vec3_t spot, vec3_t from, vec3_t fromAngles, const float thresh
 	return static_cast<qboolean>(dot > threshHold);
 }
 
-float DotToSpot(vec3_t spot, vec3_t from, vec3_t fromAngles)
-{
-	vec3_t dir, forward, angles;
-
-	VectorSubtract(spot, from, dir);
-	dir[2] = 0;
-	VectorNormalize(dir);
-
-	VectorCopy(fromAngles, angles);
-	angles[0] = 0;
-	AngleVectors(angles, forward, nullptr, nullptr);
-
-	const float dot = DotProduct(dir, forward);
-
-	return dot;
-}
-
 /*
 InFOV
 

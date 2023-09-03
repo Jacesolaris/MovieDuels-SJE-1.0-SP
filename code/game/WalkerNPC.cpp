@@ -68,7 +68,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #ifdef _JK2MP
 //this is really horrible, but it works! just be sure not to use any locals or anything
-//with these names (exluding bool, false, true). -rww
+//with these names (excluding bool, false, true). -rww
 #define currentAngles r.currentAngles
 #define currentOrigin r.currentOrigin
 #define mins r.mins
@@ -88,8 +88,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #ifdef QAGAME //we only want a few of these functions for BG
-
-extern float DotToSpot(vec3_t spot, vec3_t from, vec3_t fromAngles);
 extern vmCvar_t cg_thirdPersonAlpha;
 extern vec3_t playerMins;
 extern vec3_t playerMaxs;
@@ -338,9 +336,9 @@ static void ProcessOrientCommands(Vehicle_t* p_veh)
 			//help NPCs out some
 			turnSpeed *= 2.0f;
 #ifdef _JK2MP
-			if (parent_ps->speed > 200.0f)
+			if (parent_ps->speed >= 200.0f)
 #else
-			if (parent->client->ps.speed > 200.0f)
+			if (parent->client->ps.speed >= 200.0f)
 #endif
 			{
 				turnSpeed += turnSpeed * parent_ps->speed / 200.0f * 0.05f;

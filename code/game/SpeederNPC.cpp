@@ -89,7 +89,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern void NPC_SetAnim(gentity_t* ent, int set_anim_parts, int anim, int set_anim_flags, int i_blend);
 #endif
 
-extern float DotToSpot(vec3_t spot, vec3_t from, vec3_t fromAngles);
 #ifdef QAGAME //SP or game side MP
 extern vmCvar_t cg_thirdPersonAlpha;
 extern vec3_t playerMins;

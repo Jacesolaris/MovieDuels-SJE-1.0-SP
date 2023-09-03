@@ -86,7 +86,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define bgEntity_t gentity_t
 #endif
 
-extern float DotToSpot(vec3_t spot, vec3_t from, vec3_t fromAngles);
 #ifdef QAGAME //SP or game side MP
 extern vmCvar_t cg_thirdPersonAlpha;
 extern vec3_t playerMins;

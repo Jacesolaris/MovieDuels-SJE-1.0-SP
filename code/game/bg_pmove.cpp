@@ -10916,7 +10916,6 @@ static void PM_Footsteps()
 						if (!(pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING))
 						{
 							pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
-							pm->ps->sprintFuel -= 15;
 							g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 						}
 					}
@@ -10973,7 +10972,6 @@ static void PM_Footsteps()
 						if (!(pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING))
 						{
 							pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
-							pm->ps->sprintFuel -= 15;
 							g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 						}
 					}
@@ -11015,7 +11013,6 @@ static void PM_Footsteps()
 								if (!(pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING))
 								{
 									pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
-									pm->ps->sprintFuel -= 15;
 									g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 								}
 							}
@@ -11039,7 +11036,6 @@ static void PM_Footsteps()
 								if (!(pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING))
 								{
 									pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
-									pm->ps->sprintFuel -= 15;
 									g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 								}
 							}
@@ -11073,7 +11069,6 @@ static void PM_Footsteps()
 							if (!(pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING))
 							{
 								pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
-								pm->ps->sprintFuel -= 15;
 								g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 							}
 						}
@@ -11109,7 +11104,6 @@ static void PM_Footsteps()
 							if (!(pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING))
 							{
 								pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
-								pm->ps->sprintFuel -= 15;
 								g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 							}
 						}
@@ -11142,7 +11136,6 @@ static void PM_Footsteps()
 							if (!(pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING))
 							{
 								pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
-								pm->ps->sprintFuel -= 15;
 								g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 							}
 						}

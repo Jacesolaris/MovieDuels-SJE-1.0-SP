@@ -72,7 +72,6 @@ extern void G_RemovePlayerModel(gentity_t* p_ent);
 extern void G_ChangePlayerModel(gentity_t* p_ent, const char* new_model);
 extern void G_RemoveWeaponModels(gentity_t* ent);
 extern void CG_ChangeWeapon(int num);
-extern float DotToSpot(vec3_t spot, vec3_t from, vec3_t fromAngles);
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern void SetClientViewAngle(gentity_t* ent, vec3_t angle);
 

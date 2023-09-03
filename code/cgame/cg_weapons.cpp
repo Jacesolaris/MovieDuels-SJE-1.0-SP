@@ -4517,7 +4517,7 @@ void CG_NextWeapon_f()
 
 		if (cg.weaponSelect != n_cur_wpn)
 		{
-			if (g_entities[0].client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_NONE)
+			if (g_entities[0].client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_NONE)
 			{
 				g_entities[0].client->ps.BlasterAttackChainCount = BLASTERMISHAPLEVEL_NONE;
 			}
@@ -4771,7 +4771,7 @@ void CG_PrevWeapon_f()
 
 		if (cg.weaponSelect != n_cur_wpn)
 		{
-			if (g_entities[0].client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_NONE)
+			if (g_entities[0].client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_NONE)
 			{
 				g_entities[0].client->ps.BlasterAttackChainCount = BLASTERMISHAPLEVEL_NONE;
 			}
@@ -4901,7 +4901,7 @@ void CG_ChangeWeapon(const int num)
 
 	if (cg.weaponSelect != n_cur_wpn)
 	{
-		if (g_entities[0].client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_NONE)
+		if (g_entities[0].client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_NONE)
 		{
 			g_entities[0].client->ps.BlasterAttackChainCount = BLASTERMISHAPLEVEL_NONE;
 		}
@@ -4951,7 +4951,7 @@ void CG_Weapon_f()
 		return;
 	}
 
-	if (g_entities[0].client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWENTYSIX && is_holding_reloadable_gun(cg_entities[0].gent))
+	if (g_entities[0].client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_TWENTYSIX && is_holding_reloadable_gun(cg_entities[0].gent))
 	{
 		if (cg_entities[0].gent->s.weapon == WP_BRYAR_PISTOL ||
 			cg_entities[0].gent->s.weapon == WP_BLASTER_PISTOL ||
@@ -5181,7 +5181,7 @@ void CG_Weapon_f()
 
 	if (cg.weaponSelect != n_cur_wpn)
 	{
-		if (g_entities[0].client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_NONE)
+		if (g_entities[0].client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_NONE)
 		{
 			g_entities[0].client->ps.BlasterAttackChainCount = BLASTERMISHAPLEVEL_NONE;
 		}

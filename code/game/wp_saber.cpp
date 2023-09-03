@@ -13106,7 +13106,7 @@ void WP_SaberCatch(gentity_t* self, gentity_t* saber, const qboolean switch_to_s
 		saber->clipmask = MASK_SHOT | CONTENTS_LIGHTSABER;
 
 		//play catch sound
-		G_Sound(saber, G_SoundIndex("sound/weapons/saber/saber_catch.wav"));
+		G_Sound(saber, G_SoundIndex("sound/weapons/saber/saber_catch.mp3"));
 		if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self)) //NPC only
 		{
 			NPC_SetAnim(self, SETANIM_TORSO, BOTH_STAND1TO2, SETANIM_AFLAG_PACE);

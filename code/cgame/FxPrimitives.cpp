@@ -1732,7 +1732,7 @@ constexpr auto OLD_MUZZLE = 3;
 //----------------------------
 void CTrail::Draw() const
 {
-	polyVert_t verts[3];
+	polyVert_t verts[3]{};
 	//	vec3_t		color;
 
 	// build the first tri out of the new muzzle...new tip...old muzzle
