@@ -202,7 +202,6 @@ extern qboolean PM_KickingAnim(int anim);
 extern qboolean BG_InSlowBounce(const playerState_t* ps);
 extern qboolean PM_InSlowBounce(const playerState_t* ps);
 qboolean g_accurate_blocking(const gentity_t* blocker, const gentity_t* attacker, vec3_t hit_loc);
-int WP_SaberMustBlock(gentity_t* self, const gentity_t* atk, qboolean check_b_box_block, vec3_t point, int r_saber_num, int r_blade_num);
 extern qboolean WalkCheck(const gentity_t* self);
 extern qboolean pm_saber_innonblockable_attack(int anim);
 extern int BG_InGrappleMove(int anim);
@@ -223,7 +222,6 @@ extern void G_StartStasisEffect_FORCE_LEVEL_2(const gentity_t* ent, int me_flags
 	float time_scale = 0.0f, int spin_time = 0);
 extern void G_StartStasisEffect_FORCE_LEVEL_1(const gentity_t* ent, int me_flags = 0, int length = 1000,
 	float time_scale = 0.0f, int spin_time = 0);
-qboolean CheckStagger(gentity_t* defender, const gentity_t* attacker);
 void WP_BlockPointsRegenerate(const gentity_t* self, int override_amt);
 void WP_ForcePowerRegenerate(const gentity_t* self, int override_amt);
 extern void PM_AddBoltBlockFatigue(playerState_t* ps, int fatigue);
@@ -15375,316 +15373,9 @@ int WP_SaberBoltBlockCost(gentity_t* defender, const gentity_t* attacker)
 	return static_cast<int>(saber_block_cost);
 }
 
-int WP_SaberMustBlock(gentity_t* self, const gentity_t* atk, const qboolean check_b_box_block, vec3_t point,
-	const int r_saber_num, const int r_blade_num)
-{
-	if (!self || !self->client || !atk)
-	{
-		return 0;
-	}
-
-	if (atk && atk->s.eType == ET_MISSILE
-		&& (atk->s.weapon == WP_ROCKET_LAUNCHER ||
-			atk->s.weapon == WP_THERMAL ||
-			atk->s.weapon == WP_TRIP_MINE ||
-			atk->s.weapon == WP_DET_PACK ||
-			atk->methodOfDeath == MOD_REPEATER_ALT ||
-			atk->methodOfDeath == MOD_CONC ||
-			atk->methodOfDeath == MOD_CONC_ALT ||
-			atk->methodOfDeath == MOD_REPEATER_ALT ||
-			atk->methodOfDeath == MOD_FLECHETTE_ALT))
-	{
-		//can't block this stuff with a saber
-		return 0;
-	}
-
-	if (!(self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
-	{
-		if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self))
-		{
-			//bots just randomly parry to make up for them not intelligently parrying.
-			if (self->client->ps.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.
-				saberInFlight)
-			{
-				return 1;
-			}
-			return 0;
-		}
-		return 0;
-	}
-
-	if (PM_SaberInBrokenParry(self->client->ps.saber_move))
-	{
-		//you've been stunned from a broken parry
-		return 0;
-	}
-
-	if (BG_InGrappleMove(self->client->ps.torsoAnim))
-	{
-		//you can't block while doing a melee move.
-		return 0;
-	}
-
-	if (PM_KickMove(self->client->ps.saber_move))
-	{
-		return 0;
-	}
-
-	if (self->client->ps.weapon != WP_SABER
-		|| self->client->ps.weapon == WP_NONE
-		|| self->client->ps.weapon == WP_MELEE) //saber not here
-	{
-		return 0;
-	}
-
-	if (self->client->ps.weapon == WP_SABER && self->client->ps.saberInFlight)
-	{
-		//saber not currently in use or available, attempt to use our hands instead.
-		return 0;
-	}
-
-	if (self->client->ps.weaponstate == WEAPON_RAISING)
-	{
-		if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self))
-		{
-			//bots just randomly parry to make up for them not intelligently parrying.
-			if (self->client->ps.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.
-				saberInFlight)
-			{
-				return 1;
-			}
-			return 0;
-		}
-		return 0;
-	}
-
-	if (!WalkCheck(self) && self->client->ps.forcePowersActive & 1 << FP_SPEED)
-	{
-		//can't block while running in force speed.
-		return 0;
-	}
-
-	if (PM_InKnockDown(&self->client->ps))
-	{
-		//can't block while knocked down or getting up from knockdown.
-		return 0;
-	}
-
-	if (self->client->ManualBlockStaggerDefender || PM_SaberInMassiveBounce(self->client->ps.torsoAnim) ||
-		PM_SaberInBashedAnim(self->client->ps.torsoAnim))
-	{
-		// can't block in a stagger animation
-		return 0;
-	}
-
-	if (atk && atk->client && (atk->client->ManualBlockStaggerDefender ||
-		PM_SaberInMassiveBounce(atk->client->ps.torsoAnim) || PM_SaberInBashedAnim(atk->client->ps.torsoAnim)))
-	{
-		// they can't be blocked more then they already are, when in a stagger animation
-		return 0;
-	}
-
-	if (atk && atk->client && atk->client->ps.weapon == WP_SABER)
-	{
-		//player is attacking with saber
-		if (!BG_SaberInNonIdleDamageMove(&atk->client->ps))
-		{
-			//saber attacker isn't in a real damaging move
-			if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self))
-			{
-				//bots just randomly parry to make up for them not intelligently parrying.
-				if (self->client->ps.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.
-					saberInFlight)
-				{
-					return 1;
-				}
-				return 0;
-			}
-			return 0;
-		}
-
-		if ((atk->client->ps.saber_move == LS_A_LUNGE
-			|| atk->client->ps.saber_move == LS_SPINATTACK
-			|| atk->client->ps.saber_move == LS_SPINATTACK_DUAL)
-			&& (self->client->ps.userInt3 & 1 << FLAG_FATIGUED || self->client->ps.userInt3 & 1 << FLAG_BLOCKDRAINED))
-		{
-			//saber attacker, we can't block lunge attacks while fatigued.
-			return 0;
-		}
-
-		if (g_SerenityJediEngineMode->integer == 2)
-		{
-			if (PM_SuperBreakWinAnim(atk->client->ps.torsoAnim) && self->client->ps.blockPoints < BLOCKPOINTS_THIRTY)
-			{
-				//can't block super breaks when in critical fp.
-				return 0;
-			}
-		}
-		else
-		{
-			if (PM_SuperBreakWinAnim(atk->client->ps.torsoAnim) && self->client->ps.forcePower < BLOCKPOINTS_THIRTY)
-			{
-				//can't block super breaks when in critical fp.
-				return 0;
-			}
-		}
-
-		if (!WalkCheck(self)
-			&& (!InFront(atk->client->ps.origin, self->client->ps.origin, self->client->ps.viewangles, -0.7f)
-				|| PM_SaberInAttack(self->client->ps.saber_move)
-				|| PM_SaberInStart(self->client->ps.saber_move)))
-		{
-			//can't block saber swings while running and hit from behind or in swing.
-			if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self))
-			{
-				//bots just randomly parry to make up for them not intelligently parrying.
-				if (self->client->ps.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.
-					saberInFlight)
-				{
-					return 1;
-				}
-				return 0;
-			}
-			return 0;
-		}
-
-		if (g_SerenityJediEngineMode->integer == 2)
-		{
-			const float block_factor = cos(DEG2RAD(90.0f));
-			const auto in_front = static_cast<qboolean>(InFront(atk->client->ps.origin, self->client->ps.origin,
-				self->client->ps.viewangles, block_factor)
-				&& InFront(self->client->ps.origin, atk->client->ps.origin, atk->client->ps.viewangles, block_factor));
-			const auto in_attack = static_cast<qboolean>(PM_SaberInAttack(self->client->ps.saber_move) ||
-				PM_SaberInStart(
-					self->client->ps.saber_move));
-
-			if (!in_front || in_attack)
-			{
-				//can't block or stagger saber swings while running and hit from behind or in swing.
-				return 0;
-			}
-
-			qboolean staggered = qfalse;
-
-			if (in_front)
-			{
-				staggered = CheckStagger(self, atk);
-			}
-
-			if (staggered || PM_InKnockDown(&self->client->ps) || PM_SaberInParry(self->client->ps.saber_move))
-			{
-				//can't block while knocked down or getting up from knockdown, or we are already in a parry anim.
-				return 0;
-			}
-		}
-
-		if (PM_InKnockDown(&atk->client->ps) || PM_SaberInParry(atk->client->ps.saber_move))
-		{
-			//can't block them while they are knocked down or getting up from knockdown, or they are already in a parry anim.
-			return 0;
-		}
-	}
-
-	if (g_SerenityJediEngineMode->integer == 2)
-	{
-		//check to see if we have the force to do this.
-		if (self->client->ps.blockPoints < WP_SaberBlockCost(self, atk, point))
-		{
-			if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self))
-			{
-				//bots just randomly parry to make up for them not intelligently parrying.
-				if (self->client->ps.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.
-					saberInFlight)
-				{
-					return 1;
-				}
-				return 0;
-			}
-			return 0;
-		}
-	}
-	else
-	{
-		if (self->client->ps.forcePower < WP_SaberBlockCost(self, atk, point))
-		{
-			if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self))
-			{
-				//bots just randomly parry to make up for them not intelligently parrying.
-				if (self->client->ps.weapon == WP_SABER && self->client->ps.SaberActive() && !self->client->ps.
-					saberInFlight)
-				{
-					return 1;
-				}
-				return 0;
-			}
-			return 0;
-		}
-	}
-
-	// allow for blocking behind our backs
-	if (!InFront(point, self->client->ps.origin, self->client->ps.viewangles, -0.7f))
-	{
-		return 1;
-	}
-
-	if (!check_b_box_block)
-	{
-		//don't do the additional checkBBoxBlock checks.  As such, we're safe to saber block.
-		return 1;
-	}
-
-	if (atk && atk->client && atk->client->ps.weapon == WP_SABER && PM_SuperBreakWinAnim(atk->client->ps.torsoAnim))
-	{
-		//never box block saberlock super break wins, it looks weird.
-		return 0;
-	}
-
-	if (VectorCompare(point, vec3_origin))
-	{
-		//no hit position given, can't do blade movement check.
-		return 0;
-	}
-
-	if (atk && atk->client && r_saber_num != -1 && r_blade_num != -1)
-	{
-		vec3_t saber_move_dir;
-		vec3_t dir_to_body;
-		vec3_t closest_body_point;
-		vec3_t body_max;
-		vec3_t body_min;
-		//player attacker, if they are here they're using their saber to attack.
-		//Check to make sure that we only block the blade if it is moving towards the player
-
-		//create a line seqment thru the center of the player.
-		VectorCopy(self->client->ps.origin, body_min);
-		VectorCopy(self->client->ps.origin, body_max);
-
-		body_max[2] += self->maxs[2];
-		body_min[2] -= self->mins[2];
-
-		//find dirToBody
-		G_FindClosestPointOnLineSegment(body_min, body_max, point, closest_body_point);
-
-		VectorSubtract(closest_body_point, point, dir_to_body);
-
-		//find current saber movement direction of the attacker
-		VectorSubtract(atk->client->ps.saber[r_saber_num].blade[r_blade_num].muzzlePoint,
-			atk->client->ps.saber[r_saber_num].blade[r_blade_num].muzzlePointOld, saber_move_dir);
-
-		if (DotProduct(dir_to_body, saber_move_dir) < 0)
-		{
-			//saber is moving away from defender
-			return 0;
-		}
-	}
-
-	return 1;
-}
-
 extern qboolean G_ControlledByNPC(const gentity_t* self);
 
-int WP_SaberMustBoltBlock(gentity_t* self, const gentity_t* atk, const qboolean check_b_box_block, vec3_t point,
-	const int r_saber_num, const int r_blade_num)
+int WP_SaberMustBoltBlock(gentity_t* self, const gentity_t* atk, const qboolean check_b_box_block, vec3_t point,const int r_saber_num, const int r_blade_num)
 {
 	if (!self || !self->client || !atk)
 	{
@@ -15907,8 +15598,7 @@ int WP_SaberMustBoltBlock(gentity_t* self, const gentity_t* atk, const qboolean 
 	return 1;
 }
 
-int WP_SaberMustDisruptorBlock(gentity_t* self, const gentity_t* atk, const qboolean check_b_box_block, vec3_t point,
-	const int r_saber_num, const int r_blade_num)
+int WP_SaberMustDisruptorBlock(gentity_t* self, const gentity_t* atk, const qboolean check_b_box_block, vec3_t point,const int r_saber_num, const int r_blade_num)
 {
 	if (!self || !self->client || !atk)
 	{
@@ -16130,8 +15820,7 @@ int WP_SaberMustDisruptorBlock(gentity_t* self, const gentity_t* atk, const qboo
 	return 1;
 }
 
-int WP_SaberMustBoltBlockJKAMode(gentity_t* self, const gentity_t* atk, const qboolean check_b_box_block, vec3_t point,
-	const int r_saber_num, const int r_blade_num)
+int WP_SaberMustBoltBlockJKAMode(gentity_t* self, const gentity_t* atk, const qboolean check_b_box_block, vec3_t point,	const int r_saber_num, const int r_blade_num)
 {
 	if (!self || !self->client || !atk)
 	{
@@ -28926,8 +28615,7 @@ int IsPressingDashButton(const gentity_t* self)
 		&& !self->client->hookhasbeenfired
 		&& (!(self->client->buttons & BUTTON_KICK))
 		&& (!(self->client->buttons & BUTTON_USE))
-		&& self->client->buttons & BUTTON_DASH
-		/*&& self->client->ps.pm_flags & PMF_DASH_HELD*/)
+		&& self->client->buttons & BUTTON_DASH)
 	{
 		return qtrue;
 	}
@@ -29083,11 +28771,6 @@ void ForceSpeedDash(gentity_t* self)
 		return;
 	}
 
-	/*if (!(self->client->ps.pm_flags & PMF_DASH_HELD))
-	{
-		return;
-	}*/
-
 	if (self->client->ps.groundEntityNum != ENTITYNUM_NONE)
 	{
 		vec3_t dir;
@@ -29115,12 +28798,12 @@ void player_StopBurn(const gentity_t* self)
 	{
 		if (self->client->ps.PlayerEffectFlags & 1 << PEF_BURNING)
 		{
-			//Unburn
+			//Un burn
 			self->client->ps.PlayerEffectFlags &= ~(1 << PEF_BURNING);
 		}
 		else
 		{
-			//Unburn
+			//Un burn
 			self->client->ps.PlayerEffectFlags &= ~(1 << PEF_BURNING);
 		}
 	}
@@ -41322,186 +41005,6 @@ void G_Beskar_Attack_Bounce(const gentity_t* self, gentity_t* other)
 			}
 		}
 	}
-}
-
-qboolean CheckStagger(gentity_t* defender, const gentity_t* attacker)
-{
-	int attacker_stance_stagger_chance = 0;
-	qboolean staggered = qfalse;
-
-	if (!attacker || !attacker->client)
-	{
-		return qfalse;
-	}
-
-	if (attacker->client->ps.weapon == WP_SABER)
-	{
-		// This is the attacker's saber stance timer chance. So slower stances increase the chance they can get staggered in a swing. If you swing harder, being blocked hurts you more.
-		switch (attacker->client->ps.saber_anim_level)
-		{
-		case SS_FAST:
-			attacker_stance_stagger_chance = 10; // 10% chance.
-			break;
-		case SS_MEDIUM:
-			attacker_stance_stagger_chance = 30; // 30% chance.
-			break;
-		case SS_STRONG:
-			attacker_stance_stagger_chance = 50; // 50% chance.
-			break;
-		case SS_STAFF:
-			attacker_stance_stagger_chance = 40; // 40% chance.
-			break;
-		case SS_DUAL:
-			attacker_stance_stagger_chance = 40; // 40% chance.
-			break;
-		default:
-			attacker_stance_stagger_chance = 30; // 30% chance.
-			break;
-		}
-	}
-
-	if (defender->client->ps.weapon == WP_SABER)
-	{
-		// This stuff here is more about timing, allowing levels to make timing easier.
-		float defender_stance_stagger_chance_mod = 0.666f;
-		float defender_timing_stagger_chance_mod = 0.0f;
-
-		if (defender->client->ps.blockPoints > BLOCKPOINTS_FULL)
-		{
-			defender_stance_stagger_chance_mod *= 1.666f;
-		}
-		else if (defender->client->ps.blockPoints <= BLOCKPOINTS_FULL)
-		{
-			//level 2 defense lowers back damage more
-			defender_stance_stagger_chance_mod *= 1.333f;
-		}
-		else if (defender->client->ps.blockPoints <= BLOCKPOINTS_KNOCKAWAY)
-		{
-			//level 1 defense lowers back damage a bit
-			defender_stance_stagger_chance_mod *= 1.0f;
-		}
-		else
-		{
-			defender_stance_stagger_chance_mod = 0.666f;
-		}
-
-		// How long (max) block is valid for. So, this might be 100ms with extra time given with higher skill level.
-		const auto block_max_milliseconds = static_cast<int>(static_cast<float>(DEFAULT_BLOCK_TIME_MAX_MILLISECONDS) *
-			defender_stance_stagger_chance_mod);
-		// How long ago block was pressed. Up to maximum time of blockMaxMilliseconds.
-		const int block_start_milliseconds = level.time - defender->client->ps.ManualblockStartTime; //Blocking 2
-
-		if (defender->client->ps.ManualblockStartTime > 0 //Blocking 2
-			&& block_start_milliseconds >= 0 // We hit block before the clash. Probably not possible to happen
-			&& block_start_milliseconds <= block_max_milliseconds)
-		{
-			// So, if block was hit within around DEFAULT_BLOCK_TIME_MAX_MILLISECONDS (modified by skill above), set defender timing mod...
-			// The closer the time between when the defender hit block and when the sabers clashed, the higher the chance of a stagger.
-			defender_timing_stagger_chance_mod = 1.0 - static_cast<float>(block_start_milliseconds) / static_cast<float>
-				(
-					block_max_milliseconds);
-		}
-
-		if (defender->client->ps.ManualblockStartTime > 0 && block_start_milliseconds >= 0 &&
-			defender_timing_stagger_chance_mod > 0.0f) //Blocking 2
-		{
-			float skill_reduction = 1.0f;
-
-			if (g_SerenityJediEngineMode->integer)
-			{
-				if (g_SerenityJediEngineMode->integer == 2)
-				{
-					const float bp_percent = static_cast<float>(attacker->client->ps.blockPoints) / static_cast<float>(
-						attacker->client->ps.blockPoints) / 100;
-
-					switch (defender->client->ps.forcePowerLevel[FP_SABER_DEFENSE])
-					{
-						// If the defender's skill is higher, reduce the chance of stagger.
-					case FORCE_LEVEL_3:
-						skill_reduction *= 0.66f;
-						break;
-					case FORCE_LEVEL_2:
-						skill_reduction *= 0.75f;
-						break;
-					case FORCE_LEVEL_1:
-						skill_reduction *= 0.90f;
-						break;
-					default:
-						break;
-					}
-
-					skill_reduction *= bp_percent;
-					// reduce the chance of stagger as defender's force gets lower. should this maybe have a minimum?
-				}
-				else
-				{
-					const float fp_percent = static_cast<float>(attacker->client->ps.forcePower) / static_cast<float>(
-						attacker->client->ps.forcePowerMax);
-
-					switch (defender->client->ps.forcePowerLevel[FP_SABER_DEFENSE])
-					{
-						// If the defender's skill is higher, reduce the chance of stagger.
-					case FORCE_LEVEL_3:
-						skill_reduction *= 0.66f;
-						break;
-					case FORCE_LEVEL_2:
-						skill_reduction *= 0.75f;
-						break;
-					case FORCE_LEVEL_1:
-						skill_reduction *= 0.90f;
-						break;
-					default:
-						break;
-					}
-
-					skill_reduction *= fp_percent;
-					// reduce the chance of stagger as defender's force gets lower. should this maybe have a minimum?
-				}
-			}
-			else
-			{
-				const float fp_percent = static_cast<float>(attacker->client->ps.forcePower) / static_cast<float>(
-					attacker->client->ps.forcePowerMax);
-
-				switch (defender->client->ps.forcePowerLevel[FP_SABER_DEFENSE])
-				{
-					// If the defender's skill is higher, reduce the chance of stagger.
-				case FORCE_LEVEL_3:
-					skill_reduction *= 0.66f;
-					break;
-				case FORCE_LEVEL_2:
-					skill_reduction *= 0.75f;
-					break;
-				case FORCE_LEVEL_1:
-					skill_reduction *= 0.90f;
-					break;
-				default:
-					break;
-				}
-
-				skill_reduction *= fp_percent;
-				// reduce the chance of stagger as defender's force gets lower. should this maybe have a minimum?
-			}
-
-			defender_stance_stagger_chance_mod *= skill_reduction < 0.25 ? 0.25 : skill_reduction;
-			// but always a 25% chance.
-
-			auto final_stagger_chance = static_cast<int>(static_cast<float>(attacker_stance_stagger_chance) *
-				defender_stance_stagger_chance_mod *
-				defender_timing_stagger_chance_mod);
-			final_stagger_chance = Q_clampi(0, final_stagger_chance, 100);
-
-			const int chance = Q_irand(0, 100);
-
-			if (chance <= final_stagger_chance)
-			{
-				attacker->client->ManualBlockStaggerDefender = defender;
-				staggered = qtrue;
-			}
-		}
-	}
-
-	return staggered;
 }
 
 qboolean g_accurate_blocking(const gentity_t* blocker, const gentity_t* attacker, vec3_t hit_loc)

@@ -8599,9 +8599,8 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 						|| ent->client->NPC_class == CLASS_SITHLORD
 						|| ent->client->NPC_class == CLASS_GROGU
 						|| ent->client->NPC_class == CLASS_VADER //desann always knocks people down
-						|| (ground_ent->s.number && (ground_ent->s.weapon != WP_SABER || !ground_ent->NPC || ground_ent
-							->
-							NPC->rank < Q_irand(RANK_CIVILIAN, RANK_CAPTAIN + 1))
+						|| (ground_ent->s.number && (ground_ent->s.weapon != WP_SABER ||
+							!ground_ent->NPC || ground_ent->NPC->rank < Q_irand(RANK_CIVILIAN, RANK_CAPTAIN + 1))
 							//an NPC who is either not a saber user or passed the rank-based probability test
 							|| (!ent->s.number || G_ControlledByPlayer(ground_ent)) && !Q_irand(0, 3) && cg.
 							renderingThirdPerson && !cg.zoomMode)
