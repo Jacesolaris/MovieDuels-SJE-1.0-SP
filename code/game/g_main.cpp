@@ -2337,6 +2337,7 @@ constexpr auto SPRINT_DEFUEL_RATE = 150;
 constexpr auto JETPACK_DEFUEL_RATE = 200; //approx. 20 seconds of idle use from a fully charged fuel amt;
 constexpr auto JETPACK_REFUEL_RATE = 150; //seems fair;
 constexpr auto ENHANCED_REFUEL_RATE = 75; //seems fair;
+constexpr auto SPRINT_SLOW_REFUEL_RATE = 250;
 
 constexpr auto CLOAK_DEFUEL_RATE = 150; //approx. 20 seconds of idle use from a fully charged fuel amt;
 constexpr auto CLOAK_REFUEL_RATE = 100; //seems fair;
@@ -2586,7 +2587,7 @@ void G_RunFrame(const int level_time)
 
 			if (ent->client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING)
 			{
-				//using jetpack, drain fuel
+				//using sprint fuel
 				if (ent->client->sprintDebReduce < level.time)
 				{
 					ent->client->ps.sprintFuel--;
@@ -2599,10 +2600,11 @@ void G_RunFrame(const int level_time)
 					ent->client->sprintDebReduce = level.time + SPRINT_DEFUEL_RATE;
 				}
 			}
-			else if (ent->client->ps.sprintFuel < 100 && !ent->client->IsSprinting && !(ent->client->ps.
-				PlayerEffectFlags & 1 << PEF_SPRINTING))
+			else if (ent->client->ps.sprintFuel < 100 &&
+				!ent->client->IsSprinting &&
+				!(ent->client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING))
 			{
-				//recharge jetpack
+				//recharge sprint
 				if (ent->client->sprintkDebRecharge < level.time)
 				{
 					ent->client->ps.sprintFuel++;
@@ -2612,7 +2614,14 @@ void G_RunFrame(const int level_time)
 					}
 					else
 					{
-						ent->client->sprintkDebRecharge = level.time + JETPACK_REFUEL_RATE;
+						if (ent->client->ps.sprintFuel < 15)
+						{
+							ent->client->sprintkDebRecharge = level.time + SPRINT_SLOW_REFUEL_RATE;
+						}
+						else
+						{
+							ent->client->sprintkDebRecharge = level.time + JETPACK_REFUEL_RATE;
+						}
 					}
 				}
 			}

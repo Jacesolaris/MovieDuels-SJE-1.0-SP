@@ -10917,6 +10917,10 @@ static void PM_Footsteps()
 						{
 							pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
 							g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
+							if (pm->ps->sprintFuel < 17) // single sprint here
+							{
+								pm->ps->sprintFuel -= 10;
+							}
 						}
 					}
 					else
@@ -10973,6 +10977,10 @@ static void PM_Footsteps()
 						{
 							pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
 							g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
+							if (pm->ps->sprintFuel < 17) // single sprint here
+							{
+								pm->ps->sprintFuel -= 10;
+							}
 						}
 					}
 					else
@@ -11014,6 +11022,10 @@ static void PM_Footsteps()
 								{
 									pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
 									g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
+									if (pm->ps->sprintFuel < 17) // single sprint here
+									{
+										pm->ps->sprintFuel -= 10;
+									}
 								}
 							}
 							else
@@ -11037,6 +11049,10 @@ static void PM_Footsteps()
 								{
 									pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
 									g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
+									if (pm->ps->sprintFuel < 17) // single sprint here
+									{
+										pm->ps->sprintFuel -= 10;
+									}
 								}
 							}
 							else
@@ -11070,6 +11086,10 @@ static void PM_Footsteps()
 							{
 								pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
 								g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
+								if (pm->ps->sprintFuel < 17) // single sprint here
+								{
+									pm->ps->sprintFuel -= 10;
+								}
 							}
 						}
 						else
@@ -11105,6 +11125,10 @@ static void PM_Footsteps()
 							{
 								pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
 								g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
+								if (pm->ps->sprintFuel < 17) // single sprint here
+								{
+									pm->ps->sprintFuel -= 10;
+								}
 							}
 						}
 						else
@@ -11137,6 +11161,10 @@ static void PM_Footsteps()
 							{
 								pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
 								g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
+								if (pm->ps->sprintFuel < 17) // single sprint here
+								{
+									pm->ps->sprintFuel -= 10;
+								}
 							}
 						}
 						else
@@ -16313,9 +16341,9 @@ qboolean PM_SaberLocked()
 			{
 				pm->ps->legsAnimTimer = 0;
 				G_Sound(pm->gent, G_SoundIndex(va("sound/weapons/saber/saber_locking_end%d.mp3", index_end)));
-			}
-			return qfalse;
 		}
+			return qfalse;
+	}
 		if (pm->cmd.buttons & BUTTON_ATTACK)
 		{
 			//holding attack
@@ -16537,7 +16565,7 @@ qboolean PM_SaberLocked()
 			//roll?
 			//backflip?
 		}
-	}
+}
 	else
 	{
 		//something broke us out of it

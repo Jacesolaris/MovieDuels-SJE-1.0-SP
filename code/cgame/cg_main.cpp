@@ -4138,7 +4138,7 @@ CG_LoadHudMenu();
 =================
 */
 void CG_LoadHudMenu()
-{	
+{
 	const char* hudSet = cg_hudFiles.string;
 
 	if (hudSet[0] == '\0')
