@@ -43,7 +43,8 @@ extern qboolean WP_SaberBladeUseSecondBladeStyle(const saberInfo_t* saber, int b
 extern qboolean WP_UseFirstValidSaberStyle(const gentity_t* ent, int* saber_anim_level);
 extern void G_RemoveWeather();
 extern void RemoveBarrier(gentity_t* ent);
-
+extern cvar_t* g_SerenityJediEngineMode;
+extern cvar_t* g_RealisticBlockingMode;
 extern void G_SetWeapon(gentity_t* self, int wp);
 extern stringID_table_t WPTable[];
 
@@ -643,6 +644,15 @@ void Svcmd_SaberAttackCycle_f()
 	if (!self->s.number)
 	{
 		cg.saberAnimLevelPending = saber_anim_level;
+
+
+		if (g_SerenityJediEngineMode->integer == 2 && g_RealisticBlockingMode->integer)
+		{
+			if (!(self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK)) // lets do a movement when changing styles // need better anims for this
+			{
+				NPC_SetAnim(self, SETANIM_TORSO, BOTH_STAND2TO1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
+			}
+		}
 	}
 	else
 	{
