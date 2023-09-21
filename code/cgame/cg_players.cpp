@@ -3704,32 +3704,37 @@ static void CG_PlayerPowerups(const centity_t* cent)
 		return;
 	}
 
-	if (cg_SerenityJediEngineMode.integer == 2 && cg_SaberInnonblockableAttackWarning.integer == 1
-		&& cent->gent->client->ps.forcePower > 80
-		&& cent->gent->health > 1
-		&& (cent->currentState.powerups & 1 << PW_FORCE_PUSH
-			|| cent->currentState.powerups & 1 << PW_FORCE_PUSH_RHAND
-			|| cent->currentState.powerups & 1 << PW_MEDITATE))
+	//if (cg_SerenityJediEngineMode.integer == 2 && cg_SaberInnonblockableAttackWarning.integer == 1
+	//	&& cent->gent->client->ps.forcePower > 80
+	//	&& cent->gent->health > 1
+	//	&& (cent->currentState.powerups & 1 << PW_FORCE_PUSH
+	//		|| cent->currentState.powerups & 1 << PW_FORCE_PUSH_RHAND
+	//		|| cent->currentState.powerups & 1 << PW_MEDITATE))
+	//{
+	//	switch (cent->gent->friendlyfaction)
+	//	{
+	//	case FACTION_DARK:
+	//		cgi_R_AddLightToScene(cent->lerpOrigin, 60 + (rand() & 20), 1, 0.2f, 0.2f); //red
+	//		break;
+	//	case FACTION_LIGHT:
+	//		cgi_R_AddLightToScene(cent->lerpOrigin, 60 + (rand() & 20), 0.2f, 0.2f, 1); //blue
+	//		break;
+	//	case FACTION_SOLO:
+	//	case FACTION_KOTOR:
+	//		cgi_R_AddLightToScene(cent->lerpOrigin, 60 + (rand() & 20), 0.9f, 0.9f, 0.9f); //white
+	//		break;
+	//	case FACTION_NEUTRAL:
+	//		cgi_R_AddLightToScene(cent->lerpOrigin, 60 + (rand() & 20), 0.0f, 0.0f, 0.0f); //clear
+	//		break;
+	//	default:
+	//		cgi_R_AddLightToScene(cent->lerpOrigin, 60 + (rand() & 20), 0.0f, 0.0f, 0.0f); //clear
+	//		break;
+	//	}
+	//}
+
+	if (cent->currentState.powerups & 1 << PW_FORCE_PROJECTILE)
 	{
-		switch (cent->gent->friendlyfaction)
-		{
-		case FACTION_DARK:
-			cgi_R_AddLightToScene(cent->lerpOrigin, 60 + (rand() & 20), 1, 0.2f, 0.2f); //red
-			break;
-		case FACTION_LIGHT:
-			cgi_R_AddLightToScene(cent->lerpOrigin, 60 + (rand() & 20), 0.2f, 0.2f, 1); //blue
-			break;
-		case FACTION_SOLO:
-		case FACTION_KOTOR:
-			cgi_R_AddLightToScene(cent->lerpOrigin, 60 + (rand() & 20), 0.9f, 0.9f, 0.9f); //white
-			break;
-		case FACTION_NEUTRAL:
-			cgi_R_AddLightToScene(cent->lerpOrigin, 60 + (rand() & 20), 0.0f, 0.0f, 0.0f); //clear
-			break;
-		default:
-			cgi_R_AddLightToScene(cent->lerpOrigin, 60 + (rand() & 20), 0.0f, 0.0f, 0.0f); //clear
-			break;
-		}
+		cgi_R_AddLightToScene(cent->lerpOrigin, 60 + (rand() & 20), 0.9f, 0.9f, 0.9f); //white
 	}
 }
 
@@ -5917,12 +5922,13 @@ void CG_AddRefEntityWithPowerups(refEntity_t* ent, int powerups, centity_t* cent
 		theFxScheduler.PlayEffect(cgs.effects.forceInvincibility, cent->lerpOrigin);
 	}
 
-	if (cg_SerenityJediEngineMode.integer == 2 && cg_SaberInnonblockableAttackWarning.integer == 1
+	if (cg_SerenityJediEngineMode.integer == 2 
 		&& cent->gent->client->ps.forcePower > 80
 		&& cent->gent->health > 1
 		&& powerups & 1 << PW_MEDITATE && !in_camera)
 	{
-		theFxScheduler.PlayEffect(cgs.effects.forceInvincibility, cent->lerpOrigin);
+		theFxScheduler.PlayEffect(cgs.effects.forceInvincibility, cent->lerpOrigin); 
+		cgi_R_AddLightToScene(cent->lerpOrigin, 60 + (rand() & 20), 0.9f, 0.9f, 0.9f); //white
 	}
 
 	// Healing -- could use some work....maybe also make it NOT be framerate dependant

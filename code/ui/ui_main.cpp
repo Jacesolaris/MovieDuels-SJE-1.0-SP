@@ -705,8 +705,7 @@ void _UI_Refresh(const int realtime)
 			}
 			else if (ui_cursor.integer == 7)
 			{
-				UI_DrawHandlePic(uiInfo.uiDC.cursorx, uiInfo.uiDC.cursory, 48, 48,
-					uiInfo.uiDC.Assets.cursor_oldrepublic);
+				UI_DrawHandlePic(uiInfo.uiDC.cursorx, uiInfo.uiDC.cursory, 48, 48,uiInfo.uiDC.Assets.cursor_oldrepublic);
 			}
 			else if (ui_cursor.integer == 8)
 			{
@@ -724,9 +723,8 @@ void _UI_Refresh(const int realtime)
 			{
 				UI_DrawHandlePic(uiInfo.uiDC.cursorx, uiInfo.uiDC.cursory, 48, 48, uiInfo.uiDC.Assets.cursor_windu);
 			}
-			else /*if (ui_cursor.integer >= 11)*/
+			else
 			{
-				//UI_DrawHandlePic(uiInfo.uiDC.cursorx, uiInfo.uiDC.cursory, 48, 48, uiInfo.uiDC.Assets.cursor);
 				UI_DrawHandlePic(uiInfo.uiDC.cursorx, uiInfo.uiDC.cursory, 48, 48, uiInfo.uiDC.Assets.cursor_kylo);
 			}
 		}
@@ -3322,7 +3320,7 @@ void UI_LoadMenus(const char* menuFile, const qboolean reset)
 	Com_Printf("---------------- MovieDuels-SJE-1.0-SP---------------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------Update 9---------------------------------\n");
-	Com_Printf("------------------Build Date 19/09/2023--------------------------\n");
+	Com_Printf("------------------Build Date 21/09/2023--------------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------LightSaber-------------------------------\n");
 	Com_Printf("-----------An elegant weapon for a more civilized age------------\n");
