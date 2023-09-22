@@ -1475,6 +1475,8 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 								attacker->client->ps.userInt3 |= 1 << FLAG_MBLOCKBOUNCE;
 							}
 
+							blocker->client->ps.userInt3 |= 1 << FLAG_PERFECTBLOCK;
+
 							if (attacker->NPC && !G_ControlledByPlayer(attacker)) //NPC only
 							{
 								g_do_m_block_response(attacker);
@@ -1702,6 +1704,8 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 						CGCam_BlockShakeSP(0.45f, 100);
 					}
 
+					blocker->client->ps.userInt3 |= 1 << FLAG_PERFECTBLOCK;
+
 					G_Sound(blocker, G_SoundIndex(va("sound/weapons/saber/saber_perfectblock%d.mp3", Q_irand(1, 3))));
 
 					if (d_blockinfo->integer && blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
@@ -1739,3 +1743,7 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 	}
 	return qtrue;
 }
+
+/////////Functions//////////////
+
+/////////////////////// 20233 new build ////////////////////////////////

@@ -10062,19 +10062,19 @@ void wp_saber_damage_trace_amd(gentity_t* ent, int saber_num, int blade_num)
 					}
 					else
 					{
-						if (ent->client->ps.blockPoints < BLOCKPOINTS_HALF)
+						if (ent->client->ps.blockPoints > BLOCKPOINTS_HALF || ent->client->ps.userInt3 & 1 << FLAG_PERFECTBLOCK)
 						{
-							WP_SaberKnockSound(ent, saber_num, blade_num);
+							WP_SaberBlockSound(ent, saber_num, blade_num);
 						}
 						else
 						{
-							WP_SaberBlockSound(ent, saber_num, blade_num);
+							WP_SaberKnockSound(ent, saber_num, blade_num);
 						}
 					}
 				}
 				if (!g_saberNoEffects)
 				{
-					if (ent->client->ps.blockPoints > BLOCKPOINTS_HALF)
+					if (ent->client->ps.blockPoints > BLOCKPOINTS_HALF || ent->client->ps.userInt3 & 1 << FLAG_PERFECTBLOCK)
 					{
 						WP_SaberMBlockEffect(ent, saber_num, blade_num, saberHitLocation, saberHitNormal, qfalse);
 					}
@@ -11453,19 +11453,19 @@ void WP_SaberDamageTrace_MD(gentity_t* ent, int saber_num, int blade_num)
 					}
 					else
 					{
-						if (ent->client->ps.forcePower < BLOCKPOINTS_HALF)
+						if (ent->client->ps.forcePower > BLOCKPOINTS_HALF || ent->client->ps.userInt3 & 1 << FLAG_PERFECTBLOCK)
 						{
-							WP_SaberKnockSound(ent, saber_num, blade_num);
+							WP_SaberBlockSound(ent, saber_num, blade_num);
 						}
 						else
 						{
-							WP_SaberBlockSound(ent, saber_num, blade_num);
+							WP_SaberKnockSound(ent, saber_num, blade_num);
 						}
 					}
 				}
 				if (!g_saberNoEffects)
 				{
-					if (ent->client->ps.forcePower > BLOCKPOINTS_HALF)
+					if (ent->client->ps.forcePower > BLOCKPOINTS_HALF || ent->client->ps.userInt3 & 1 << FLAG_PERFECTBLOCK)
 					{
 						WP_SaberMBlockEffect(ent, saber_num, blade_num, saberHitLocation, saberHitNormal, qfalse);
 					}

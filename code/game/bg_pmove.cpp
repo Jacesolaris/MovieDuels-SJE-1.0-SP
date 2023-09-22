@@ -14079,6 +14079,7 @@ void PM_BlockFatigue(playerState_t* ps, const int new_move)
 extern qboolean DarthMaulHolster(const gentity_t* ent);
 extern qboolean SaberStaffWeapon(const gentity_t* ent);
 void PM_SaberFakeFlagUpdate(int new_move);
+void PM_SaberPerfectBlockUpdate(int new_move);
 
 void WP_SaberFatigueRegenerate(const int override_amt)
 {
@@ -14896,6 +14897,8 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 			}
 			//update the attack fake flag
 			PM_SaberFakeFlagUpdate(new_move);
+
+			PM_SaberPerfectBlockUpdate(new_move);
 
 			if (!PM_SaberInBounce(new_move) && !PM_SaberInReturn(new_move))
 			{
@@ -23706,6 +23709,17 @@ void PM_SaberFakeFlagUpdate(const int new_move)
 	{
 		//not going into an attack move, clear the flag
 		pm->ps->userInt3 &= ~(1 << FLAG_ATTACKFAKE);
+	}
+}
+
+void PM_SaberPerfectBlockUpdate(const int new_move)
+{
+	const qboolean holding_block = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+
+	//checks to see if the flag needs to be removed.
+	if ((!(holding_block)) || PM_SaberInBounce(new_move) || PM_SaberInMassiveBounce(pm->ps->torsoAnim) || PM_SaberInAttack(new_move))
+	{
+		pm->ps->userInt3 &= ~(1 << FLAG_PERFECTBLOCK);
 	}
 }
 
