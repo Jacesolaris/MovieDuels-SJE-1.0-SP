@@ -235,7 +235,7 @@ void WP_FireRocket(gentity_t* ent, const qboolean alt_fire)
 			lockTime = g_rocketLockTime;
 		}
 
-		if (ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWENTYNINE)
+		if (ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_FIFTEEN)
 		{
 			NPC_SetAnim(ent, SETANIM_BOTH, BOTH_H1_S1_TR, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 		}

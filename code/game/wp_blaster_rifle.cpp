@@ -90,11 +90,21 @@ void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qbool
 		}
 		else
 		{
-			damage = BLASTER_NPC_DAMAGE_HARD;
+			if (g_SerenityJediEngineMode->integer == 2)
+			{
+				damage = SJE_BLASTER_NPC_DAMAGE_HARD;
+			}
+			else
+			{
+				damage = BLASTER_NPC_DAMAGE_HARD;
+			}
 		}
 	}
+	else
+	{
+		missile->damage = damage;
+	}
 
-	missile->damage = damage;
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
@@ -275,11 +285,21 @@ void WP_FireBattleDroidMissile(gentity_t* ent, vec3_t start, vec3_t dir, const q
 		}
 		else
 		{
-			damage = BLASTER_NPC_DAMAGE_HARD;
+			if (g_SerenityJediEngineMode->integer == 2)
+			{
+				damage = SJE_BLASTER_NPC_DAMAGE_HARD;
+			}
+			else
+			{
+				damage = BLASTER_NPC_DAMAGE_HARD;
+			}
 		}
 	}
+	else
+	{
+		missile->damage = damage;
+	}
 
-	missile->damage = damage;
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
@@ -455,11 +475,21 @@ void WP_FireFirstOrderMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qb
 		}
 		else
 		{
-			damage = BLASTER_NPC_DAMAGE_HARD;
+			if (g_SerenityJediEngineMode->integer == 2)
+			{
+				damage = SJE_BLASTER_NPC_DAMAGE_HARD;
+			}
+			else
+			{
+				damage = BLASTER_NPC_DAMAGE_HARD;
+			}
 		}
 	}
+	else
+	{
+		missile->damage = damage;
+	}
 
-	missile->damage = damage;
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
@@ -638,8 +668,11 @@ void WP_FireRebelBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const 
 			damage = REBELBLASTER_NPC_DAMAGE_HARD;
 		}
 	}
+	else
+	{
+		missile->damage = damage;
+	}
 
-	missile->damage = damage;
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;

@@ -1455,7 +1455,7 @@ qboolean doesnot_drain_mishap(const gentity_t* ent)
 	return qfalse;
 }
 
-void G_AddMercBalance(const gentity_t* ent, int amount)
+void G_AddBlasterAttackChainCount(const gentity_t* ent, int amount)
 {
 	if (!g_SerenityJediEngineMode->integer)
 	{
@@ -1527,7 +1527,7 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 		return;
 	}
 
-	if (ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWENTYNINE && is_holding_reloadable_gun(ent))
+	if (ent->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_FIFTEEN && is_holding_reloadable_gun(ent))
 	{
 		if (ent->s.weapon == WP_BRYAR_PISTOL ||
 			ent->s.weapon == WP_BLASTER_PISTOL ||
@@ -1571,7 +1571,7 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 			AngleVectors(ent->lastAngles, forward_vec, vright_vec, up);
 		}
 	}
-	else if (ent && ent->s.weapon == WP_ATST_SIDE || ent->s.weapon == WP_ATST_MAIN)
+	else if (ent && (ent->s.weapon == WP_ATST_SIDE || ent->s.weapon == WP_ATST_MAIN))
 	{
 		vec3_t muzzle1;
 
@@ -1653,7 +1653,7 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 			AngleVectors(angle_to_enemy1, forward_vec, vright_vec, up);
 		}
 	}
-	else if (ent->s.weapon == WP_BOT_LASER && ent->enemy)
+	else if (ent && ent->client && ent->s.weapon == WP_BOT_LASER && ent->enemy)
 	{
 		vec3_t delta1, enemy_org1, muzzle1;
 		vec3_t angle_to_enemy1;
@@ -1769,11 +1769,11 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 					{
 						if (ent->client->pers.cmd.forwardmove == 0 && ent->client->pers.cmd.rightmove == 0)
 						{
-							G_AddMercBalance(ent, BLASTERMISHAPLEVEL_MININACCURACY);
+							G_AddBlasterAttackChainCount(ent, BLASTERMISHAPLEVEL_MIN);
 						}
 						else
 						{
-							G_AddMercBalance(ent, BLASTERMISHAPLEVEL_TWO);
+							G_AddBlasterAttackChainCount(ent, BLASTERMISHAPLEVEL_TWO);
 						}
 
 						ent->client->cloneFired = 0;
@@ -1785,24 +1785,31 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 
 					if (ent->client->DekaFired == 5)
 					{
-						G_AddMercBalance(ent, BLASTERMISHAPLEVEL_MININACCURACY);
+						G_AddBlasterAttackChainCount(ent, BLASTERMISHAPLEVEL_MIN);
 
 						ent->client->DekaFired = 0;
 					}
 				}
 				else if (ent->s.weapon == WP_DISRUPTOR)
 				{
-					G_AddMercBalance(ent, BLASTERMISHAPLEVEL_RUNINACCURACY);
+					G_AddBlasterAttackChainCount(ent, BLASTERMISHAPLEVEL_THREE);
 				}
 				else
 				{
-					if (ent->client->pers.cmd.forwardmove == 0 && ent->client->pers.cmd.rightmove == 0)
+					ent->client->BoltsFired++;
+
+					if (ent->client->BoltsFired == 2)
 					{
-						G_AddMercBalance(ent, BLASTERMISHAPLEVEL_MININACCURACY);
-					}
-					else
-					{
-						G_AddMercBalance(ent, Q_irand(BLASTERMISHAPLEVEL_MININACCURACY, BLASTERMISHAPLEVEL_TWO)); // 1 was not enough
+						if (ent->client->pers.cmd.forwardmove == 0 && ent->client->pers.cmd.rightmove == 0)
+						{
+							G_AddBlasterAttackChainCount(ent, BLASTERMISHAPLEVEL_MIN);
+						}
+						else
+						{
+							G_AddBlasterAttackChainCount(ent, Q_irand(BLASTERMISHAPLEVEL_MIN, BLASTERMISHAPLEVEL_TWO)); // 1 was not enough
+						}
+
+						ent->client->BoltsFired = 0;
 					}
 				}
 			}

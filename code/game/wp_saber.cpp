@@ -15375,7 +15375,7 @@ int WP_SaberBoltBlockCost(gentity_t* defender, const gentity_t* attacker)
 
 extern qboolean G_ControlledByNPC(const gentity_t* self);
 
-int WP_SaberMustBoltBlock(gentity_t* self, const gentity_t* atk, const qboolean check_b_box_block, vec3_t point,const int r_saber_num, const int r_blade_num)
+int WP_SaberMustBoltBlock(gentity_t* self, const gentity_t* atk, const qboolean check_b_box_block, vec3_t point, const int r_saber_num, const int r_blade_num)
 {
 	if (!self || !self->client || !atk)
 	{
@@ -15598,7 +15598,7 @@ int WP_SaberMustBoltBlock(gentity_t* self, const gentity_t* atk, const qboolean 
 	return 1;
 }
 
-int WP_SaberMustDisruptorBlock(gentity_t* self, const gentity_t* atk, const qboolean check_b_box_block, vec3_t point,const int r_saber_num, const int r_blade_num)
+int WP_SaberMustDisruptorBlock(gentity_t* self, const gentity_t* atk, const qboolean check_b_box_block, vec3_t point, const int r_saber_num, const int r_blade_num)
 {
 	if (!self || !self->client || !atk)
 	{
@@ -15820,7 +15820,7 @@ int WP_SaberMustDisruptorBlock(gentity_t* self, const gentity_t* atk, const qboo
 	return 1;
 }
 
-int WP_SaberMustBoltBlockJKAMode(gentity_t* self, const gentity_t* atk, const qboolean check_b_box_block, vec3_t point,	const int r_saber_num, const int r_blade_num)
+int WP_SaberMustBoltBlockJKAMode(gentity_t* self, const gentity_t* atk, const qboolean check_b_box_block, vec3_t point, const int r_saber_num, const int r_blade_num)
 {
 	if (!self || !self->client || !atk)
 	{
@@ -41292,13 +41292,13 @@ void BG_ReduceSaberMishapLevel(playerState_t* ps)
 	}
 	else if (ps->saberFatigueChainCount >= MISHAPLEVEL_SNIPER)
 	{
-		ps->saberFatigueChainCount = MISHAPLEVEL_RUNINACCURACY;
+		ps->saberFatigueChainCount = MISHAPLEVEL_TWO;
 	}
-	else if (ps->saberFatigueChainCount >= MISHAPLEVEL_RUNINACCURACY)
+	else if (ps->saberFatigueChainCount >= MISHAPLEVEL_TWO)
 	{
-		ps->saberFatigueChainCount = MISHAPLEVEL_MININACCURACY;
+		ps->saberFatigueChainCount = MISHAPLEVEL_MIN;
 	}
-	else if (ps->saberFatigueChainCount >= MISHAPLEVEL_MININACCURACY)
+	else if (ps->saberFatigueChainCount >= MISHAPLEVEL_MIN)
 	{
 		if (g_debugFatigueBars->integer)
 		{
@@ -41320,21 +41320,21 @@ void BG_ReduceBlasterMishapLevel(playerState_t* ps)
 	//reduces a player's mishap meter by one level
 	if (ps->BlasterAttackChainCount >= BLASTERMISHAPLEVEL_MAX)
 	{
-		ps->BlasterAttackChainCount = BLASTERMISHAPLEVEL_TWENTYNINE;
+		ps->BlasterAttackChainCount = BLASTERMISHAPLEVEL_FIFTEEN;
 	}
-	else if (ps->BlasterAttackChainCount >= BLASTERMISHAPLEVEL_TWENTYNINE)
+	else if (ps->BlasterAttackChainCount >= BLASTERMISHAPLEVEL_FIFTEEN)
 	{
-		ps->BlasterAttackChainCount = BLASTERMISHAPLEVEL_TWENTYEIGHT;
+		ps->BlasterAttackChainCount = BLASTERMISHAPLEVEL_FOURTEEN;
 	}
-	else if (ps->BlasterAttackChainCount >= BLASTERMISHAPLEVEL_TWENTYEIGHT)
+	else if (ps->BlasterAttackChainCount >= BLASTERMISHAPLEVEL_FOURTEEN)
 	{
 		ps->BlasterAttackChainCount = BLASTERMISHAPLEVEL_OVERLOAD;
 	}
 	else if (ps->BlasterAttackChainCount >= BLASTERMISHAPLEVEL_OVERLOAD)
 	{
-		ps->BlasterAttackChainCount = BLASTERMISHAPLEVEL_TWENTYSIX;
+		ps->BlasterAttackChainCount = BLASTERMISHAPLEVEL_TWELVE;
 	}
-	else if (ps->BlasterAttackChainCount >= BLASTERMISHAPLEVEL_TWENTYSIX)
+	else if (ps->BlasterAttackChainCount >= BLASTERMISHAPLEVEL_TWELVE)
 	{
 		ps->BlasterAttackChainCount = BLASTERMISHAPLEVEL_FULL;
 	}
@@ -41360,9 +41360,9 @@ void BG_ReduceBlasterMishapLevel(playerState_t* ps)
 	}
 	else if (ps->BlasterAttackChainCount >= BLASTERMISHAPLEVEL_LIGHT)
 	{
-		ps->BlasterAttackChainCount = BLASTERMISHAPLEVEL_RUNINACCURACY;
+		ps->BlasterAttackChainCount = BLASTERMISHAPLEVEL_THREE;
 	}
-	else if (ps->BlasterAttackChainCount >= BLASTERMISHAPLEVEL_RUNINACCURACY)
+	else if (ps->BlasterAttackChainCount >= BLASTERMISHAPLEVEL_THREE)
 	{
 		ps->BlasterAttackChainCount = BLASTERMISHAPLEVEL_MIN;
 	}

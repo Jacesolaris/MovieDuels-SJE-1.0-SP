@@ -385,7 +385,7 @@ static void CG_DrawJK2SaberFatigue(const centity_t* cent, const int x, const int
 		}
 	}
 	else if (cg.mishapHUDTotalFlashTime > cg.time || cent->gent->client->ps.saberFatigueChainCount >
-		MISHAPLEVEL_RUNINACCURACY)
+		MISHAPLEVEL_TWO)
 	{
 		if (!(cg.time / 600 & 1))
 		{

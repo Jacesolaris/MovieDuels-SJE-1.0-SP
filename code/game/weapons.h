@@ -242,10 +242,12 @@ using ammoData_t = struct ammoData_s
 #define BLASTER_VELOCITY			2300
 #define BLASTER_NPC_VEL_CUT			0.5f
 #define BLASTER_NPC_HARD_VEL_CUT	0.7f
-#define BLASTER_DAMAGE				20
-#define	BLASTER_NPC_DAMAGE_EASY		6
-#define	BLASTER_NPC_DAMAGE_NORMAL	12 // 14
-#define	BLASTER_NPC_DAMAGE_HARD		16 // 18
+#define BLASTER_DAMAGE				25
+#define	BLASTER_NPC_DAMAGE_EASY		8
+#define	BLASTER_NPC_DAMAGE_NORMAL	20
+#define	BLASTER_NPC_DAMAGE_HARD		35
+#define	SJE_BLASTER_NPC_DAMAGE_HARD	35
+
 
 // DC-15
 //---------
@@ -313,10 +315,10 @@ using ammoData_t = struct ammoData_s
 #define JANGO_VELOCITY				3800
 #define JANGO_NPC_VEL_CUT			0.5f
 #define JANGO_NPC_HARD_VEL_CUT		0.7f
-#define JANGO_DAMAGE				8
+#define JANGO_DAMAGE				10
 #define	JANGO_NPC_DAMAGE_EASY		6
 #define	JANGO_NPC_DAMAGE_NORMAL		8
-#define	JANGO_NPC_DAMAGE_HARD		10
+#define	JANGO_NPC_DAMAGE_HARD		15
 
 // EE-3 Carbine Rifle
 //---------
@@ -339,10 +341,10 @@ using ammoData_t = struct ammoData_s
 
 // Tenloss Disruptor
 //----------
-#define DISRUPTOR_MAIN_DAMAGE			14
-#define DISRUPTOR_NPC_MAIN_DAMAGE_EASY	5
-#define DISRUPTOR_NPC_MAIN_DAMAGE_MEDIUM	10
-#define DISRUPTOR_NPC_MAIN_DAMAGE_HARD	15
+#define DISRUPTOR_MAIN_DAMAGE			 14
+#define DISRUPTOR_NPC_MAIN_DAMAGE_EASY	 5
+#define DISRUPTOR_NPC_MAIN_DAMAGE_MEDIUM 10
+#define DISRUPTOR_NPC_MAIN_DAMAGE_HARD	 15
 
 #define DISRUPTOR_ALT_DAMAGE			12
 #define DISRUPTOR_NPC_ALT_DAMAGE_EASY	15
@@ -370,11 +372,11 @@ using ammoData_t = struct ammoData_s
 //----------
 #define REPEATER_SPREAD				1.4f
 #define REPEATER_NPC_SPREAD			0.7f
-#define	REPEATER_DAMAGE				8
+#define	REPEATER_DAMAGE				10
 #define	REPEATER_VELOCITY			1600
 #define	REPEATER_NPC_DAMAGE_EASY	2
 #define	REPEATER_NPC_DAMAGE_NORMAL	4
-#define	REPEATER_NPC_DAMAGE_HARD	6
+#define	REPEATER_NPC_DAMAGE_HARD	10
 
 #define REPEATER_ALT_SIZE				3	// half of bbox size
 #define	REPEATER_ALT_DAMAGE				60
@@ -391,7 +393,7 @@ using ammoData_t = struct ammoData_s
 #define	DEMP2_VELOCITY				1800
 #define	DEMP2_NPC_DAMAGE_EASY		6
 #define	DEMP2_NPC_DAMAGE_NORMAL		12
-#define	DEMP2_NPC_DAMAGE_HARD		18
+#define	DEMP2_NPC_DAMAGE_HARD		20
 #define	DEMP2_SIZE					2		// half of bbox size
 
 #define DEMP2_ALT_DAMAGE			15

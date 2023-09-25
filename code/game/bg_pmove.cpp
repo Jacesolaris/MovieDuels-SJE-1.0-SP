@@ -14177,8 +14177,10 @@ void PM_SetSaberMove(saberMoveName_t new_move)
 
 		if (PM_SaberInAttack(new_move))
 		{
-			//continuing with a kata, increment attack counter
-			pm->ps->saberFatigueChainCount++;
+			if (pm->ps->saberFatigueChainCount < MISHAPLEVEL_MAX)
+			{
+				pm->ps->saberFatigueChainCount++;
+			}
 		}
 	}
 
@@ -16344,9 +16346,9 @@ qboolean PM_SaberLocked()
 			{
 				pm->ps->legsAnimTimer = 0;
 				G_Sound(pm->gent, G_SoundIndex(va("sound/weapons/saber/saber_locking_end%d.mp3", index_end)));
-		}
+			}
 			return qfalse;
-	}
+		}
 		if (pm->cmd.buttons & BUTTON_ATTACK)
 		{
 			//holding attack
@@ -16568,7 +16570,7 @@ qboolean PM_SaberLocked()
 			//roll?
 			//backflip?
 		}
-}
+	}
 	else
 	{
 		//something broke us out of it
@@ -20170,7 +20172,10 @@ void PM_WeaponLightsaber()
 
 						if (g_SerenityJediEngineMode->integer)
 						{
-							pm->ps->saberFatigueChainCount++;
+							if (pm->ps->saberFatigueChainCount < MISHAPLEVEL_MAX)
+							{
+								pm->ps->saberFatigueChainCount++;
+							}
 						}
 					}
 				}
@@ -24247,7 +24252,7 @@ void PM_CheckGrab()
 
 	if (pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ||
 		pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING ||
-		pm->ps->BlasterAttackChainCount >= BLASTERMISHAPLEVEL_TWENTYSIX)
+		pm->ps->BlasterAttackChainCount >= BLASTERMISHAPLEVEL_TWELVE)
 	{
 		return;
 	}
@@ -24355,7 +24360,7 @@ void PM_CheckGrab()
 	}
 	else
 	{
-		if (PM_IsMerc() && pm->ps->BlasterAttackChainCount <= BLASTERMISHAPLEVEL_TWENTYSIX)
+		if (PM_IsMerc() && pm->ps->BlasterAttackChainCount <= BLASTERMISHAPLEVEL_TWELVE)
 		{
 			G_SetWeapon(pm->gent, WP_MELEE);
 			G_SoundOnEnt(pm->gent, CHAN_BODY, "sound/weapons/change.wav");

@@ -7882,7 +7882,7 @@ void wp_reload_gun(gentity_t* ent)
 
 	if (is_holding_reloadable_gun(ent))
 	{
-		if (ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWENTYSIX)
+		if (ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWELVE)
 		{
 			if (ent->s.weapon == WP_BRYAR_PISTOL ||
 				ent->s.weapon == WP_BLASTER_PISTOL ||

@@ -41,7 +41,7 @@ void WP_FireTuskenRifle(gentity_t* ent)
 	WP_TraceSetStart(ent, start);
 	//make sure our start point isn't on the other side of a wall
 
-	if (ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWENTYNINE)
+	if (ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_FIFTEEN)
 	{
 		NPC_SetAnim(ent, SETANIM_BOTH, BOTH_H1_S1_TR, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 	}

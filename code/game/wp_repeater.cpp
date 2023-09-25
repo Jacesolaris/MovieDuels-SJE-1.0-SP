@@ -99,7 +99,7 @@ static void WP_RepeaterAltFire(gentity_t* ent)
 	missile->s.weapon = WP_REPEATER;
 	missile->mass = 10;
 
-	if (ent->client && ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWENTYNINE)
+	if (ent->client && ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_FIFTEEN)
 	{
 		NPC_SetAnim(ent, SETANIM_BOTH, BOTH_H1_S1_TR, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 	}

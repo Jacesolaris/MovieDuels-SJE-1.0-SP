@@ -5703,7 +5703,7 @@ void PM_SaberStartTransAnim(const int saber_anim_level, const int anim, float* a
 					{
 						if (g_RealisticBlockingMode->integer)
 						{
-							if (gent->client->ps.saberFatigueChainCount >= MISHAPLEVEL_MAXINACCURACY)
+							if (gent->client->ps.saberFatigueChainCount >= MISHAPLEVEL_LIGHT)
 							{//Slow down saber moves...
 								constexpr float fatiguedanimscale = 0.97f;
 								*anim_speed *= fatiguedanimscale;
@@ -5874,7 +5874,7 @@ void PM_SetAnimFinal(int* torso_anim, int* legs_anim,
 			{
 				gi.Printf(S_COLOR_RED"PM_SetAnimFinal: Anim %s does not exist in this model (%s)!\n", anim_table[anim].name, gent->NPC_type);
 			}
-}
+		}
 		LastAnimWarningNum = anim;
 #endif
 		return;
@@ -6190,7 +6190,7 @@ void PM_SetAnimFinal(int* torso_anim, int* legs_anim,
 		{
 			PM_SetTorsoAnimTimer(gent, torso_anim_timer, anim_hold_m_sec);
 		}
-		}
+	}
 
 	// PLAY ON THE WHOLE BODY
 	//========================
@@ -6228,7 +6228,7 @@ void PM_SetAnimFinal(int* torso_anim, int* legs_anim,
 
 	// PRINT SOME DEBUG TEXT OF EXISTING VALUES
 	//==========================================
-	}
+}
 
 void PM_SetAnim(const pmove_t* pm, int set_anim_parts, const int anim, const int set_anim_flags, const int blend_time)
 {

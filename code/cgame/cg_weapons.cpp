@@ -4392,7 +4392,7 @@ void CG_NextWeapon_f()
 		return;
 	}
 
-	if (g_entities[0].client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWENTYSIX && is_holding_reloadable_gun(cg_entities[0].gent))
+	if (g_entities[0].client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWELVE && is_holding_reloadable_gun(cg_entities[0].gent))
 	{
 		if (cg_entities[0].gent->s.weapon == WP_BRYAR_PISTOL ||
 			cg_entities[0].gent->s.weapon == WP_BLASTER_PISTOL ||
@@ -4652,7 +4652,7 @@ void CG_PrevWeapon_f()
 		return;
 	}
 
-	if (g_entities[0].client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWENTYSIX && is_holding_reloadable_gun(cg_entities[0].gent))
+	if (g_entities[0].client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWELVE && is_holding_reloadable_gun(cg_entities[0].gent))
 	{
 		if (cg_entities[0].gent->s.weapon == WP_BRYAR_PISTOL ||
 			cg_entities[0].gent->s.weapon == WP_BLASTER_PISTOL ||
@@ -4814,7 +4814,7 @@ void CG_ChangeWeapon(const int num)
 		return;
 	}
 
-	if (player->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWENTYSIX && is_holding_reloadable_gun(cg_entities[0].gent))
+	if (player->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWELVE && is_holding_reloadable_gun(cg_entities[0].gent))
 	{
 		if (cg_entities[0].gent->s.weapon == WP_BRYAR_PISTOL ||
 			cg_entities[0].gent->s.weapon == WP_BLASTER_PISTOL ||
@@ -4951,7 +4951,7 @@ void CG_Weapon_f()
 		return;
 	}
 
-	if (g_entities[0].client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_TWENTYSIX && is_holding_reloadable_gun(cg_entities[0].gent))
+	if (g_entities[0].client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_TWELVE && is_holding_reloadable_gun(cg_entities[0].gent))
 	{
 		if (cg_entities[0].gent->s.weapon == WP_BRYAR_PISTOL ||
 			cg_entities[0].gent->s.weapon == WP_BLASTER_PISTOL ||
@@ -5282,8 +5282,7 @@ void CG_FireWeapon(centity_t* cent, const qboolean alt_fire)
 		return;
 	}
 
-	if (PM_ReloadAnim(cent->currentState.torsoAnim) ||
-		PM_WeponRestAnim(cent->currentState.torsoAnim))
+	if (PM_ReloadAnim(cent->currentState.torsoAnim) || PM_WeponRestAnim(cent->currentState.torsoAnim))
 	{
 		return;
 	}
@@ -5293,31 +5292,8 @@ void CG_FireWeapon(centity_t* cent, const qboolean alt_fire)
 		return;
 	}
 
-	if (g_entities[0].client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWENTYNINE && is_holding_reloadable_gun(cg_entities[0].gent))
+	if (PM_ReloadAnim(cent->currentState.torsoAnim) || PM_WeponRestAnim(cent->currentState.torsoAnim))
 	{
-		if (cg_entities[0].gent->s.weapon == WP_BRYAR_PISTOL ||
-			cg_entities[0].gent->s.weapon == WP_BLASTER_PISTOL ||
-			cg_entities[0].gent->s.weapon == WP_DUAL_PISTOL ||
-			cg_entities[0].gent->s.weapon == WP_DUAL_CLONEPISTOL ||
-			cg_entities[0].gent->s.weapon == WP_REY ||
-			cg_entities[0].gent->s.weapon == WP_JANGO ||
-			cg_entities[0].gent->s.weapon == WP_CLONEPISTOL ||
-			cg_entities[0].gent->s.weapon == WP_REBELBLASTER)
-		{
-			NPC_SetAnim(cg_entities[0].gent, SETANIM_TORSO, BOTH_PISTOLFAIL, SETANIM_AFLAG_BLOCKPACE);
-		}
-		else if (cg_entities[0].gent->s.weapon == WP_DROIDEKA)
-		{
-			NPC_SetAnim(cg_entities[0].gent, SETANIM_TORSO, BOTH_RELOAD_DEKA, SETANIM_AFLAG_BLOCKPACE);
-		}
-		else
-		{
-			NPC_SetAnim(cg_entities[0].gent, SETANIM_TORSO, BOTH_RIFLEFAIL, SETANIM_AFLAG_BLOCKPACE);
-		}
-		G_SoundOnEnt(cg_entities[0].gent, CHAN_WEAPON, "sound/weapons/reloadfail.mp3");
-		G_SoundOnEnt(cg_entities[0].gent, CHAN_VOICE_ATTEN, "*pain25.wav");
-		G_Damage(cg_entities[0].gent, nullptr, nullptr, nullptr, cg_entities[0].gent->currentOrigin, 2, DAMAGE_NO_ARMOR, MOD_LAVA);
-		cg_entities[0].gent->reloadTime = level.time + fire_deley_time();
 		return;
 	}
 

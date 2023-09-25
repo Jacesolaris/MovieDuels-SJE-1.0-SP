@@ -61,7 +61,7 @@ static void WP_FireConcussionAlt(gentity_t* ent)
 	VectorMA(ent->client->ps.velocity, -200, forward_vec, ent->client->ps.velocity);
 	ent->client->ps.groundEntityNum = ENTITYNUM_NONE;
 
-	if (ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWENTYNINE)
+	if (ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_FIFTEEN)
 	{
 		NPC_SetAnim(ent, SETANIM_BOTH, BOTH_H1_S1_TR, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD);
 	}
