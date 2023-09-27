@@ -1740,7 +1740,7 @@ void G_TauntSound(const gentity_t* ent, const int taunt)
 	case TAUNT_BOW:
 		break;
 	case TAUNT_MEDITATE:
-		G_SpeechEvent(ent, EV_PUSHFAIL);
+		G_AddVoiceEvent(ent, EV_PUSHFAIL, 0);
 		break;
 	case TAUNT_FLOURISH:
 		if (Q_irand(0, 1))
@@ -1853,7 +1853,7 @@ void G_SetTauntAnim(gentity_t* ent, const int taunt)
 		{
 		case TAUNT_TAUNT:
 			G_TauntSound(ent, TAUNT_TAUNT);
-			
+
 			if (ent->client->ps.weapon != WP_SABER)
 			{
 				if (PM_WalkingAnim(ent->client->ps.legsAnim) || PM_RunningAnim(ent->client->ps.legsAnim))
