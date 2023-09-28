@@ -4754,8 +4754,7 @@ static void CG_DrawHUD(const centity_t* cent)
 				CG_DrawDF_BlockPoints(cent);
 			}
 
-			if (cent->currentState.weapon != WP_SABER && cent->currentState.weapon != WP_MELEE && cent->currentState.
-				weapon != WP_STUN_BATON)
+			if (cent->currentState.weapon != WP_SABER && cent->currentState.weapon != WP_MELEE && cent->currentState.weapon != WP_STUN_BATON)
 			{
 				CG_DrawDF_Ammo(cent);
 			}
@@ -4772,10 +4771,7 @@ static void CG_DrawHUD(const centity_t* cent)
 
 			if (cent->currentState.weapon == WP_SABER)
 			{
-				if (cent->gent->client->ps.SaberActive())
-				{
-					CG_DrawDF_SaberStyle_Fatigue(cent);
-				}
+				CG_DrawDF_SaberStyle_Fatigue(cent);
 			}
 
 			if (cent->currentState.weapon != WP_SABER && cent->currentState.weapon != WP_MELEE)

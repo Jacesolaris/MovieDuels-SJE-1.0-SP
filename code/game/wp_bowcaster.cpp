@@ -140,6 +140,7 @@ static void WP_BowcasterMainFire(gentity_t* ent)
 		VectorScale(missile->maxs, -1, missile->mins);
 
 		missile->damage = damage;
+
 		if (g_SerenityJediEngineMode->integer == 2)
 		{
 			missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
@@ -206,6 +207,7 @@ static void WP_BowcasterAltFire(gentity_t* ent)
 	missile->bounceCount = 3;
 
 	missile->damage = damage;
+
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;

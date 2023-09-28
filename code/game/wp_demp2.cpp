@@ -71,6 +71,7 @@ static void WP_DEMP2_MainFire(gentity_t* ent)
 	VectorScale(missile->maxs, -1, missile->mins);
 
 	missile->damage = damage;
+
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;

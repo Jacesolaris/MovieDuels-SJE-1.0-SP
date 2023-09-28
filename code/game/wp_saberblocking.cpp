@@ -74,7 +74,7 @@ extern qboolean WP_SaberNPCMBlock(gentity_t* victim, gentity_t* attacker, int sa
 extern qboolean WP_SaberSlowBounceBlock(gentity_t* victim, gentity_t* attacker, int saber_num, int blade_num, vec3_t hit_loc);
 extern cvar_t* g_saberAutoBlocking;
 extern void g_do_m_block_response(const gentity_t* speaker_npc_self);
-extern qboolean PM_SaberInKata(saberMoveName_t saber_move);
+extern qboolean PM_SaberInKata(saber_moveName_t saber_move);
 extern qboolean g_accurate_blocking(const gentity_t* blocker, const gentity_t* attacker, vec3_t hit_loc);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -795,7 +795,7 @@ qboolean sab_beh_attack_vs_attack(gentity_t* attacker, gentity_t* blocker, const
 		//set otherOwner
 		SabBeh_AddBalance(blocker, 1);
 	}
-	else if (PM_SaberInKata(static_cast<saberMoveName_t>(attacker->client->ps.saber_move)))
+	else if (PM_SaberInKata(static_cast<saber_moveName_t>(attacker->client->ps.saber_move)))
 	{
 		SabBeh_AddBalance(attacker, 1);
 		//set otherOwner
@@ -814,7 +814,7 @@ qboolean sab_beh_attack_vs_attack(gentity_t* attacker, gentity_t* blocker, const
 			PM_AddBlockFatigue(&blocker->client->ps, BLOCKPOINTS_TEN);
 		}
 	}
-	else if (PM_SaberInKata(static_cast<saberMoveName_t>(blocker->client->ps.saber_move)))
+	else if (PM_SaberInKata(static_cast<saber_moveName_t>(blocker->client->ps.saber_move)))
 	{
 		SabBeh_AddBalance(attacker, -1);
 		//set otherOwner
@@ -977,6 +977,7 @@ qboolean sab_beh_attack_vs_block(gentity_t* attacker, gentity_t* blocker, const 
 					{
 						G_StartStasisEffect_FORCE_LEVEL_1(attacker, MEF_NO_SPIN, 200, 0.3f, 0);
 					}
+					CGCam_BlockShakeSP(0.45f, 100);
 				}
 
 				if (g_SerenityJediEngineMode->integer && (blocker->NPC && !G_ControlledByPlayer(blocker)))

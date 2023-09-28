@@ -94,6 +94,7 @@ void WP_FireCloneMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qboolea
 	}
 
 	missile->damage = damage;
+
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
@@ -278,6 +279,7 @@ void WP_FireCloneRifleMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qb
 	}
 
 	missile->damage = damage;
+
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
@@ -456,6 +458,7 @@ void WP_FireCloneCommandoMissile(gentity_t* ent, vec3_t start, vec3_t dir, const
 	}
 
 	missile->damage = damage;
+
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;

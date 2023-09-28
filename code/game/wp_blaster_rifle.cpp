@@ -100,10 +100,8 @@ void WP_FireBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qbool
 			}
 		}
 	}
-	else
-	{
-		missile->damage = damage;
-	}
+
+	missile->damage = damage;
 
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
@@ -295,10 +293,8 @@ void WP_FireBattleDroidMissile(gentity_t* ent, vec3_t start, vec3_t dir, const q
 			}
 		}
 	}
-	else
-	{
-		missile->damage = damage;
-	}
+
+	missile->damage = damage;
 
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
@@ -485,10 +481,8 @@ void WP_FireFirstOrderMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qb
 			}
 		}
 	}
-	else
-	{
-		missile->damage = damage;
-	}
+
+	missile->damage = damage;
 
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
@@ -668,10 +662,8 @@ void WP_FireRebelBlasterMissile(gentity_t* ent, vec3_t start, vec3_t dir, const 
 			damage = REBELBLASTER_NPC_DAMAGE_HARD;
 		}
 	}
-	else
-	{
-		missile->damage = damage;
-	}
+
+	missile->damage = damage;
 
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
@@ -955,6 +947,7 @@ void WP_FireRebelRifleMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qb
 	}
 
 	missile->damage = damage;
+
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
@@ -1135,6 +1128,7 @@ void WP_FireJangoPistolMissile(gentity_t* ent, vec3_t start, vec3_t dir, const q
 	}
 
 	missile->damage = damage;
+
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
@@ -1225,6 +1219,7 @@ void WP_FireJangoWristMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qb
 	}
 
 	missile->damage = damage;
+
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
@@ -1312,6 +1307,7 @@ void WP_FireJangoDualPistolMissile(gentity_t* ent, vec3_t start, vec3_t dir, con
 	}
 
 	missile->damage = damage;
+
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
@@ -1405,6 +1401,7 @@ void WP_FireJangoDualPistolMissileDuals(gentity_t* ent, vec3_t start, vec3_t dir
 	}
 
 	missile->damage = damage;
+
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
@@ -1892,6 +1889,7 @@ void WP_FireBobaRifleMissile(gentity_t* ent, vec3_t start, vec3_t dir, const qbo
 	}
 
 	missile->damage = damage;
+
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
@@ -2066,6 +2064,7 @@ void WP_FireDroidekaDualPistolMissileDuals(gentity_t* ent, vec3_t start, vec3_t 
 	}
 
 	missile->damage = damage;
+
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;
@@ -2161,6 +2160,7 @@ void WP_FireDroidekaDualPistolMissile(gentity_t* ent, vec3_t start, vec3_t dir, 
 	}
 
 	missile->damage = damage;
+
 	if (g_SerenityJediEngineMode->integer == 2)
 	{
 		missile->dflags = DAMAGE_DEATH_KNOCKBACK | DAMAGE_EXTRA_KNOCKBACK;

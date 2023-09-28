@@ -311,7 +311,7 @@ using swingType_t = enum
 #undef LS_NONE
 #endif
 
-using saberMoveName_t = enum
+using saber_moveName_t = enum
 {
 	// Invalid, or saber not armed
 	LS_INVALID = -1,
@@ -533,7 +533,7 @@ using saberMoveName_t = enum
 	LS_MOVE_MAX //
 };
 
-void PM_SetSaberMove(saberMoveName_t new_move);
+void PM_Setsaber_move(saber_moveName_t new_move);
 
 using saberQuadrant_t = enum
 {
@@ -548,7 +548,7 @@ using saberQuadrant_t = enum
 	Q_NUM_QUADS
 };
 
-using saberMoveData_t = struct
+using saber_moveData_t = struct
 {
 	const char* name;
 	int animToUse;
@@ -557,11 +557,11 @@ using saberMoveData_t = struct
 	unsigned animSetFlags;
 	int blend_time;
 	int blocking;
-	saberMoveName_t chain_idle; // What move to call if the attack button is not pressed at the end of this anim
-	saberMoveName_t chain_attack; // What move to call if the attack button (and nothing else) is pressed
+	saber_moveName_t chain_idle; // What move to call if the attack button is not pressed at the end of this anim
+	saber_moveName_t chain_attack; // What move to call if the attack button (and nothing else) is pressed
 	int trailLength;
 };
 
-extern saberMoveData_t saberMoveData[LS_MOVE_MAX];
+extern saber_moveData_t saber_moveData[LS_MOVE_MAX];
 
 #endif	// __WP_SABER_H

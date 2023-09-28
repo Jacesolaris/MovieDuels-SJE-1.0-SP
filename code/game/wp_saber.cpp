@@ -123,9 +123,9 @@ extern qboolean PM_SaberInParry(int move);
 extern qboolean PM_SaberInKnockaway(int move);
 extern qboolean PM_SaberInBrokenParry(int move);
 extern qboolean PM_SpinningSaberAnim(int anim);
-extern saberMoveName_t PM_SaberBounceForAttack(int move);
-extern saberMoveName_t PM_BrokenParryForAttack(int move);
-extern saberMoveName_t PM_KnockawayForParry(int move);
+extern saber_moveName_t PM_SaberBounceForAttack(int move);
+extern saber_moveName_t PM_BrokenParryForAttack(int move);
+extern saber_moveName_t PM_KnockawayForParry(int move);
 extern qboolean PM_FlippingAnim(int anim);
 extern qboolean PM_RollingAnim(int anim);
 extern qboolean PM_CrouchAnim(int anim);
@@ -140,11 +140,11 @@ extern qboolean PM_SuperBreakWinAnim(int anim);
 extern qboolean PM_SaberLockBreakAnim(int anim);
 extern qboolean PM_InOnGroundAnim(playerState_t* ps);
 extern qboolean PM_KnockDownAnim(int anim);
-extern qboolean PM_SaberInKata(saberMoveName_t saber_move);
-extern qboolean PM_SaberInBackAttack(saberMoveName_t saber_move);
-extern qboolean PM_SaberInOverHeadSlash(saberMoveName_t saber_move);
-extern qboolean PM_SaberInRollStab(saberMoveName_t saber_move);
-extern qboolean PM_SaberInLungeStab(saberMoveName_t saber_move);
+extern qboolean PM_SaberInKata(saber_moveName_t saber_move);
+extern qboolean PM_SaberInBackAttack(saber_moveName_t saber_move);
+extern qboolean PM_SaberInOverHeadSlash(saber_moveName_t saber_move);
+extern qboolean PM_SaberInRollStab(saber_moveName_t saber_move);
+extern qboolean PM_SaberInLungeStab(saber_moveName_t saber_move);
 extern qboolean PM_StabDownAnim(int anim);
 extern int PM_PowerLevelForSaberAnim(const playerState_t* ps, int saber_num = 0);
 extern void PM_VelocityForSaberMove(const playerState_t* ps, vec3_t throw_dir);
@@ -195,7 +195,7 @@ void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length = qfalse);
 qboolean FP_ForceDrainGrippableEnt(const gentity_t* victim);
 extern qboolean PM_RunningAnim(int anim);
 extern qboolean PM_WalkingAnim(int anim);
-extern saberMoveName_t PM_BrokenParryForParry(int move);
+extern saber_moveName_t PM_BrokenParryForParry(int move);
 extern qboolean BG_SaberInNonIdleDamageMove(const playerState_t* ps);
 qboolean BG_SaberInPartialDamageMove(gentity_t* self);
 extern qboolean PM_KickingAnim(int anim);
@@ -249,7 +249,7 @@ extern qboolean jedi_jedi_master_high(const gentity_t* self);
 extern void Boba_FlyStop(gentity_t* self);
 extern void Jetpack_Off(const gentity_t* ent);
 qboolean WP_SaberFatiguedParryDirection(gentity_t* self, vec3_t hitloc, qboolean missileBlock);
-extern saberMoveName_t PM_SaberAttackStagger(int move);
+extern saber_moveName_t PM_SaberAttackStagger(int move);
 void G_StaggerAttacker(gentity_t* atk);
 extern qboolean PM_LungRollAnim(int anim);
 extern qboolean jedi_win_po(const gentity_t* self);
@@ -1807,12 +1807,12 @@ void WP_SaberHitSound(const gentity_t* ent, const int saber_num, const int blade
 	const qboolean saber_in_stab_down = PM_StabDownAnim(ent->client->ps.torsoAnim);
 	const qboolean saber_in_special = PM_SaberInKillAttack(ent->client->ps.torsoAnim);
 	const qboolean saber_in_over_head_attack = PM_SaberInOverHeadSlash(
-		static_cast<saberMoveName_t>(ent->client->ps.saber_move));
-	const qboolean saber_in_kata = PM_SaberInKata(static_cast<saberMoveName_t>(ent->client->ps.saber_move));
+		static_cast<saber_moveName_t>(ent->client->ps.saber_move));
+	const qboolean saber_in_kata = PM_SaberInKata(static_cast<saber_moveName_t>(ent->client->ps.saber_move));
 	const qboolean saber_in_lock_win = PM_SaberInLockWin(ent->client->ps.torsoAnim);
-	const qboolean saber_in_back_attack = PM_SaberInBackAttack(static_cast<saberMoveName_t>(ent->client->ps.saber_move));
+	const qboolean saber_in_back_attack = PM_SaberInBackAttack(static_cast<saber_moveName_t>(ent->client->ps.saber_move));
 	const qboolean saber_in_lunge_attack = PM_LungRollAnim(ent->client->ps.torsoAnim);
-	const qboolean saber_in_roll_stab = PM_SaberInRollStab(static_cast<saberMoveName_t>(ent->client->ps.saber_move));
+	const qboolean saber_in_roll_stab = PM_SaberInRollStab(static_cast<saber_moveName_t>(ent->client->ps.saber_move));
 
 	if (!ent || !ent->client)
 	{
@@ -2502,7 +2502,7 @@ qboolean WP_GetSaberDeflectionAngle(const gentity_t* attacker, const gentity_t* 
 #ifndef FINAL_BUILD
 	if (d_saberCombat->integer)
 	{
-		gi.Printf(S_COLOR_BLUE"%s deflected from %s to %s\n", attacker->targetname, saberMoveData[attacker->client->ps.saber_move].name, saberMoveData[attacker->client->ps.saberBounceMove].name);
+		gi.Printf(S_COLOR_BLUE"%s deflected from %s to %s\n", attacker->targetname, saber_moveData[attacker->client->ps.saber_move].name, saber_moveData[attacker->client->ps.saberBounceMove].name);
 	}
 #endif
 	return qtrue;
@@ -3175,15 +3175,15 @@ qboolean WP_SaberApplyDamageMD(gentity_t* ent, const float base_damage, const in
 						const qboolean saber_in_LeapAttack = PM_SaberInInstankillKillAttack(ent->client->ps.torsoAnim);
 						const qboolean saber_in_stab_down = PM_StabDownAnim(ent->client->ps.torsoAnim);
 						const qboolean saber_in_kata = PM_SaberInKata(
-							static_cast<saberMoveName_t>(ent->client->ps.saber_move));
+							static_cast<saber_moveName_t>(ent->client->ps.saber_move));
 						const qboolean saber_in_back_attack = PM_SaberInBackAttack(
-							static_cast<saberMoveName_t>(ent->client->ps.saber_move));
+							static_cast<saber_moveName_t>(ent->client->ps.saber_move));
 						const qboolean saber_in_over_head_attack = PM_SaberInOverHeadSlash(
-							static_cast<saberMoveName_t>(ent->client->ps.saber_move));
+							static_cast<saber_moveName_t>(ent->client->ps.saber_move));
 						const qboolean saber_in_roll_stab = PM_SaberInRollStab(
-							static_cast<saberMoveName_t>(ent->client->ps.saber_move));
+							static_cast<saber_moveName_t>(ent->client->ps.saber_move));
 						const qboolean saber_in_lunge_stab = PM_SaberInLungeStab(
-							static_cast<saberMoveName_t>(ent->client->ps.saber_move));
+							static_cast<saber_moveName_t>(ent->client->ps.saber_move));
 						const int index = Q_irand(1, 3);
 
 						if (victim->client
@@ -6126,12 +6126,12 @@ qboolean WP_SabersCheckLock(gentity_t* ent1, gentity_t* ent2)
 	if (PM_SaberInParry(ent1->client->ps.saber_move))
 	{
 		//use the endquad of the move
-		lock_quad = saberMoveData[ent1->client->ps.saber_move].endQuad;
+		lock_quad = saber_moveData[ent1->client->ps.saber_move].endQuad;
 	}
 	else
 	{
 		//use the startquad of the move
-		lock_quad = saberMoveData[ent1->client->ps.saber_move].startQuad;
+		lock_quad = saber_moveData[ent1->client->ps.saber_move].startQuad;
 	}
 
 	switch (lock_quad)
@@ -8125,7 +8125,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 #ifndef FINAL_BUILD
 							if (d_saberCombat->integer)
 							{
-								gi.Printf(S_COLOR_RED"%s knockaway %s's attack, new move = %s, anim = %s\n", hitOwner->NPC_type, ent->NPC_type, saberMoveData[ent->client->ps.saberBounceMove].name, anim_table[saberMoveData[ent->client->ps.saberBounceMove].animToUse].name);
+								gi.Printf(S_COLOR_RED"%s knockaway %s's attack, new move = %s, anim = %s\n", hitOwner->NPC_type, ent->NPC_type, saber_moveData[ent->client->ps.saberBounceMove].name, anim_table[saber_moveData[ent->client->ps.saberBounceMove].animToUse].name);
 							}
 #endif
 						}
@@ -8518,7 +8518,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 			//bounce off walls
 			//do anim
 			ent->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
-			ent->client->ps.saberBounceMove = LS_D1_BR + (saberMoveData[ent->client->ps.saber_move].startQuad - Q_BR);
+			ent->client->ps.saberBounceMove = LS_D1_BR + (saber_moveData[ent->client->ps.saber_move].startQuad - Q_BR);
 			//do bounce sound & force feedback
 			WP_SaberBounceOnWallSound(ent, saber_num, blade_num);
 			//do hit effect
@@ -8703,7 +8703,7 @@ void G_Stumble(gentity_t* hit_ent)
 		break;
 	}
 
-	if (PM_SaberInKata(static_cast<saberMoveName_t>(hit_ent->client->ps.saber_move)))
+	if (PM_SaberInKata(static_cast<saber_moveName_t>(hit_ent->client->ps.saber_move)))
 	{
 		NPC_SetAnim(hit_ent, SETANIM_BOTH, use_anim, SETANIM_AFLAG_PACE);
 	}
@@ -8758,7 +8758,7 @@ void G_Stagger(gentity_t* hit_ent)
 		break;
 	}
 
-	if (PM_SaberInKata(static_cast<saberMoveName_t>(hit_ent->client->ps.saber_move)))
+	if (PM_SaberInKata(static_cast<saber_moveName_t>(hit_ent->client->ps.saber_move)))
 	{
 		NPC_SetAnim(hit_ent, SETANIM_BOTH, use_anim, SETANIM_AFLAG_PACE);
 	}
@@ -8827,7 +8827,7 @@ void G_StaggerAttacker(gentity_t* atk)
 		break;
 	}
 
-	if (PM_SaberInKata(static_cast<saberMoveName_t>(atk->client->ps.saber_move)))
+	if (PM_SaberInKata(static_cast<saber_moveName_t>(atk->client->ps.saber_move)))
 	{
 		NPC_SetAnim(atk, SETANIM_BOTH, use_anim, SETANIM_AFLAG_PACE);
 	}
@@ -8886,7 +8886,7 @@ void G_MawStagger(gentity_t* hit_ent)
 		break;
 	}
 
-	if (PM_SaberInKata(static_cast<saberMoveName_t>(hit_ent->client->ps.saber_move)))
+	if (PM_SaberInKata(static_cast<saber_moveName_t>(hit_ent->client->ps.saber_move)))
 	{
 		NPC_SetAnim(hit_ent, SETANIM_BOTH, use_anim, SETANIM_AFLAG_PACE);
 	}
@@ -10252,7 +10252,7 @@ void wp_saber_damage_trace_amd(gentity_t* ent, int saber_num, int blade_num)
 			//bounce off walls
 			//do anim
 			ent->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
-			ent->client->ps.saberBounceMove = LS_D1_BR + (saberMoveData[ent->client->ps.saber_move].startQuad - Q_BR);
+			ent->client->ps.saberBounceMove = LS_D1_BR + (saber_moveData[ent->client->ps.saber_move].startQuad - Q_BR);
 			//do bounce sound & force feedback
 			WP_SaberBounceOnWallSound(ent, saber_num, blade_num);
 			//do hit effect
@@ -10299,7 +10299,7 @@ void wp_saber_damage_trace_amd(gentity_t* ent, int saber_num, int blade_num)
 		{
 			//reflect from wall
 			ent->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
-			ent->client->ps.saberBounceMove = LS_D1_BR + (saberMoveData[ent->client->ps.saber_move].startQuad - Q_BR);
+			ent->client->ps.saberBounceMove = LS_D1_BR + (saber_moveData[ent->client->ps.saber_move].startQuad - Q_BR);
 
 			//do hit effect
 			if (!g_saberNoEffects)
@@ -11643,7 +11643,7 @@ void WP_SaberDamageTrace_MD(gentity_t* ent, int saber_num, int blade_num)
 			//bounce off walls
 			//do anim
 			ent->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
-			ent->client->ps.saberBounceMove = LS_D1_BR + (saberMoveData[ent->client->ps.saber_move].startQuad - Q_BR);
+			ent->client->ps.saberBounceMove = LS_D1_BR + (saber_moveData[ent->client->ps.saber_move].startQuad - Q_BR);
 			//do bounce sound & force feedback
 			WP_SaberBounceOnWallSound(ent, saber_num, blade_num);
 			//do hit effect
@@ -11690,7 +11690,7 @@ void WP_SaberDamageTrace_MD(gentity_t* ent, int saber_num, int blade_num)
 		{
 			//reflect from wall
 			ent->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
-			ent->client->ps.saberBounceMove = LS_D1_BR + (saberMoveData[ent->client->ps.saber_move].startQuad - Q_BR);
+			ent->client->ps.saberBounceMove = LS_D1_BR + (saber_moveData[ent->client->ps.saber_move].startQuad - Q_BR);
 
 			//do hit effect
 			if (!g_saberNoEffects)
@@ -13324,7 +13324,7 @@ void WP_SaberThrow(gentity_t* self, const usercmd_t* ucmd)
 
 	if (!g_saberNewControlScheme->integer)
 	{
-		if (PM_SaberInKata(static_cast<saberMoveName_t>(self->client->ps.saber_move)))
+		if (PM_SaberInKata(static_cast<saber_moveName_t>(self->client->ps.saber_move)))
 		{
 			//don't throw saber when in special attack (alt+attack)
 			return;
@@ -14066,7 +14066,7 @@ qboolean Manual_NPCSaberblocking(const gentity_t* defender) //Is this guy blocki
 		return qfalse;
 	}
 
-	if (PM_SaberInKata(static_cast<saberMoveName_t>(defender->client->ps.saber_move)))
+	if (PM_SaberInKata(static_cast<saber_moveName_t>(defender->client->ps.saber_move)))
 	{
 		return qfalse;
 	}
@@ -19121,10 +19121,20 @@ void wp_saber_start_missile_block_check_md(gentity_t* self, const usercmd_t* ucm
 		do_full_routine = qfalse;
 	}
 
-	if ((self->s.number < MAX_CLIENTS || G_ControlledByPlayer(self)) && !(self->client->ps.ManualBlockingFlags & 1 <<
-		HOLDINGBLOCK))
+	if (g_SerenityJediEngineMode->integer && !(self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 	{
-		return;
+		if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self))
+		{
+			//bots just randomly parry to make up for them not intelligently parrying.
+			if (self->client->ps.weapon == WP_SABER && (!self->client->ps.SaberActive() || self->client->ps.saberInFlight))
+			{
+				return;
+			}
+		}
+		else
+		{
+			return;
+		}
 	}
 
 	if (self->client->ps.SaberLength() <= 0)
@@ -19242,11 +19252,6 @@ void wp_saber_start_missile_block_check_md(gentity_t* self, const usercmd_t* ucm
 				if (!self->client->ps.SaberLength())
 				{
 					//player doesn't auto-activate
-					return;
-				}
-
-				if (!(self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
-				{
 					return;
 				}
 			}
@@ -19410,13 +19415,13 @@ void wp_saber_start_missile_block_check_md(gentity_t* self, const usercmd_t* ucm
 				if (BG_SaberInNonIdleDamageMove(&self->client->ps))
 				{
 					//attacking
-					swing_block_quad = InvertQuad(saberMoveData[self->client->ps.saber_move].startQuad);
+					swing_block_quad = InvertQuad(saber_moveData[self->client->ps.saber_move].startQuad);
 				}
 				else if (PM_SaberInStart(self->client->ps.saber_move) ||
 					PM_SaberInTransition(self->client->ps.saber_move))
 				{
 					//preparing to attack
-					swing_block_quad = InvertQuad(saberMoveData[self->client->ps.saber_move].endQuad);
+					swing_block_quad = InvertQuad(saber_moveData[self->client->ps.saber_move].endQuad);
 				}
 				else
 				{
@@ -19754,21 +19759,7 @@ void wp_saber_start_missile_block_check_md(gentity_t* self, const usercmd_t* ucm
 					self->client->ps.userInt3 |= 1 << FLAG_PREBLOCK;
 				}
 			}
-			else if (g_SerenityJediEngineMode->integer) //MD Mode
-			{
-				if (self->NPC && !G_ControlledByPlayer(self))
-				{
-					WP_SaberBlockNonRandom(self, incoming->currentOrigin, qtrue);
-				}
-				else
-				{
-					if (blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK) //MD Mode
-					{
-						WP_SaberBlockNonRandom_MD(self, incoming->currentOrigin, qtrue);
-					}
-				}
-			}
-			else if (!g_SerenityJediEngineMode->integer && !(ucmd->buttons & BUTTON_USE)) //JKA Mode
+			else if (blocker->health > 0)
 			{
 				WP_SaberBlockNonRandom(self, incoming->currentOrigin, qtrue);
 			}
@@ -20822,7 +20813,7 @@ void WP_ResistForcePush(gentity_t* self, const gentity_t* pusher, const qboolean
 		return;
 	}
 
-	if (PM_SaberInKata(static_cast<saberMoveName_t>(self->client->ps.saber_move)) || PM_InKataAnim(
+	if (PM_SaberInKata(static_cast<saber_moveName_t>(self->client->ps.saber_move)) || PM_InKataAnim(
 		self->client->ps.torsoAnim))
 	{
 		//don't throw saber when in special attack (alt+attack)
@@ -21498,7 +21489,7 @@ static qboolean PlayerisResistingForceThrow(const gentity_t* player, gentity_t* 
 		return qfalse;
 	}
 
-	if (PM_SaberInKata(static_cast<saberMoveName_t>(player->client->ps.saber_move)) || PM_InKataAnim(
+	if (PM_SaberInKata(static_cast<saber_moveName_t>(player->client->ps.saber_move)) || PM_InKataAnim(
 		player->client->ps.torsoAnim))
 	{
 		//don't throw saber when in special attack (alt+attack)
@@ -21608,7 +21599,7 @@ static qboolean ShouldPlayerResistForceThrow(const gentity_t* player, gentity_t*
 		return qfalse;
 	}
 
-	if (PM_SaberInKata(static_cast<saberMoveName_t>(player->client->ps.saber_move)) || PM_InKataAnim(
+	if (PM_SaberInKata(static_cast<saber_moveName_t>(player->client->ps.saber_move)) || PM_InKataAnim(
 		player->client->ps.torsoAnim))
 	{
 		//don't throw saber when in special attack (alt+attack)
@@ -31611,7 +31602,7 @@ void ForceLightningDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, con
 						&& !PM_SuperBreakWinAnim(trace_ent->client->ps.torsoAnim)
 						&& !pm_saber_in_special_attack(trace_ent->client->ps.torsoAnim)
 						&& !PM_InSpecialJump(trace_ent->client->ps.torsoAnim)
-						&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saber_move))
+						&& !PM_SaberInKata(static_cast<saber_moveName_t>(trace_ent->client->ps.saber_move))
 						&& trace_ent->client->ps.forcePower > 5)
 					{
 						//saber can block lightning
@@ -31721,7 +31712,7 @@ void ForceLightningDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, con
 						&& !PM_SuperBreakWinAnim(trace_ent->client->ps.torsoAnim)
 						&& !pm_saber_in_special_attack(trace_ent->client->ps.torsoAnim)
 						&& !PM_InSpecialJump(trace_ent->client->ps.torsoAnim)
-						&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saber_move))
+						&& !PM_SaberInKata(static_cast<saber_moveName_t>(trace_ent->client->ps.saber_move))
 						&& trace_ent->client->ps.forcePower > 20)
 					{
 						if (trace_ent->client->ps.forcePowersActive & 1 << FP_ABSORB && trace_ent->client->ps.
@@ -32006,7 +31997,7 @@ void ForceLightningDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, con
 
 				if (!in_camera && (trace_ent->NPC || (trace_ent->s.number < MAX_CLIENTS ||
 					G_ControlledByPlayer(trace_ent))) && trace_ent->s.weapon != WP_EMPLACED_GUN
-					&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saber_move)))
+					&& !PM_SaberInKata(static_cast<saber_moveName_t>(trace_ent->client->ps.saber_move)))
 				{
 					if (PM_RunningAnim(trace_ent->client->ps.legsAnim) && trace_ent->client->ps.stats[STAT_HEALTH] > 1
 						|| is_class_guard)
@@ -32355,7 +32346,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 						&& !PM_SuperBreakWinAnim(trace_ent->client->ps.torsoAnim)
 						&& !pm_saber_in_special_attack(trace_ent->client->ps.torsoAnim)
 						&& !PM_InSpecialJump(trace_ent->client->ps.torsoAnim)
-						&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saber_move))
+						&& !PM_SaberInKata(static_cast<saber_moveName_t>(trace_ent->client->ps.saber_move))
 						&& trace_ent->client->ps.blockPoints > 5)
 					{
 						//saber can block lightning
@@ -32466,7 +32457,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 				{
 					if (!in_camera && !is_class_guard && manual_saberblocking(trace_ent)
 						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35)
-						&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saber_move))
+						&& !PM_SaberInKata(static_cast<saber_moveName_t>(trace_ent->client->ps.saber_move))
 						&& trace_ent->client->ps.blockPoints > 5)
 					{
 						//saber can block lightning
@@ -32848,7 +32839,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 
 				if (!in_camera && (trace_ent->NPC || (trace_ent->s.number < MAX_CLIENTS ||
 					G_ControlledByPlayer(trace_ent)))
-					&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saber_move))
+					&& !PM_SaberInKata(static_cast<saber_moveName_t>(trace_ent->client->ps.saber_move))
 					&& trace_ent->s.weapon != WP_EMPLACED_GUN)
 				{
 					if (trace_ent && trace_ent->client && trace_ent->client->ps.stats[STAT_HEALTH] <= 35)
@@ -33207,7 +33198,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 						&& !PM_SuperBreakWinAnim(trace_ent->client->ps.torsoAnim)
 						&& !pm_saber_in_special_attack(trace_ent->client->ps.torsoAnim)
 						&& !PM_InSpecialJump(trace_ent->client->ps.torsoAnim)
-						&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saber_move))
+						&& !PM_SaberInKata(static_cast<saber_moveName_t>(trace_ent->client->ps.saber_move))
 						&& trace_ent->client->ps.forcePower > 5)
 					{
 						//saber can block lightning
@@ -33309,7 +33300,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 				{
 					if (!in_camera && !is_class_guard && manual_saberblocking(trace_ent)
 						&& InFOV(self->currentOrigin, trace_ent->currentOrigin, trace_ent->client->ps.viewangles, 20, 35)
-						&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saber_move))
+						&& !PM_SaberInKata(static_cast<saber_moveName_t>(trace_ent->client->ps.saber_move))
 						&& trace_ent->client->ps.forcePower > 20)
 					{
 						//saber can block lightning
@@ -33610,7 +33601,7 @@ void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, 
 				if (!in_camera && (trace_ent->NPC
 					|| (trace_ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(trace_ent)))
 					&& trace_ent->s.weapon != WP_EMPLACED_GUN
-					&& !PM_SaberInKata(static_cast<saberMoveName_t>(trace_ent->client->ps.saber_move)))
+					&& !PM_SaberInKata(static_cast<saber_moveName_t>(trace_ent->client->ps.saber_move)))
 				{
 					if (trace_ent->client->ps.stats[STAT_HEALTH] <= 20)
 					{
