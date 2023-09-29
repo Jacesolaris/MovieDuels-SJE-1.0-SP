@@ -714,6 +714,8 @@ extern vmCvar_t cg_setVaderBreathdamaged;
 
 extern vmCvar_t cg_hudRatio;
 extern vmCvar_t cg_saberLockCinematicCamera;
+extern vmCvar_t cg_jumpSounds;
+extern vmCvar_t cg_rollSounds;
 
 extern vmCvar_t cg_saberinfo;
 

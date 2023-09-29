@@ -478,6 +478,10 @@ vmCvar_t cg_allowcallout;
 
 vmCvar_t cg_allowcalloutmarker;
 
+vmCvar_t cg_jumpSounds;
+
+vmCvar_t cg_rollSounds;
+
 using cvarTable_t = struct
 {
 	vmCvar_t* vmCvar;
@@ -637,13 +641,13 @@ static cvarTable_t cvarTable[] = {
 	{&cg_ignitionSpeedstaff, "cg_ignitionSpeedstaff", "1.0", CVAR_ARCHIVE},
 
 	{&cg_SerenityJediEngineMode, "g_SerenityJediEngineMode", "1", CVAR_ARCHIVE},
-	{&cg_SerenityJediEngineHudMode, "g_SerenityJediEngineHudMode", "5", CVAR_ARCHIVE},
+	{&cg_SerenityJediEngineHudMode, "g_SerenityJediEngineHudMode", "4", CVAR_ARCHIVE},
 	{&cg_SaberInnonblockableAttackWarning, "g_SaberInnonblockableAttackWarning", "0", CVAR_ARCHIVE},
 	{&cg_IsSaberDoingAttackDamage, "g_IsSaberDoingAttackDamage", "0", CVAR_ARCHIVE},
 
 	{&cg_drawRadar, "cg_drawRadar", "1", CVAR_ARCHIVE},
 
-	{&cg_drawSelectionScrollBar, "cg_drawSelectionScrollBar", "1", CVAR_ARCHIVE},
+	{&cg_drawSelectionScrollBar, "cg_drawSelectionScrollBar", "0", CVAR_ARCHIVE},
 
 	{&cg_trueguns, "cg_trueguns", "1", CVAR_ARCHIVE},
 	{&cg_fpls, "cg_fpls", "0", CVAR_ARCHIVE},
@@ -690,9 +694,13 @@ static cvarTable_t cvarTable[] = {
 
 	{&cg_allowcalloutmarker, "g_allowattackordermarker", "1", CVAR_ARCHIVE},
 
-	{&cg_com_kotor, "com_kotor", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART },
+	{&cg_com_kotor, "com_kotor", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART},
 
-	{&cg_saberLockCinematicCamera, "g_saberLockCinematicCamera", "0", CVAR_ARCHIVE },
+	{&cg_saberLockCinematicCamera, "g_saberLockCinematicCamera", "0", CVAR_ARCHIVE},
+
+	{&cg_jumpSounds, "cg_jumpSounds", "1", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART},
+
+	{&cg_rollSounds, "cg_rollSounds", "2", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART},
 };
 
 static constexpr size_t cvarTableSize = std::size(cvarTable);

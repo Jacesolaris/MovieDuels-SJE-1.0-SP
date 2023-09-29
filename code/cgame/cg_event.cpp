@@ -485,23 +485,59 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 
 	case EV_JUMP:
 		DEBUGNAME("EV_JUMP");
+		if (!cg_jumpSounds.integer)
+		{
+			break;
+		}
 		if (G_IsRidingVehicle(cent->gent))
 		{
 		}
 		else
 		{
-			CG_TryPlayCustomSound(nullptr, es->number, CHAN_AUTO, "*jump1.wav", CS_BASIC); //CHAN_VOICE
+			if (cg_jumpSounds.integer == 1)
+			{
+				CG_TryPlayCustomSound(nullptr, es->number, CHAN_AUTO, "*jump1.wav", CS_BASIC); //CHAN_VOICE
+				//play all jump sounds
+			}
+			else if (cg_jumpSounds.integer == 2 && cg.snap->ps.client_num != es->number)
+			{
+				CG_TryPlayCustomSound(nullptr, es->number, CHAN_AUTO, "*jump1.wav", CS_BASIC); //CHAN_VOICE
+				//only play other players' jump sounds
+			}
+			else if (cg_jumpSounds.integer > 2 && cg.snap->ps.client_num == es->number)
+			{
+				CG_TryPlayCustomSound(nullptr, es->number, CHAN_AUTO, "*jump1.wav", CS_BASIC); //CHAN_VOICE
+				//only play my jump sounds
+			}
 		}
 		break;
 
 	case EV_ROLL:
 		DEBUGNAME("EV_ROLL");
+		if (!cg_rollSounds.integer)
+		{
+			break;
+		}
 		if (G_IsRidingVehicle(cent->gent))
 		{
 		}
 		else
 		{
-			CG_TryPlayCustomSound(nullptr, es->number, CHAN_AUTO, "*jump1.wav", CS_BASIC); //CHAN_VOICE
+			if (cg_rollSounds.integer == 1)
+			{
+				CG_TryPlayCustomSound(nullptr, es->number, CHAN_AUTO, "*jump1.wav", CS_BASIC); //CHAN_VOICE
+				//play all jump sounds
+			}
+			else if (cg_rollSounds.integer == 2 && cg.snap->ps.client_num != es->number)
+			{
+				CG_TryPlayCustomSound(nullptr, es->number, CHAN_AUTO, "*jump1.wav", CS_BASIC); //CHAN_VOICE
+				//only play other players' jump sounds
+			}
+			else if (cg_rollSounds.integer > 2 && cg.snap->ps.client_num == es->number)
+			{
+				CG_TryPlayCustomSound(nullptr, es->number, CHAN_AUTO, "*jump1.wav", CS_BASIC); //CHAN_VOICE
+				//only play my jump sounds
+			}
 		}
 		cgi_S_StartSound(nullptr, es->number, CHAN_BODY, cgs.media.rollSound); //CHAN_AUTO
 		break;

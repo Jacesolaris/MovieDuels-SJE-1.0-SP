@@ -19121,17 +19121,9 @@ void wp_saber_start_missile_block_check_md(gentity_t* self, const usercmd_t* ucm
 		do_full_routine = qfalse;
 	}
 
-	if (g_SerenityJediEngineMode->integer && !(self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
+	if (g_SerenityJediEngineMode->integer)
 	{
-		if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self))
-		{
-			//bots just randomly parry to make up for them not intelligently parrying.
-			if (self->client->ps.weapon == WP_SABER && (!self->client->ps.SaberActive() || self->client->ps.saberInFlight))
-			{
-				return;
-			}
-		}
-		else
+		if ((self->s.number < MAX_CLIENTS || G_ControlledByPlayer(self)) && !(self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 		{
 			return;
 		}
