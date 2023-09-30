@@ -13858,7 +13858,7 @@ qboolean manual_saberblocking(const gentity_t* defender) //Is this guy blocking 
 		return qfalse;
 	}
 
-	if (defender->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(defender)) //npc
+	if (defender->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(defender) && defender->client->ps.weapon != WP_SABER) //npc
 	{
 		return qfalse;
 	}
@@ -13919,8 +13919,23 @@ qboolean manual_saberblocking(const gentity_t* defender) //Is this guy blocking 
 		return qfalse;
 	}
 
+	if (SaberAttacking(defender))
+	{
+		if (defender->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(defender) && defender->client->ps.weapon == WP_SABER)
+		{
+			//bots just randomly parry to make up for them not intelligently parrying.
+			return qtrue;
+		}
+		return qfalse;
+	}
+
 	if (!(defender->client->buttons & BUTTON_BLOCK))
 	{
+		if (defender->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(defender) && defender->client->ps.weapon == WP_SABER)
+		{
+			//bots just randomly parry to make up for them not intelligently parrying.
+			return qtrue;
+		}
 		return qfalse;
 	}
 	return qtrue;
@@ -19736,24 +19751,20 @@ void wp_saber_start_missile_block_check_md(gentity_t* self, const usercmd_t* ucm
 		}
 		else //player
 		{
-			const gentity_t* blocker = &g_entities[incoming->ownerNum];
+			gentity_t* blocker = &g_entities[incoming->ownerNum];
 
-			if (!self->client->ps.SaberActive())
+			if (!blocker->client->ps.SaberActive())
 			{
-				self->client->ps.SaberActivate();
+				blocker->client->ps.SaberActivate();
 			}
 			if (closest_swing_block && blocker->health > 0)
 			{
-				self->client->ps.saberBlocked = BlockedforQuad(closestSwingQuad);
-
-				if (self->s.number < MAX_CLIENTS || G_ControlledByPlayer(self))
-				{
-					self->client->ps.userInt3 |= 1 << FLAG_PREBLOCK;
-				}
+				blocker->client->ps.saberBlocked = BlockedforQuad(closestSwingQuad);
+				blocker->client->ps.userInt3 |= 1 << FLAG_PREBLOCK;
 			}
-			else if (blocker->health > 0)
+			else if (blocker->health > 0 && (blocker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK || blocker->client->ps.ManualBlockingFlags & 1 << MBF_NPCBLOCKING))
 			{
-				WP_SaberBlockNonRandom(self, incoming->currentOrigin, qtrue);
+				WP_SaberBlockNonRandom(blocker, incoming->currentOrigin, qtrue);
 			}
 			else
 			{
@@ -19764,8 +19775,7 @@ void wp_saber_start_missile_block_check_md(gentity_t* self, const usercmd_t* ucm
 				VectorMA(incoming->currentOrigin, dist, ent_dir, start);
 				VectorCopy(self->currentOrigin, end);
 				end[2] += self->maxs[2] * 0.75f;
-				gi.trace(&trace, start, incoming->mins, incoming->maxs, end, incoming->s.number, MASK_SHOT, G2_COLLIDE,
-					10);
+				gi.trace(&trace, start, incoming->mins, incoming->maxs, end, incoming->s.number, MASK_SHOT, G2_COLLIDE, 10);
 
 				jedi_dodge_evasion(self, incoming->owner, &trace, HL_NONE);
 			}

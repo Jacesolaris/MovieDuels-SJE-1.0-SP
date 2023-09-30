@@ -14652,7 +14652,7 @@ void PM_Setsaber_move(saber_moveName_t new_move)
 	}
 	else if (new_move == LS_A_JUMP_T__B_ && pm->ps->saber_anim_level == SS_DESANN && g_SerenityJediEngineMode->integer)
 	{
-		anim = BOTH_FJSS_TR_BL;
+		anim = Q_irand(BOTH_FJSS_TR_BL, BOTH_FJSS_TL_BR);
 	}
 	else if (pm->ps->saber_anim_level == SS_STAFF && new_move >= LS_S_TL2BR && new_move < LS_REFLECT_LL)
 	{

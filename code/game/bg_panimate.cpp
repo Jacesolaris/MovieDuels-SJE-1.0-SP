@@ -3077,6 +3077,8 @@ qboolean PM_InSecondaryStyle()
 
 saber_moveName_t PM_SaberLungeAttackMove(const qboolean fallback_to_normal_lunge)
 {
+	vec3_t fwd_angles, jumpFwd;
+
 	WP_ForcePowerDrain(pm->gent, FP_SABER_OFFENSE, SABER_ALT_ATTACK_POWER_FB);
 	//see if we have an overridden (or cancelled) lunge move
 	if (pm->ps->saber[0].lungeAtkMove != LS_INVALID)
@@ -3125,6 +3127,14 @@ saber_moveName_t PM_SaberLungeAttackMove(const qboolean fallback_to_normal_lunge
 		return LS_SPINATTACK;
 		break;
 	case SS_TAVION:
+		VectorCopy(pm->ps->viewangles, fwd_angles);
+		fwd_angles[PITCH] = fwd_angles[ROLL] = 0;
+		//do the lunge
+		AngleVectors(fwd_angles, jumpFwd, nullptr, nullptr);
+		VectorScale(jumpFwd, 150, pm->ps->velocity);
+		pm->ps->velocity[2] = 50;
+		PM_AddEvent(EV_JUMP);
+
 		if (pm->ps->forcePower < BLOCKPOINTS_KNOCKAWAY)
 		{
 			return LS_A_LUNGE;
@@ -3135,32 +3145,19 @@ saber_moveName_t PM_SaberLungeAttackMove(const qboolean fallback_to_normal_lunge
 		}
 		break;
 	case SS_FAST:
-	{
-		if (pm->ps->dualSabers)
-		{
-			return LS_SPINATTACK_DUAL;
-		}
+		VectorCopy(pm->ps->viewangles, fwd_angles);
+		fwd_angles[PITCH] = fwd_angles[ROLL] = 0;
+		//do the lunge
+		AngleVectors(fwd_angles, jumpFwd, nullptr, nullptr);
+		VectorScale(jumpFwd, 150, pm->ps->velocity);
+		pm->ps->velocity[2] = 50;
+		PM_AddEvent(EV_JUMP);
+		return LS_A_LUNGE;
+		break;
+	case SS_STRONG:
+	case SS_DESANN:
 		if (fallback_to_normal_lunge)
 		{
-			vec3_t fwd_angles, jump_fwd;
-
-			VectorCopy(pm->ps->viewangles, fwd_angles);
-			fwd_angles[PITCH] = fwd_angles[ROLL] = 0;
-			//do the lunge
-			AngleVectors(fwd_angles, jump_fwd, nullptr, nullptr);
-			VectorScale(jump_fwd, 150, pm->ps->velocity);
-			pm->ps->velocity[2] = 50;
-			PM_AddEvent(EV_JUMP);
-
-			return LS_A_LUNGE;
-		}
-	}
-	break;
-	default: //normal lunge
-		if (fallback_to_normal_lunge)
-		{
-			vec3_t fwd_angles, jumpFwd;
-
 			VectorCopy(pm->ps->viewangles, fwd_angles);
 			fwd_angles[PITCH] = fwd_angles[ROLL] = 0;
 			//do the lunge
@@ -3168,7 +3165,19 @@ saber_moveName_t PM_SaberLungeAttackMove(const qboolean fallback_to_normal_lunge
 			VectorScale(jumpFwd, 150, pm->ps->velocity);
 			pm->ps->velocity[2] = 50;
 			PM_AddEvent(EV_JUMP);
-
+			return LS_A_JUMP_T__B_;
+		}
+		break;
+	default: //normal lunge
+		if (fallback_to_normal_lunge)
+		{
+			VectorCopy(pm->ps->viewangles, fwd_angles);
+			fwd_angles[PITCH] = fwd_angles[ROLL] = 0;
+			//do the lunge
+			AngleVectors(fwd_angles, jumpFwd, nullptr, nullptr);
+			VectorScale(jumpFwd, 150, pm->ps->velocity);
+			pm->ps->velocity[2] = 50;
+			PM_AddEvent(EV_JUMP);
 			return LS_A_LUNGE;
 		}
 		break;
@@ -3206,11 +3215,13 @@ qboolean PM_CheckLungeAttackMove()
 		}
 	}
 	//do normal checks
-	if (g_SerenityJediEngineMode->integer == 2 && pm->ps->saber_anim_level == SS_MEDIUM
-		|| pm->ps->saber_anim_level == SS_FAST //fast
+	if (pm->ps->saber_anim_level == SS_FAST //fast
+		|| pm->ps->saber_anim_level == SS_MEDIUM
+		|| pm->ps->saber_anim_level == SS_STRONG
 		|| pm->ps->saber_anim_level == SS_DUAL //dual
 		|| pm->ps->saber_anim_level == SS_STAFF //staff
 		|| pm->ps->saber_anim_level == SS_DESANN
+		|| pm->ps->saber_anim_level == SS_TAVION
 		|| pm->ps->dualSabers)
 	{
 		//alt+back+attack using fast, dual or staff attacks
