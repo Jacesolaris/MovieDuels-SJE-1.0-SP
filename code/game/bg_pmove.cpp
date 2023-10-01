@@ -23689,9 +23689,6 @@ void Pmove(pmove_t* pmove)
 	// entering / leaving water splashes
 	PM_WaterEvents();
 
-	// snap some parts of playerstate to save network bandwidth
-	// SnapVector( pm->ps->velocity );
-
 	if (!pm->cmd.rightmove && !pm->cmd.forwardmove && pm->cmd.upmove <= 0)
 	{
 		if (VectorCompare(pm->ps->velocity, vec3_origin))

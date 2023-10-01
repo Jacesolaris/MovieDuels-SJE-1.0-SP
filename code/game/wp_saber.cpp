@@ -2508,7 +2508,7 @@ qboolean WP_GetSaberDeflectionAngle(const gentity_t* attacker, const gentity_t* 
 	return qtrue;
 }
 
-void WP_SaberClearDamageForEntNum(gentity_t* attacker, const int entity_num, const int saber_num, const int blade_num)
+void wp_saber_clear_damage_for_ent_num(gentity_t* attacker, const int entity_num, const int saber_num, const int blade_num)
 {
 #ifndef FINAL_BUILD
 	if (d_saberCombat->integer)
@@ -6215,7 +6215,7 @@ qboolean WP_SaberParry(gentity_t* victim, gentity_t* attacker, const int saber_n
 		victim->client->ps.saberEventFlags |= SEF_PARRIED;
 
 		//since it was parried, take away any damage done
-		WP_SaberClearDamageForEntNum(attacker, victim->s.number, saber_num, blade_num);
+		wp_saber_clear_damage_for_ent_num(attacker, victim->s.number, saber_num, blade_num);
 
 		//tell the victim to get mad at me
 		if (victim->enemy != attacker && victim->client->playerTeam != attacker->client->playerTeam)
@@ -6281,7 +6281,7 @@ qboolean WP_SaberBlockedBounceBlock(gentity_t* victim, gentity_t* attacker, cons
 		victim->client->ps.saberEventFlags |= SEF_PARRIED;
 
 		//since it was parried, take away any damage done
-		WP_SaberClearDamageForEntNum(attacker, victim->s.number, saber_num, blade_num);
+		wp_saber_clear_damage_for_ent_num(attacker, victim->s.number, saber_num, blade_num);
 
 		//tell the victim to get mad at me
 		if (victim->enemy != attacker && victim->client->playerTeam != attacker->client->playerTeam)
@@ -6347,7 +6347,7 @@ qboolean WP_SaberNPCParry(gentity_t* victim, gentity_t* attacker, const int sabe
 		victim->client->ps.saberEventFlags |= SEF_PARRIED;
 
 		//since it was parried, take away any damage done
-		WP_SaberClearDamageForEntNum(attacker, victim->s.number, saber_num, blade_num);
+		wp_saber_clear_damage_for_ent_num(attacker, victim->s.number, saber_num, blade_num);
 
 		//tell the victim to get mad at me
 		if (victim->enemy != attacker && victim->client->playerTeam != attacker->client->playerTeam)
@@ -6413,7 +6413,7 @@ qboolean WP_SaberMBlock(gentity_t* victim, gentity_t* attacker, const int saber_
 		victim->client->ps.saberEventFlags |= SEF_PARRIED;
 
 		//since it was parried, take away any damage done
-		WP_SaberClearDamageForEntNum(attacker, victim->s.number, saber_num, blade_num);
+		wp_saber_clear_damage_for_ent_num(attacker, victim->s.number, saber_num, blade_num);
 
 		//tell the victim to get mad at me
 		if (victim->enemy != attacker && victim->client->playerTeam != attacker->client->playerTeam)
@@ -6479,7 +6479,7 @@ qboolean WP_SaberNPCMBlock(gentity_t* victim, gentity_t* attacker, const int sab
 		victim->client->ps.saberEventFlags |= SEF_PARRIED;
 
 		//since it was parried, take away any damage done
-		WP_SaberClearDamageForEntNum(attacker, victim->s.number, saber_num, blade_num);
+		wp_saber_clear_damage_for_ent_num(attacker, victim->s.number, saber_num, blade_num);
 
 		//tell the victim to get mad at me
 		if (victim->enemy != attacker && victim->client->playerTeam != attacker->client->playerTeam)
@@ -6545,7 +6545,7 @@ qboolean WP_SaberNPCFatiguedParry(gentity_t* victim, gentity_t* attacker, const 
 		victim->client->ps.saberEventFlags |= SEF_PARRIED;
 
 		//since it was parried, take away any damage done
-		WP_SaberClearDamageForEntNum(attacker, victim->s.number, saber_num, blade_num);
+		wp_saber_clear_damage_for_ent_num(attacker, victim->s.number, saber_num, blade_num);
 
 		//tell the victim to get mad at me
 		if (victim->enemy != attacker && victim->client->playerTeam != attacker->client->playerTeam)
@@ -6611,7 +6611,7 @@ qboolean WP_SaberSlowBounceBlock(gentity_t* victim, gentity_t* attacker, const i
 		victim->client->ps.saberEventFlags |= SEF_PARRIED;
 
 		//since it was parried, take away any damage done
-		WP_SaberClearDamageForEntNum(attacker, victim->s.number, saber_num, blade_num);
+		wp_saber_clear_damage_for_ent_num(attacker, victim->s.number, saber_num, blade_num);
 
 		//tell the victim to get mad at me
 		if (victim->enemy != attacker && victim->client->playerTeam != attacker->client->playerTeam)
@@ -6677,7 +6677,7 @@ qboolean WP_SaberFatiguedParry(gentity_t* victim, gentity_t* attacker, const int
 		victim->client->ps.saberEventFlags |= SEF_PARRIED;
 
 		//since it was parried, take away any damage done
-		WP_SaberClearDamageForEntNum(attacker, victim->s.number, saber_num, blade_num);
+		wp_saber_clear_damage_for_ent_num(attacker, victim->s.number, saber_num, blade_num);
 
 		//tell the victim to get mad at me
 		if (victim->enemy != attacker && victim->client->playerTeam != attacker->client->playerTeam)
@@ -8268,7 +8268,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 								ent->client->ps.saberEventFlags |= SEF_BLOCKED;
 								//since it was blocked/deflected, take away any damage done
 								//FIXME: what if the damage was done before the parry?
-								WP_SaberClearDamageForEntNum(ent, hit_owner->s.number, saber_num, blade_num);
+								wp_saber_clear_damage_for_ent_num(ent, hit_owner->s.number, saber_num, blade_num);
 							}
 						}
 						else
@@ -8276,7 +8276,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 							//saber collided when not attacking, parry it
 							//since it was blocked/deflected, take away any damage done
 							//FIXME: what if the damage was done before the parry?
-							WP_SaberClearDamageForEntNum(ent, hit_owner->s.number, saber_num, blade_num);
+							wp_saber_clear_damage_for_ent_num(ent, hit_owner->s.number, saber_num, blade_num);
 							/*
 							if ( ent->s.number || g_saberAutoBlocking->integer || ent->client->ps.saberBlockingTime > level.time )
 							{//either an NPC or a player who has blocking
@@ -8294,7 +8294,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 					{
 						//since it was blocked/deflected, take away any damage done
 						//FIXME: what if the damage was done before the parry?
-						WP_SaberClearDamageForEntNum(ent, hit_owner->s.number, saber_num, blade_num);
+						wp_saber_clear_damage_for_ent_num(ent, hit_owner->s.number, saber_num, blade_num);
 					}
 				}
 				else
@@ -8583,7 +8583,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 
 //////SERENITYJEDIENGINE MODE //////////////////////////////////////////////////////////////////////////
 
-void SabBeh_AnimateHeavySlowBounceAttacker(gentity_t* attacker)
+void sab_beh_animate_heavy_slow_bounce_attacker(gentity_t* attacker)
 {
 	G_StaggerAttacker(attacker);
 }
@@ -8933,7 +8933,7 @@ void SabBeh_SaberShouldBeDisarmedBlocker(gentity_t* blocker, const int saber_num
 	}
 }
 
-void SabBeh_SaberShouldBeDisarmedAttacker(gentity_t* attacker, const int saber_num)
+void sab_beh_saber_should_be_disarmed_attacker(gentity_t* attacker, const int saber_num)
 {
 	if (saber_num == 0 && !in_camera)
 	{
@@ -8948,7 +8948,7 @@ void SabBeh_SaberShouldBeDisarmedAttacker(gentity_t* attacker, const int saber_n
 	}
 }
 
-void SabBeh_AddBalance(const gentity_t* self, int amount)
+void sab_beh_add_balance(const gentity_t* self, int amount)
 {
 	if (!WalkCheck(self))
 	{
@@ -9933,7 +9933,7 @@ void wp_saber_damage_trace_amd(gentity_t* ent, int saber_num, int blade_num)
 								//don't deflect/bounce in strong attack or when enemy is dead
 								WP_GetSaberDeflectionAngle(ent, hit_owner);
 								ent->client->ps.saberEventFlags |= SEF_BLOCKED;
-								WP_SaberClearDamageForEntNum(ent, hit_owner->s.number, saber_num, blade_num);
+								wp_saber_clear_damage_for_ent_num(ent, hit_owner->s.number, saber_num, blade_num);
 
 								if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 								{
@@ -9949,7 +9949,7 @@ void wp_saber_damage_trace_amd(gentity_t* ent, int saber_num, int blade_num)
 									ent->client->ps.saber_move))
 								{
 									WP_SaberParry(ent, hit_owner, saber_num, blade_num);
-									WP_SaberClearDamageForEntNum(ent, hit_owner->s.number, saber_num, blade_num);
+									wp_saber_clear_damage_for_ent_num(ent, hit_owner->s.number, saber_num, blade_num);
 									ent->client->ps.saberEventFlags |= SEF_PARRIED;
 
 									if (d_blockinfo->integer || g_DebugSaberCombat->integer)
@@ -9962,7 +9962,7 @@ void wp_saber_damage_trace_amd(gentity_t* ent, int saber_num, int blade_num)
 					}
 					else
 					{
-						WP_SaberClearDamageForEntNum(ent, hit_owner->s.number, saber_num, blade_num);
+						wp_saber_clear_damage_for_ent_num(ent, hit_owner->s.number, saber_num, blade_num);
 
 						if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 						{
@@ -11324,7 +11324,7 @@ void WP_SaberDamageTrace_MD(gentity_t* ent, int saber_num, int blade_num)
 								//don't deflect/bounce in strong attack or when enemy is dead
 								WP_GetSaberDeflectionAngle(ent, hit_owner);
 								ent->client->ps.saberEventFlags |= SEF_BLOCKED;
-								WP_SaberClearDamageForEntNum(ent, hit_owner->s.number, saber_num, blade_num);
+								wp_saber_clear_damage_for_ent_num(ent, hit_owner->s.number, saber_num, blade_num);
 
 								if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 								{
@@ -11340,7 +11340,7 @@ void WP_SaberDamageTrace_MD(gentity_t* ent, int saber_num, int blade_num)
 									ent->client->ps.saber_move))
 								{
 									WP_SaberParry(ent, hit_owner, saber_num, blade_num);
-									WP_SaberClearDamageForEntNum(ent, hit_owner->s.number, saber_num, blade_num);
+									wp_saber_clear_damage_for_ent_num(ent, hit_owner->s.number, saber_num, blade_num);
 									ent->client->ps.saberEventFlags |= SEF_PARRIED;
 
 									if (d_blockinfo->integer || g_DebugSaberCombat->integer)
@@ -11353,7 +11353,7 @@ void WP_SaberDamageTrace_MD(gentity_t* ent, int saber_num, int blade_num)
 					}
 					else
 					{
-						WP_SaberClearDamageForEntNum(ent, hit_owner->s.number, saber_num, blade_num);
+						wp_saber_clear_damage_for_ent_num(ent, hit_owner->s.number, saber_num, blade_num);
 
 						if (d_blockinfo->integer || g_DebugSaberCombat->integer)
 						{
@@ -19734,18 +19734,22 @@ void wp_saber_start_missile_block_check_md(gentity_t* self, const usercmd_t* ucm
 					self->client->ps.forcePowerDebounce[FP_SABER_DEFENSE] = level.time + Q_irand(1000, 2000);
 				}
 			}
-			else if (jedi_saber_block_go(self, &self->NPC->last_ucmd, nullptr, nullptr, incoming) != EVASION_NONE &&
-				self->client->NPC_class != CLASS_ROCKETTROOPER)
+			else if (jedi_saber_block_go(self, &self->NPC->last_ucmd, nullptr, nullptr, incoming) != EVASION_NONE)
 			{
 				//make sure to turn on your saber if it's not on
 				if (self->client->NPC_class != CLASS_BOBAFETT
+					&& self->client->NPC_class != CLASS_ROCKETTROOPER
 					&& self->client->NPC_class != CLASS_MANDALORIAN
 					&& self->client->NPC_class != CLASS_JANGO
 					&& self->client->NPC_class != CLASS_JANGODUAL
-					&& (self->client->NPC_class != CLASS_REBORN || self->s.weapon == WP_SABER)
-					&& (self->client->NPC_class != CLASS_GROGU || self->s.weapon == WP_SABER))
+					&& (self->client->NPC_class != CLASS_REBORN)
+					&& (self->client->NPC_class != CLASS_GROGU))
 				{
-					self->client->ps.SaberActivate();
+					//make sure to turn on your saber if it's not on
+					if (self->s.weapon == WP_SABER)
+					{
+						self->client->ps.SaberActivate();
+					}
 				}
 			}
 		}
@@ -19753,9 +19757,9 @@ void wp_saber_start_missile_block_check_md(gentity_t* self, const usercmd_t* ucm
 		{
 			gentity_t* blocker = &g_entities[incoming->ownerNum];
 
-			if (!blocker->client->ps.SaberActive())
+			if (self->client && !self->client->ps.SaberActive())
 			{
-				blocker->client->ps.SaberActivate();
+				self->client->ps.SaberActivate();
 			}
 			if (closest_swing_block && blocker->health > 0)
 			{
