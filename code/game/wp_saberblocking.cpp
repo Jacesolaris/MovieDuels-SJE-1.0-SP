@@ -1162,6 +1162,13 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 								attacker->client->ps.userInt3 |= 1 << FLAG_MBLOCKBOUNCE;
 							}
 
+							blocker->client->ps.userInt3 |= 1 << FLAG_PERFECTBLOCK;
+
+							if (attacker->NPC && !G_ControlledByPlayer(attacker)) //NPC only
+							{
+								g_do_m_block_response(attacker);
+							}
+
 							if (blocker->s.number < MAX_CLIENTS || G_ControlledByPlayer(blocker))
 							{
 								if (d_slowmoaction->integer)
@@ -1323,7 +1330,10 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 							{
 								WP_SaberNPCMBlock(blocker, attacker, saber_num, blade_num, hit_loc);
 
-								g_do_m_block_response(blocker);
+								if (blocker->NPC && !G_ControlledByPlayer(blocker)) //NPC only
+								{
+									g_do_m_block_response(blocker);
+								}
 
 								if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->NPC && !
 									G_ControlledByPlayer(blocker)))
@@ -1667,7 +1677,10 @@ qboolean sab_beh_block_vs_attack(gentity_t* blocker, gentity_t* attacker, const 
 							{
 								WP_SaberNPCMBlock(blocker, attacker, saber_num, blade_num, hit_loc);
 
-								g_do_m_block_response(blocker);
+								if (blocker->NPC && !G_ControlledByPlayer(blocker)) //NPC only
+								{
+									g_do_m_block_response(blocker);
+								}
 
 								if ((d_blockinfo->integer || g_DebugSaberCombat->integer) && (blocker->NPC && !
 									G_ControlledByPlayer(blocker)))

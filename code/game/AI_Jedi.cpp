@@ -2467,6 +2467,59 @@ static void jedi_combat_distance(const int enemy_dist)
 		}
 	}
 
+	if (g_SerenityJediEngineMode->integer == 2
+		&& !in_camera
+		&& NPC->enemy
+		&& enemy_dist < 200
+		&& NPC_IsAlive(NPC, NPC->enemy)
+		&& NPC->enemy->s.weapon == WP_SABER
+		&& NPC->client->ps.weapon == WP_SABER)
+	{
+		if (NPC->saberPowerTime < level.time)
+		{
+			//Don't just use strong attacks constantly, switch around a bit
+			if (Q_irand(1, 10) <= 5)
+			{
+				NPC->saberPower = qtrue;
+			}
+			else
+			{
+				NPC->saberPower = qfalse;
+			}
+
+			NPC->saberPowerTime = level.time + Q_irand(3000, 15000);
+		}
+		if (NPC->client->ps.saber_anim_level != SS_STAFF
+			&& NPC->client->ps.saber_anim_level != SS_DUAL)
+		{
+			if (NPC->enemy->client->ps.blockPoints > BLOCKPOINTS_MISSILE &&
+				NPC->client->ps.forcePowerLevel[FP_SABER_OFFENSE] > FORCE_LEVEL_2)
+			{
+				if (NPC->client->ps.saber_anim_level != SS_STRONG &&
+					NPC->client->ps.saber_anim_level != SS_DESANN && NPC->saberPower)
+				{ //if we are up against someone with a lot of blockpoints and we have a strong attack available, then h4q them
+					jedi_adjust_saber_anim_level(NPC, Q_irand(SS_DESANN, SS_STRONG)); //use a faster attack
+				}
+			}
+			else if (NPC->enemy->client->ps.blockPoints > BLOCKPOINTS_FOURTY &&
+				NPC->client->ps.forcePowerLevel[FP_SABER_OFFENSE] > FORCE_LEVEL_1)
+			{
+				if (NPC->client->ps.saber_anim_level != SS_MEDIUM)
+				{ //they're down on blockpoints a little, use level 2 if we can
+					jedi_adjust_saber_anim_level(NPC, SS_MEDIUM); //use a faster attack
+				}
+			}
+			else
+			{
+				if (NPC->client->ps.saber_anim_level != SS_FAST
+					&& NPC->client->ps.saber_anim_level != SS_TAVION)
+				{ //they've gone below 40 blockpoints, go at them with quick attacks
+					jedi_adjust_saber_anim_level(NPC, Q_irand(SS_DESANN, SS_FAST)); //use a faster attack
+				}
+			}
+		}
+	}
+
 	// SLAP
 	shoot = qfalse;
 	enemyDist = DistanceSquared(NPC->currentOrigin, NPC->enemy->currentOrigin);

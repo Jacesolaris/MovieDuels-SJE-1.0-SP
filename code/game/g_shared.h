@@ -1517,6 +1517,8 @@ struct gentity_s
 	int weaponfiredelaytime;
 	int TimeOfWeaponDrop;
 	faction_t friendlyfaction;
+	int saberPowerTime;
+	qboolean saberPower;
 
 	void sg_export(
 		ojk::SavedGameHelper& saved_game) const
@@ -1735,6 +1737,8 @@ struct gentity_s
 		saved_game.write<int32_t>(weaponfiredelaytime);
 		saved_game.write<int32_t>(TimeOfWeaponDrop);
 		saved_game.write<int32_t>(friendlyfaction);
+		saved_game.write<int32_t>(saberPowerTime);
+		saved_game.write<int32_t>(saberPower);
 	}
 
 	void sg_import(
@@ -1954,6 +1958,8 @@ struct gentity_s
 		saved_game.read<int32_t>(weaponfiredelaytime);
 		saved_game.read<int32_t>(TimeOfWeaponDrop);
 		saved_game.read<int32_t>(friendlyfaction);
+		saved_game.read<int32_t>(saberPowerTime);
+		saved_game.read<int32_t>(saberPower);
 	}
 };
 #endif //#ifdef GAME_INCLUDE

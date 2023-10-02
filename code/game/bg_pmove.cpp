@@ -19603,7 +19603,9 @@ void PM_WeaponLightsaber()
 	if (PM_InKnockDown(pm->ps) || PM_InRoll(pm->ps))
 	{
 		//in knockdown
-		if (pm->ps->legsAnim == BOTH_ROLL_F
+		if (pm->ps->legsAnim == BOTH_ROLL_F ||
+			pm->ps->legsAnim == BOTH_ROLL_F1 ||
+			pm->ps->legsAnim == BOTH_ROLL_F2
 			&& pm->ps->legsAnimTimer <= 250)
 		{
 			if (pm->cmd.buttons & BUTTON_ATTACK
