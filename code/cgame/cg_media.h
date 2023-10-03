@@ -289,6 +289,7 @@ using cgMedia_t = struct
 
 	//Radar
 	qhandle_t radarShader;
+	qhandle_t radarScanShader;
 	qhandle_t siegeItemShader;
 	qhandle_t mAutomapPlayerIcon;
 	qhandle_t mAutomapRocketIcon;

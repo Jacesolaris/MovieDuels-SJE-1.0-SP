@@ -103,7 +103,7 @@ extern qboolean WP_SabersCheckLock2(gentity_t* attacker, gentity_t* defender, sa
 extern qboolean G_JediInNormalAI(const gentity_t* ent);
 extern void WP_ForcePowerDrain(const gentity_t* self, forcePowers_t force_power, int override_amt);
 extern qboolean manual_saberblocking(const gentity_t* defender);
-extern qboolean Manual_RunningAndSaberblocking(const gentity_t* defender);
+extern qboolean manual_running_and_saberblocking(const gentity_t* defender);
 extern qboolean Manual_NPCSaberblocking(const gentity_t* defender);
 extern qboolean NPC_Can_Do_Blocking_stances_In_SJE_Mode(const gentity_t* defender);
 extern qboolean Manual_JKAMode_NPCSaberblocking(const gentity_t* defender);
@@ -8707,7 +8707,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 		!PM_SaberInBashedAnim(client->ps.torsoAnim) &&
 		!PM_Saberinstab(client->ps.saber_move))
 	{
-		if (Manual_RunningAndSaberblocking(ent))
+		if (manual_running_and_saberblocking(ent))
 		{
 			if (!(client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK))
 			{
@@ -8724,7 +8724,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 				client->ps.userInt3 |= 1 << FLAG_BLOCKING;
 				client->ps.ManualBlockingTime = level.time; //Blocking time 1 on
 
-				if (client->ps.weapon == WP_SABER && !client->ps.SaberActive() && client->NPC_class != CLASS_YODA) // not yoda he can block lightning with a saber off in his hand
+				if (client->ps.weapon == WP_SABER && !client->ps.SaberActive() && client->NPC_class != CLASS_YODA && !manual_running_and_saberblocking(ent)) // not yoda he can block lightning with a saber off in his hand
 				{
 					client->ps.SaberActivate();
 				}

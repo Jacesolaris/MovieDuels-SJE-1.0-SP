@@ -2229,7 +2229,7 @@ static qboolean jedi_decide_kick()
 void kyle_grab_enemy()
 {
 	WP_SabersCheckLock2(NPC, NPC->enemy, static_cast<sabersLockMode_t>(Q_irand(LOCK_KYLE_GRAB1, LOCK_KYLE_GRAB2)));
-	TIMER_Set(NPC, "grabEnemyDebounce", NPC->client->ps.torsoAnimTimer + Q_irand(4000, 20000));
+	TIMER_Set(NPC, "grabEnemyDebounce", NPC->client->ps.torsoAnimTimer + Q_irand(6000, 20000));
 }
 
 void npc_grab_player()
@@ -2254,7 +2254,7 @@ void kyle_try_grab()
 
 qboolean kyle_can_do_grab()
 {
-	if (g_SerenityJediEngineMode->integer == 2 && NPCInfo->aiFlags & NPCAI_BOSS_SERENITYJEDIENGINE)
+	if (g_SerenityJediEngineMode->integer)
 	{
 		if (NPC->client->NPC_class == CLASS_KYLE
 			&& NPC->client->ps.forcePower > BLOCKPOINTS_FULL

@@ -2152,6 +2152,7 @@ static void CG_RegisterGraphics()
 	}
 
 	cgs.media.radarShader = cgi_R_RegisterShaderNoMip("gfx/menus/radar/radar.png");
+	cgs.media.radarScanShader = cgi_R_RegisterShaderNoMip("gfx/hud/Radarscanline");
 	cgs.media.siegeItemShader = cgi_R_RegisterShaderNoMip("gfx/menus/radar/goalitem");
 	cgs.media.mAutomapPlayerIcon = cgi_R_RegisterShaderNoMip("gfx/menus/radar/arrow_w");
 	cgs.media.mAutomapRocketIcon = cgi_R_RegisterShaderNoMip("gfx/menus/radar/rocket");

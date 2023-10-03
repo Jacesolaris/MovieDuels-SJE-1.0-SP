@@ -13941,7 +13941,7 @@ qboolean manual_saberblocking(const gentity_t* defender) //Is this guy blocking 
 	return qtrue;
 }
 
-qboolean Manual_RunningAndSaberblocking(const gentity_t* defender) //Is this guy blocking or not?
+qboolean manual_running_and_saberblocking(const gentity_t* defender) //Is this guy blocking or not?
 {
 	if (!g_SerenityJediEngineMode->integer)
 	{
