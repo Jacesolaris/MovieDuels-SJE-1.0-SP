@@ -124,7 +124,7 @@ extern qboolean WP_SaberStyleValidForSaber(const gentity_t* ent, int saber_anim_
 extern int jedi_re_calc_parry_time(const gentity_t* self, evasionType_t evasion_type);
 extern qboolean PM_SaberInKata(saber_moveName_t saber_move);
 extern qboolean PM_InKataAnim(int anim);
-extern qboolean is_holding_block_button(const gentity_t* defender);
+extern qboolean Block_Button_Held(const gentity_t* defender);
 extern qboolean IsSurrendering(const gentity_t* self);
 extern qboolean PM_SaberDoDamageAnim(int anim);
 qboolean PM_InKnockDown(const playerState_t* ps);
@@ -9947,7 +9947,7 @@ static void PM_Footsteps()
 	qboolean flipping = qfalse;
 	int set_anim_flags = SETANIM_FLAG_NORMAL;
 
-	const qboolean holding_block = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean is_holding_block_button = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	const qboolean active_blocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	//Holding Block Button
 
@@ -10290,7 +10290,7 @@ static void PM_Footsteps()
 			else if (pm->ps->weapon == WP_SABER
 				&& pm->ps->SaberLength() > 0
 				&& (pm->ps->SaberActive() || !g_noIgniteTwirl->integer && !active_blocking
-					&& !holding_block && !IsSurrendering(pm->gent))
+					&& !is_holding_block_button && !IsSurrendering(pm->gent))
 				&& !pm->ps->saberInFlight
 				&& !PM_SaberDrawPutawayAnim(pm->ps->legsAnim))
 			{
@@ -10320,7 +10320,7 @@ static void PM_Footsteps()
 						case SS_STRONG:
 						case SS_DESANN:
 						case SS_MEDIUM:
-							if (holding_block)
+							if (is_holding_block_button)
 							{
 								if (pm->ps->saber_anim_level == SS_DUAL)
 								{
@@ -10725,7 +10725,7 @@ static void PM_Footsteps()
 					{
 						if (g_SerenityJediEngineMode->integer)
 						{
-							if (holding_block)
+							if (is_holding_block_button)
 							{
 								PM_SetAnim(pm, SETANIM_LEGS, BOTH_WALKBACK_STAFF, set_anim_flags);
 							}
@@ -10898,7 +10898,7 @@ static void PM_Footsteps()
 
 				if (pm->ps->weapon == WP_SABER && pm->ps->SaberActive())
 				{
-					if (is_holding_block_button(pm->gent) && pm->ps->sprintFuel > 15)
+					if (is_holding_block_button && pm->ps->sprintFuel > 15)
 					{
 						if (pm->ps->saber_anim_level == SS_DUAL)
 						{
@@ -10969,7 +10969,7 @@ static void PM_Footsteps()
 				else if (pm->ps->weapon == WP_MELEE || pm->ps->weapon == WP_NONE ||
 					pm->ps->weapon == WP_SABER && !pm->ps->SaberActive())
 				{
-					if (is_holding_block_button(pm->gent) && pm->ps->sprintFuel > 15)
+					if (pm->cmd.buttons & BUTTON_BLOCK && pm->ps->sprintFuel > 15)
 					{
 						PM_SetAnim(pm, SETANIM_LEGS, BOTH_SPRINT, set_anim_flags);
 
@@ -11014,7 +11014,7 @@ static void PM_Footsteps()
 						if (pm->gent && pm->gent->weaponModel[1] > 0) //they do this themselves
 						{
 							//dual blaster pistols
-							if (is_holding_block_button(pm->gent) && pm->ps->sprintFuel > 15)
+							if (pm->cmd.buttons & BUTTON_BLOCK && pm->ps->sprintFuel > 15)
 							{
 								PM_SetAnim(pm, SETANIM_LEGS, BOTH_SPRINT_DOUBLE_PISTOL, set_anim_flags);
 
@@ -11041,7 +11041,7 @@ static void PM_Footsteps()
 						}
 						else
 						{
-							if (is_holding_block_button(pm->gent) && pm->ps->sprintFuel > 15)
+							if (pm->cmd.buttons & BUTTON_BLOCK && pm->ps->sprintFuel > 15)
 							{
 								PM_SetAnim(pm, SETANIM_LEGS, BOTH_SPRINT_PISTOL, set_anim_flags);
 
@@ -11078,7 +11078,7 @@ static void PM_Footsteps()
 						pm->ps->weapon == WP_REBELRIFLE ||
 						pm->ps->weapon == WP_REPEATER)
 					{
-						if (is_holding_block_button(pm->gent) && pm->ps->sprintFuel > 15)
+						if (pm->cmd.buttons & BUTTON_BLOCK && pm->ps->sprintFuel > 15)
 						{
 							PM_SetAnim(pm, SETANIM_LEGS, BOTH_SPRINT_BLASTER, set_anim_flags);
 
@@ -11116,7 +11116,7 @@ static void PM_Footsteps()
 						pm->ps->weapon == WP_FLECHETTE ||
 						pm->ps->weapon == WP_DEMP2)
 					{
-						if (is_holding_block_button(pm->gent) && pm->ps->sprintFuel > 15)
+						if (pm->cmd.buttons & BUTTON_BLOCK && pm->ps->sprintFuel > 15)
 						{
 							PM_SetAnim(pm, SETANIM_LEGS, BOTH_SPRINT_HEAVY, set_anim_flags);
 							g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
@@ -11153,7 +11153,7 @@ static void PM_Footsteps()
 						pm->ps->weapon == WP_DET_PACK ||
 						pm->ps->weapon == WP_TRIP_MINE)
 					{
-						if (is_holding_block_button(pm->gent) && pm->ps->sprintFuel > 15)
+						if (pm->cmd.buttons & BUTTON_BLOCK && pm->ps->sprintFuel > 15)
 						{
 							PM_SetAnim(pm, SETANIM_LEGS, BOTH_SPRINT_GRENADE, set_anim_flags);
 
@@ -11277,7 +11277,7 @@ static void PM_Footsteps()
 						{
 							if (g_SerenityJediEngineMode->integer == 2)
 							{
-								if (holding_block)
+								if (is_holding_block_button)
 								{
 									PM_SetAnim(pm, SETANIM_LEGS, BOTH_WALK_DUAL, set_anim_flags);
 								}
@@ -11324,7 +11324,7 @@ static void PM_Footsteps()
 						{
 							if (g_SerenityJediEngineMode->integer == 2)
 							{
-								if (holding_block)
+								if (is_holding_block_button)
 								{
 									PM_SetAnim(pm, SETANIM_LEGS, BOTH_WALK_STAFF, set_anim_flags);
 								}
@@ -14126,7 +14126,7 @@ void PM_Setsaber_move(saber_moveName_t new_move)
 	int parts = SETANIM_TORSO;
 	qboolean manual_blocking = qfalse;
 
-	const qboolean holding_block = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean is_holding_block_button = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Holding Block Button
 
 	if (new_move < LS_NONE || new_move >= LS_MOVE_MAX)
@@ -14242,7 +14242,7 @@ void PM_Setsaber_move(saber_moveName_t new_move)
 					//saber staff with more than first blade active
 					|| pm->ps->saber[0].type == SABER_ARC))
 			{
-				if (holding_block)
+				if (is_holding_block_button)
 				{
 					if (pm->ps->saber_anim_level == SS_DUAL)
 					{
@@ -14286,7 +14286,7 @@ void PM_Setsaber_move(saber_moveName_t new_move)
 		}
 		else if (pm->ps->saber[0].readyAnim != -1)
 		{
-			if (holding_block)
+			if (is_holding_block_button)
 			{
 				if (pm->ps->saber_anim_level == SS_DUAL)
 				{
@@ -14329,7 +14329,7 @@ void PM_Setsaber_move(saber_moveName_t new_move)
 		}
 		else if (pm->ps->dualSabers && pm->ps->saber[1].readyAnim != -1)
 		{
-			if (holding_block)
+			if (is_holding_block_button)
 			{
 				if (pm->ps->saber_anim_level == SS_DUAL)
 				{
@@ -14376,7 +14376,7 @@ void PM_Setsaber_move(saber_moveName_t new_move)
 					|| pm->ps->saber[0].blade[1].active)
 					|| pm->ps->saber[0].type == SABER_ARC)))
 		{
-			if (holding_block)
+			if (is_holding_block_button)
 			{
 				if (pm->ps->saber_anim_level == SS_DUAL)
 				{
@@ -14419,7 +14419,7 @@ void PM_Setsaber_move(saber_moveName_t new_move)
 		}
 		else
 		{
-			if (holding_block)
+			if (is_holding_block_button)
 			{
 				if (pm->ps->saber_anim_level == SS_DUAL)
 				{
@@ -17027,12 +17027,12 @@ qboolean PM_SaberMoveOkayForKata()
 
 qboolean PM_CanDoKata()
 {
-	const qboolean holding_block = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean is_holding_block_button = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Holding Block Button
 	const qboolean active_blocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	//Active Blocking
 
-	if (holding_block || active_blocking)
+	if (is_holding_block_button || active_blocking)
 	{
 		return qfalse;
 	}
@@ -19325,7 +19325,7 @@ void PM_WeaponLightsaber()
 	int anim = -1;
 	int newmove = LS_NONE;
 
-	const qboolean holding_block = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean is_holding_block_button = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Holding Block Button
 	const qboolean active_blocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	//Active Blocking
@@ -19756,7 +19756,7 @@ void PM_WeaponLightsaber()
 				PM_SetAnim(pm, SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
 				break;
 			default:
-				if (holding_block)
+				if (is_holding_block_button)
 				{
 					if (pm->ps->saber_anim_level == SS_DUAL)
 					{
@@ -19982,7 +19982,7 @@ void PM_WeaponLightsaber()
 			//must transition back to ready from this anim
 			newmove = LS_R_T2B;
 		}
-		else if (!(pm->cmd.buttons & BUTTON_ATTACK) || holding_block || active_blocking || walking_blocking)
+		else if (!(pm->cmd.buttons & BUTTON_ATTACK) || is_holding_block_button || active_blocking || walking_blocking)
 		{
 			//not attacking
 			pm->ps->weaponTime = 0;
@@ -20421,7 +20421,7 @@ void PM_WeaponLightsaber()
 					pm->ps->legsAnim;
 					break;
 				default:
-					if (holding_block)
+					if (is_holding_block_button)
 					{
 						if (pm->ps->saber_anim_level == SS_DUAL)
 						{
@@ -23608,10 +23608,10 @@ void PM_SaberFakeFlagUpdate(const int new_move)
 
 void PM_SaberPerfectBlockUpdate(const int new_move)
 {
-	const qboolean holding_block = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean is_holding_block_button = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 
 	//checks to see if the flag needs to be removed.
-	if ((!(holding_block)) || PM_SaberInBounce(new_move) || PM_SaberInMassiveBounce(pm->ps->torsoAnim) || PM_SaberInAttack(new_move))
+	if ((!(is_holding_block_button)) || PM_SaberInBounce(new_move) || PM_SaberInMassiveBounce(pm->ps->torsoAnim) || PM_SaberInAttack(new_move))
 	{
 		pm->ps->userInt3 &= ~(1 << FLAG_PERFECTBLOCK);
 	}

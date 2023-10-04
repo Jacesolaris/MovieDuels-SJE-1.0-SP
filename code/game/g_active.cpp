@@ -7103,47 +7103,85 @@ void ClientAlterSpeed(gentity_t* ent, usercmd_t* ucmd, const qboolean controlled
 		{
 			client->ps.speed *= 0.3f;
 		}
+		else if (client->ps.stats[STAT_HEALTH] <= 25)
+		{
+			//move slower when low on health
+			client->ps.speed *= 0.85f;
+		}
+		else if (client->ps.stats[STAT_HEALTH] <= 40)
+		{
+			//move slower when low on health
+			client->ps.speed *= 0.90f;
+		}
 		else if (BG_SprintAnim(client->ps.legsAnim))
 		{
-			if (g_standard_humanoid(ent))
+			if (ent->client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING)
 			{
-				if (client->NPC_class == CLASS_VADER)
+				if ((ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
 				{
-					client->ps.speed *= 1.15f;
-				}
-				else
-				{
-					client->ps.speed *= 1.40f;
+					if (client->NPC_class == CLASS_VADER)
+					{
+						client->ps.speed *= 1.15f;
+					}
+					else if (client->NPC_class == CLASS_YODA)
+					{
+						client->ps.speed *= 1.60f;
+					}
+					else
+					{
+						client->ps.speed *= 1.50f;
+					}
 				}
 			}
 		}
 		else if (BG_SaberSprintAnim(client->ps.legsAnim))
 		{
-			if (g_standard_humanoid(ent))
+			if (ent->client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING)
 			{
-				if (client->NPC_class == CLASS_VADER)
+				if ((ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
 				{
-					client->ps.speed *= 1.15f;
-				}
-				else
-				{
-					client->ps.speed *= 1.30f;
+					if (client->NPC_class == CLASS_VADER)
+					{
+						client->ps.speed *= 1.15f;
+					}
+					else if (client->NPC_class == CLASS_YODA)
+					{
+						client->ps.speed *= 1.65f;
+					}
+					else
+					{
+						client->ps.speed *= 1.60f;
+					}
 				}
 			}
 		}
 		else if (BG_WeaponSprintAnim(client->ps.legsAnim))
 		{
-			if (g_standard_humanoid(ent))
+			if (ent->client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING)
 			{
-				if (client->NPC_class == CLASS_VADER)
+				if ((ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
 				{
-					client->ps.speed *= 1.10f;
-				}
-				else
-				{
-					client->ps.speed *= 1.20f;
+					if (client->NPC_class == CLASS_VADER)
+					{
+						client->ps.speed *= 1.10f;
+					}
+					else if (client->NPC_class == CLASS_YODA)
+					{
+						client->ps.speed *= 1.30f;
+					}
+					else
+					{
+						client->ps.speed *= 1.20f;
+					}
 				}
 			}
+		}
+		else if (client->ps.weapon == WP_BRYAR_PISTOL ||
+			client->ps.weapon == WP_THERMAL ||
+			client->ps.weapon == WP_DET_PACK ||
+			client->ps.weapon == WP_TRIP_MINE)
+		{
+			client->ps.speed *= 0.85f;
 		}
 		else if (PM_SaberInAttack(client->ps.saber_move) && ucmd->forwardmove < 0)
 		{

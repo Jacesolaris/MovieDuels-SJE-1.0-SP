@@ -9585,7 +9585,7 @@ void G_RadiusDamage(const vec3_t origin, gentity_t* attacker, const float damage
 //Combat Reward Code
 void AddFatigueKillBonus(const gentity_t* attacker, const gentity_t* victim, const int means_of_death)
 {
-	const qboolean holding_block = attacker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean is_holding_block_button = attacker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 
 	//get a bonus for killing an enemy
 	if (!attacker || !attacker->client || !victim || !victim->client)
@@ -9615,7 +9615,7 @@ void AddFatigueKillBonus(const gentity_t* attacker, const gentity_t* victim, con
 		return;
 	}
 
-	if (holding_block && (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker)))
+	if (is_holding_block_button && (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker)))
 		//DONT GET THIS BONUS IF YOUR A BLOCK SPAMMER
 	{
 		//add bonus
@@ -9648,7 +9648,7 @@ void AddFatigueKillBonus(const gentity_t* attacker, const gentity_t* victim, con
 
 void AddFatigueHurtBonus(const gentity_t* attacker, const gentity_t* victim, const int mod)
 {
-	const qboolean holding_block = attacker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean is_holding_block_button = attacker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 
 	//get a small bonus for killing an enemy
 	if (!attacker || !attacker->client || !victim || !victim->client)
@@ -9678,7 +9678,7 @@ void AddFatigueHurtBonus(const gentity_t* attacker, const gentity_t* victim, con
 		return;
 	}
 
-	if (holding_block && (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker)))
+	if (is_holding_block_button && (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker)))
 		//DONT GET THIS BONUS IF YOUR A BLOCK SPAMMER
 	{
 		//add bonus
@@ -9718,7 +9718,7 @@ void AddFatigueHurtBonus(const gentity_t* attacker, const gentity_t* victim, con
 
 void AddFatigueHurtBonusMax(const gentity_t* attacker, const gentity_t* victim, const int mod)
 {
-	const qboolean holding_block = attacker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean is_holding_block_button = attacker->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 
 	//get a small bonus for killing an enemy
 	if (!attacker || !attacker->client || !victim || !victim->client)
@@ -9748,7 +9748,7 @@ void AddFatigueHurtBonusMax(const gentity_t* attacker, const gentity_t* victim, 
 		return;
 	}
 
-	if (holding_block && (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker)))
+	if (is_holding_block_button && (attacker->s.number < MAX_CLIENTS || G_ControlledByPlayer(attacker)))
 		//DONT GET THIS BONUS IF YOUR A BLOCK SPAMMER
 	{
 		//add bonus

@@ -1788,7 +1788,7 @@ void G_TauntSound(const gentity_t* ent, const int taunt)
 }
 
 extern qboolean PM_CrouchAnim(int anim);
-extern qboolean is_holding_block_button(const gentity_t* defender);
+extern qboolean Block_Button_Held(const gentity_t* defender);
 extern qboolean is_holding_reloadable_gun(const gentity_t* ent);
 extern void wp_reload_gun(gentity_t* ent);
 extern void cancel_reload(gentity_t* ent);
@@ -1797,7 +1797,7 @@ extern qboolean PM_RestAnim(int anim);
 
 void G_SetTauntAnim(gentity_t* ent, const int taunt)
 {
-	const qboolean holding_block = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean is_holding_block_button = ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Normal Blocking
 
 	if (!ent || !ent->client)
@@ -1826,7 +1826,7 @@ void G_SetTauntAnim(gentity_t* ent, const int taunt)
 		}
 	}
 
-	if (holding_block || is_holding_block_button(ent))
+	if (is_holding_block_button || Block_Button_Held(ent))
 	{
 		return;
 	}

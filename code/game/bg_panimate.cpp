@@ -6445,7 +6445,7 @@ void PM_TorsoAnimLightsaber()
 	// WEAPON_READY
 	// *********************************************************
 
-	const qboolean holding_block = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
+	const qboolean is_holding_block_button = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
 	//Holding Block Button
 	const qboolean active_blocking = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	//Active Blocking
@@ -6495,7 +6495,7 @@ void PM_TorsoAnimLightsaber()
 					{
 						//AMD Mode
 						if (!g_noIgniteTwirl->integer && !active_blocking
-							&& !holding_block && !IsSurrendering(pm->gent)) //twirl on
+							&& !is_holding_block_button && !IsSurrendering(pm->gent)) //twirl on
 						{
 							PM_Setsaber_move(LS_DRAW);
 						}
@@ -6514,7 +6514,7 @@ void PM_TorsoAnimLightsaber()
 								|| pm->ps->legsAnim == BOTH_WALKBACK2)
 								&& pm->ps->saberBlockingTime < cg.time
 								&& !active_blocking
-								&& !holding_block
+								&& !is_holding_block_button
 								&& !walking_blocking
 								&& !IsSurrendering(pm->gent))
 							{
@@ -6564,7 +6564,7 @@ void PM_TorsoAnimLightsaber()
 					{
 						//MD Mode
 						if (!g_noIgniteTwirl->integer && !active_blocking
-							&& !holding_block
+							&& !is_holding_block_button
 							&& !IsSurrendering(pm->gent)) //twirl on
 						{
 							PM_Setsaber_move(LS_DRAW);
@@ -6584,7 +6584,7 @@ void PM_TorsoAnimLightsaber()
 								|| pm->ps->legsAnim == BOTH_WALKBACK2)
 								&& pm->ps->saberBlockingTime < cg.time
 								&& !active_blocking
-								&& !holding_block
+								&& !is_holding_block_button
 								&& !walking_blocking
 								&& !IsSurrendering(pm->gent))
 							{
@@ -6621,7 +6621,7 @@ void PM_TorsoAnimLightsaber()
 				{
 					//JKA Mode
 					if (!g_noIgniteTwirl->integer && !active_blocking
-						&& !holding_block
+						&& !is_holding_block_button
 						&& !IsSurrendering(pm->gent)) //twirl on
 					{
 						PM_Setsaber_move(LS_DRAW);
@@ -6641,7 +6641,7 @@ void PM_TorsoAnimLightsaber()
 							|| pm->ps->legsAnim == BOTH_WALKBACK2)
 							&& pm->ps->saberBlockingTime < cg.time
 							&& !active_blocking
-							&& !holding_block
+							&& !is_holding_block_button
 							&& !walking_blocking
 							&& !IsSurrendering(pm->gent))
 						{
@@ -6688,7 +6688,7 @@ void PM_TorsoAnimLightsaber()
 			else
 			{
 				if (!g_noIgniteTwirl->integer && !active_blocking
-					&& !holding_block
+					&& !is_holding_block_button
 					&& !IsSurrendering(pm->gent)) //twirl on
 				{
 					PM_Setsaber_move(LS_PUTAWAY);
@@ -6793,7 +6793,7 @@ void PM_TorsoAnimLightsaber()
 							|| pm->ps->legsAnim == BOTH_WALKBACK2)
 							&& pm->ps->saberBlockingTime < cg.time
 							&& !active_blocking
-							&& !holding_block
+							&& !is_holding_block_button
 							&& !walking_blocking
 							&& !IsSurrendering(pm->gent))
 						{
@@ -7330,7 +7330,7 @@ void PM_TorsoAnimLightsaber()
 								|| pm->ps->legsAnim == BOTH_WALKBACK2)
 								&& pm->ps->saberBlockingTime < cg.time
 								&& !active_blocking
-								&& !holding_block
+								&& !is_holding_block_button
 								&& !walking_blocking
 								&& !IsSurrendering(pm->gent))
 							{
