@@ -1432,8 +1432,9 @@ static void CG_RegisterEffects()
 	cgs.effects.landingSnow = theFxScheduler.RegisterEffect("materials/snow_large");
 	cgs.effects.landingGravel = theFxScheduler.RegisterEffect("materials/gravel_large");
 	cgs.effects.landingLava = theFxScheduler.RegisterEffect("materials/dirt_large");
+	cgs.effects.mSaberFriction = theFxScheduler.RegisterEffect("saber/saber_friction");
 
-	cgs.effects.mSaberFriction = theFxScheduler.RegisterEffect("saber/saber_lock");
+	cgs.effects.mSaberLock = theFxScheduler.RegisterEffect("saber/saber_lock");
 
 	//splashes
 	if (gi.totalMapContents() & CONTENTS_WATER)
@@ -4420,6 +4421,11 @@ void CG_DrawInventorySelect()
 		return;
 	}
 
+	if (cg.predicted_player_state.communicatingflags & (1 << CF_SABERLOCKING) && cg_saberLockCinematicCamera.integer)
+	{
+		return;
+	}
+
 	if ((cg_SerenityJediEngineHudMode.integer == 4 || cg_SerenityJediEngineHudMode.integer == 5) && !
 		cg_drawSelectionScrollBar.integer)
 	{
@@ -5182,6 +5188,11 @@ void CG_DrawForceSelect()
 	// don't display if dead
 	if (cg.predicted_player_state.stats[STAT_HEALTH] <= 0 || cg.snap->ps.viewEntity > 0 && cg.snap->ps.viewEntity <
 		ENTITYNUM_WORLD)
+	{
+		return;
+	}
+
+	if (cg.predicted_player_state.communicatingflags & (1 << CF_SABERLOCKING) && cg_saberLockCinematicCamera.integer)
 	{
 		return;
 	}

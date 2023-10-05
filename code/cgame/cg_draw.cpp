@@ -4316,6 +4316,33 @@ static void CG_DrawHUD(const centity_t* cent)
 	const float hud_ratio = cg_hudRatio.integer ? cgs.widthRatioCoef : 1.0f;
 
 	workshop_draw_clientside_information();
+	const Vehicle_t* p_veh;
+
+	if (cent->gent->health < 1)
+	{
+		return;
+	}
+
+	if (cg.predicted_player_state.communicatingflags & (1 << CF_SABERLOCKING) && cg_saberLockCinematicCamera.integer)
+	{
+		return;
+	}
+
+	// Are we in zoom mode or the HUD is turned off?
+	if (cg.zoomMode != 0 || !cg_drawHUD.integer)
+	{
+		return;
+	}
+
+	if (cg.snap->ps.viewEntity > 0 && cg.snap->ps.viewEntity < ENTITYNUM_WORLD)
+	{
+		return;
+	}
+
+	if ((p_veh = G_IsRidingVehicle(cg_entities[0].gent)) != nullptr)
+	{
+		return;
+	}
 
 	if (cg_hudFiles.integer)
 	{
@@ -6287,9 +6314,20 @@ static void CG_DrawCrosshair(vec3_t world_point)
 		return;
 	}
 
+	if (in_camera)
+	{
+		//no crosshair while in cutscenes
+		return;
+	}
+
 	if (cg.zoomMode > 0 && cg.zoomMode < 3)
 	{
 		//not while scoped
+		return;
+	}
+
+	if (cg.predicted_player_state.communicatingflags & (1 << CF_SABERLOCKING) && cg_saberLockCinematicCamera.integer)
+	{
 		return;
 	}
 
@@ -7385,6 +7423,11 @@ static float CG_DrawFPS(const float y)
 	static int previous, lastupdate;
 	constexpr int x_offset = 0;
 
+	if (cg.predicted_player_state.communicatingflags & (1 << CF_SABERLOCKING) && cg_saberLockCinematicCamera.integer)
+	{
+		return y;
+	}
+
 	// don't use serverTime, because that will be drifting to
 	// correct for internet lag changes, timescales, timedemos, etc
 	const int t = cgi_Milliseconds();
@@ -7428,6 +7471,11 @@ static float CG_DrawTimer(const float y)
 	seconds -= mins * 60;
 	const int tens = seconds / 10;
 	seconds -= tens * 10;
+
+	if (cg.predicted_player_state.communicatingflags & (1 << CF_SABERLOCKING) && cg_saberLockCinematicCamera.integer)
+	{
+		return y;
+	}
 
 	const char* s = va("%i:%i%i", mins, tens, seconds);
 
@@ -7473,6 +7521,11 @@ float cg_draw_radar(const float y)
 	}
 
 	if (cg.snap->ps.viewEntity > 0 && cg.snap->ps.viewEntity < ENTITYNUM_WORLD)
+	{
+		return y;
+	}
+
+	if (cg.predicted_player_state.communicatingflags & (1 << CF_SABERLOCKING) && cg_saberLockCinematicCamera.integer)
 	{
 		return y;
 	}
@@ -8684,6 +8737,11 @@ void CG_DrawIconBackground()
 		return;
 	}
 
+	if (cg.predicted_player_state.communicatingflags & (1 << CF_SABERLOCKING) && cg_saberLockCinematicCamera.integer)
+	{
+		return;
+	}
+
 	if (cg_hudFiles.integer)
 	{
 		//simple hud
@@ -8811,6 +8869,11 @@ void CG_DrawSJEIconBackground()
 	if (cg_hudFiles.integer)
 	{
 		//simple hud
+		return;
+	}
+
+	if (cg.predicted_player_state.communicatingflags & (1 << CF_SABERLOCKING) && cg_saberLockCinematicCamera.integer)
+	{
 		return;
 	}
 

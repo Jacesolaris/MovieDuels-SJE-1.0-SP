@@ -4066,7 +4066,7 @@ float WP_SabersDistance(const gentity_t* ent1, const gentity_t* ent2)
 	return sabers_dist;
 }
 
-qboolean WP_SabersIntersection(const gentity_t* ent1, const gentity_t* ent2, vec3_t intersect)
+qboolean wp_sabers_intersection(const gentity_t* ent1, const gentity_t* ent2, vec3_t intersect)
 {
 	float best_line_seg_length = Q3_INFINITE;
 
@@ -8485,7 +8485,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 		{
 			//need to make some kind of effect
 			vec3_t hit_norm = { 0, 0, 1 };
-			if (WP_SabersIntersection(ent, &g_entities[ent->client->ps.saberLockEnemy], g_saberFlashPos))
+			if (wp_sabers_intersection(ent, &g_entities[ent->client->ps.saberLockEnemy], g_saberFlashPos))
 			{
 				if (Q_irand(0, 10))
 				{
@@ -8502,7 +8502,7 @@ void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 					}
 					if (!g_saberNoEffects)
 					{
-						WP_SaberBlockEffect(ent, saber_num, blade_num, g_saberFlashPos, hit_norm, qtrue);
+						WP_SaberBlockEffect(ent, saber_num, blade_num, g_saberFlashPos, hit_norm, qtrue); //jka
 					}
 				}
 				WP_SaberBlockSound(ent, 0, 0);
@@ -10211,33 +10211,18 @@ void wp_saber_damage_trace_amd(gentity_t* ent, int saber_num, int blade_num)
 
 	if (ent->client->ps.saberLockTime > level.time)
 	{
-		if (ent->s.number < ent->client->ps.saberLockEnemy
-			&& !Q_irand(0, 3))
+		if (ent->s.number < ent->client->ps.saberLockEnemy)
 		{
-			//need to make some kind of effect
 			vec3_t hit_norm = { 0, 0, 1 };
-			if (WP_SabersIntersection(ent, &g_entities[ent->client->ps.saberLockEnemy], g_saberFlashPos))
+
+			if (wp_sabers_intersection(ent, &g_entities[ent->client->ps.saberLockEnemy], g_saberFlashPos))
 			{
 				int index = 1;
 				index = Q_irand(1, 9);
 
-				if (Q_irand(0, 10))
+				if (!g_saberNoEffects)
 				{
-					if (!g_saberNoEffects)
-					{
-						WP_SaberBlockEffect(ent, saber_num, blade_num, g_saberFlashPos, hit_norm, qfalse);
-					}
-				}
-				else
-				{
-					if (!g_noClashFlare)
-					{
-						g_saberFlashTime = level.time - 50;
-					}
-					if (!g_saberNoEffects)
-					{
-						G_PlayEffect("saber/saber_friction.efx", g_saberFlashPos, hit_norm);
-					}
+					G_PlayEffect("saber/saber_lock.efx", g_saberFlashPos, hit_norm);
 				}
 				G_Sound(ent, G_SoundIndex(va("sound/weapons/saber/saberlock%d.mp3", index)));
 			}
@@ -11602,33 +11587,18 @@ void WP_SaberDamageTrace_MD(gentity_t* ent, int saber_num, int blade_num)
 
 	if (ent->client->ps.saberLockTime > level.time)
 	{
-		if (ent->s.number < ent->client->ps.saberLockEnemy
-			&& !Q_irand(0, 3))
+		if (ent->s.number < ent->client->ps.saberLockEnemy)
 		{
-			//need to make some kind of effect
 			vec3_t hit_norm = { 0, 0, 1 };
-			if (WP_SabersIntersection(ent, &g_entities[ent->client->ps.saberLockEnemy], g_saberFlashPos))
+			
+			if (wp_sabers_intersection(ent, &g_entities[ent->client->ps.saberLockEnemy], g_saberFlashPos))
 			{
 				int index = 1;
 				index = Q_irand(1, 9);
 
-				if (Q_irand(0, 10))
+				if (!g_saberNoEffects)
 				{
-					if (!g_saberNoEffects)
-					{
-						WP_SaberBlockEffect(ent, saber_num, blade_num, g_saberFlashPos, hit_norm, qfalse);
-					}
-				}
-				else
-				{
-					if (!g_noClashFlare)
-					{
-						g_saberFlashTime = level.time - 50;
-					}
-					if (!g_saberNoEffects)
-					{
-						G_PlayEffect("saber/saber_friction.efx", g_saberFlashPos, hit_norm);
-					}
+					G_PlayEffect("saber/saber_lock.efx", g_saberFlashPos, hit_norm);
 				}
 				G_Sound(ent, G_SoundIndex(va("sound/weapons/saber/saberlock%d.mp3", index)));
 			}

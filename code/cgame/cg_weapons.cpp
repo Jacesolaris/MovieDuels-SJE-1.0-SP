@@ -3693,6 +3693,11 @@ void CG_DrawWeaponSelect_kotor()
 		return;
 	}
 
+	if (cg.predicted_player_state.communicatingflags & (1 << CF_SABERLOCKING) && cg_saberLockCinematicCamera.integer)
+	{
+		return;
+	}
+
 	// don't display if dead
 	if (cg.predicted_player_state.stats[STAT_HEALTH] <= 0)
 	{

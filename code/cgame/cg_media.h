@@ -752,6 +752,7 @@ using cgEffects_t = struct
 	fxHandle_t landingGravel;
 	fxHandle_t landingLava;
 	fxHandle_t mSaberFriction;
+	fxHandle_t mSaberLock;
 };
 
 // The client game static (cgs) structure hold everything

@@ -3628,9 +3628,9 @@ qboolean G_CheckClampUcmd(gentity_t* ent, usercmd_t* ucmd)
 		{
 			cg.overrides.active |= CG_OVERRIDE_3RD_PERSON_RNG | CG_OVERRIDE_FOV | CG_OVERRIDE_3RD_PERSON_CDP | CG_OVERRIDE_3RD_PERSON_HOF;
 
-			cg.overrides.thirdPersonRange = 60;
+			cg.overrides.thirdPersonRange = 82.5f;
 			cg.overrides.thirdPersonCameraDamp = 1;
-			cg.overrides.thirdPersonHorzOffset = -12.5f;
+			cg.overrides.thirdPersonHorzOffset = -25.5f;
 			cg.overrides.fov = 31;
 		}
 		else
@@ -7157,7 +7157,7 @@ void ClientAlterSpeed(gentity_t* ent, usercmd_t* ucmd, const qboolean controlled
 		}
 		else if (BG_WeaponSprintAnim(client->ps.legsAnim))
 		{
-			if (ent->client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING)
+			if (ent->client->ps.PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 			{
 				if ((ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)))
 				{
@@ -7506,7 +7506,8 @@ void CG_BreathPuffsVader(const gentity_t* ent)
 			}
 			else
 			{
-				if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING)
+				if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING ||
+					client->ps.PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 				{
 					G_SoundOnEnt(ent, CHAN_VOICE, "sound/chars/darthvader/vader_fast_breath.mp3");
 				}
@@ -7525,7 +7526,8 @@ void CG_BreathPuffsVader(const gentity_t* ent)
 			}
 			else
 			{
-				if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING)
+				if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING ||
+					client->ps.PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 				{
 					G_SoundOnEnt(ent, CHAN_VOICE, "sound/chars/darthvader/vader_fast_breath.mp3");
 				}
@@ -7552,7 +7554,8 @@ void CG_BreathPuffsVader(const gentity_t* ent)
 			}
 			else
 			{
-				if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING)
+				if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING ||
+					client->ps.PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 				{
 					G_SoundOnEnt(ent, CHAN_VOICE, "sound/chars/darthvader/vader_fast_breath.mp3");
 				}
@@ -7571,7 +7574,8 @@ void CG_BreathPuffsVader(const gentity_t* ent)
 			}
 			else
 			{
-				if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING)
+				if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING ||
+					client->ps.PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 				{
 					G_SoundOnEnt(ent, CHAN_VOICE, "sound/chars/darthvader/vader_fast_breath.mp3");
 				}
@@ -7651,7 +7655,8 @@ void CG_SetVaderBreath(const gentity_t* ent)
 		}
 		else
 		{
-			if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING)
+			if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING ||
+				client->ps.PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 			{
 				G_SoundOnEnt(ent, CHAN_VOICE, "sound/chars/darthvader/vader_fast_breath.mp3");
 			}
@@ -7664,7 +7669,8 @@ void CG_SetVaderBreath(const gentity_t* ent)
 	else if (ent && !Q_stricmp("md_vad_tfu", ent->NPC_type) ||
 		ent && !Q_stricmp("md_vad_vr", ent->NPC_type))
 	{
-		if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING)
+		if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING ||
+			client->ps.PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 		{
 			G_SoundOnEnt(ent, CHAN_VOICE, "sound/chars/darthvader/vader_fast_breath.mp3");
 		}
@@ -7676,7 +7682,8 @@ void CG_SetVaderBreath(const gentity_t* ent)
 	else if (ent && !Q_stricmp("md_vader_bw", ent->NPC_type) ||
 		ent && !Q_stricmp("md_vad2_tfu", ent->NPC_type))
 	{
-		if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING)
+		if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING ||
+			client->ps.PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 		{
 			G_SoundOnEnt(ent, CHAN_VOICE, "sound/chars/darthvader/vader_fast_breath.mp3");
 		}
@@ -7746,7 +7753,8 @@ void CG_SetVaderBreathDamaged(const gentity_t* ent)
 		ent && !Q_stricmp("md_vader_ds", ent->NPC_type) ||
 		ent && !Q_stricmp("md_vader", ent->NPC_type))
 	{
-		if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING)
+		if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING ||
+			client->ps.PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 		{
 			G_SoundOnEnt(ent, CHAN_VOICE, "sound/chars/darthvader/vader_fast_breath.mp3");
 		}
@@ -7758,7 +7766,8 @@ void CG_SetVaderBreathDamaged(const gentity_t* ent)
 	else if (ent && !Q_stricmp("md_vader_bw", ent->NPC_type) ||
 		ent && !Q_stricmp("md_vad2_tfu", ent->NPC_type))
 	{
-		if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING)
+		if (client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING ||
+			client->ps.PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 		{
 			G_SoundOnEnt(ent, CHAN_VOICE, "sound/chars/darthvader/vader_fast_breath.mp3");
 		}
@@ -8271,6 +8280,7 @@ void ClientThink_real(gentity_t* ent, usercmd_t* ucmd)
 				NPC_SetLookTarget(ent, new_look_target, level.time + 1000);
 			}
 		}
+
 		if (in_camera)
 		{
 			// watch the code here, you MUST "return" within this IF(), *unless* you're stopping the cinematic skip.

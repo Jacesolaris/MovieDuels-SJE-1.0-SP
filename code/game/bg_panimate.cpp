@@ -6334,8 +6334,9 @@ bool TorsoAgainstWindTest(gentity_t* ent)
 				AngleVectors(pm->gent->currentAngles, fwd, nullptr, nullptr);
 				if (DotProduct(fwd, wind_dir) > 0.65f)
 				{
-					if (ent->client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING || ent->client->ps.ManualBlockingFlags &
-						1 << HOLDINGBLOCK)
+					if (ent->client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING ||
+						ent->client->ps.PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING ||
+						ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK)
 					{
 						// Dont do this if sprinting it looks shit
 					}
@@ -6354,8 +6355,9 @@ bool TorsoAgainstWindTest(gentity_t* ent)
 							// ok i have a saber
 							if (g_SerenityJediEngineMode->integer)
 							{
-								if (!(ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK) && !(ent->client->ps.
-									PlayerEffectFlags & 1 << PEF_SPRINTING))
+								if (!(ent->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK) &&
+									!(ent->client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING) &&
+									!(ent->client->ps.PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING))
 								{
 									if (ent->client && ent->client->ps.torsoAnim != BOTH_WIND)
 									{
@@ -6365,7 +6367,8 @@ bool TorsoAgainstWindTest(gentity_t* ent)
 							}
 							else
 							{
-								if (!(ent->client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING))
+								if (!(ent->client->ps.PlayerEffectFlags & 1 << PEF_SPRINTING) &&
+									!(ent->client->ps.PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING))
 								{
 									if (ent->client && ent->client->ps.torsoAnim != BOTH_WIND)
 									{

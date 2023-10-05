@@ -10453,9 +10453,11 @@ static void PM_Footsteps()
 			}
 		}
 
-		if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
+		if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING ||
+			pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 		{
 			pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+			pm->ps->PlayerEffectFlags &= ~(1 << PEF_WEAPONSPRINTING);
 			g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 		}
 		return;
@@ -10568,9 +10570,11 @@ static void PM_Footsteps()
 		}
 		// ducked characters never play footsteps
 
-		if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
+		if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING ||
+			pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 		{
 			pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+			pm->ps->PlayerEffectFlags &= ~(1 << PEF_WEAPONSPRINTING);
 			g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 		}
 	}
@@ -10866,9 +10870,11 @@ static void PM_Footsteps()
 			}
 		}
 
-		if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
+		if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING ||
+			pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 		{
 			pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+			pm->ps->PlayerEffectFlags &= ~(1 << PEF_WEAPONSPRINTING);
 			g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 		}
 	}
@@ -10987,9 +10993,11 @@ static void PM_Footsteps()
 					{
 						PM_SetAnim(pm, SETANIM_LEGS, BOTH_RUN1, set_anim_flags);
 
-						if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
+						if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING ||
+							pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 						{
 							pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+							pm->ps->PlayerEffectFlags &= ~(1 << PEF_WEAPONSPRINTING);
 							g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 						}
 					}
@@ -11018,9 +11026,13 @@ static void PM_Footsteps()
 							{
 								PM_SetAnim(pm, SETANIM_LEGS, BOTH_SPRINT_DOUBLE_PISTOL, set_anim_flags);
 
-								if (!(pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING))
+								if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 								{
-									pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
+									pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+								}
+								if (!(pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING))
+								{
+									pm->ps->PlayerEffectFlags |= 1 << PEF_WEAPONSPRINTING;
 									g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 									if (pm->ps->sprintFuel < 17) // single sprint here
 									{
@@ -11032,9 +11044,11 @@ static void PM_Footsteps()
 							{
 								PM_SetAnim(pm, SETANIM_LEGS, BOTH_JOG_DOUBLE_PISTOL, set_anim_flags);
 
-								if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
+								if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING ||
+									pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 								{
 									pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+									pm->ps->PlayerEffectFlags &= ~(1 << PEF_WEAPONSPRINTING);
 									g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 								}
 							}
@@ -11045,9 +11059,13 @@ static void PM_Footsteps()
 							{
 								PM_SetAnim(pm, SETANIM_LEGS, BOTH_SPRINT_PISTOL, set_anim_flags);
 
-								if (!(pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING))
+								if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 								{
-									pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
+									pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+								}
+								if (!(pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING))
+								{
+									pm->ps->PlayerEffectFlags |= 1 << PEF_WEAPONSPRINTING;
 									g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 									if (pm->ps->sprintFuel < 17) // single sprint here
 									{
@@ -11059,9 +11077,11 @@ static void PM_Footsteps()
 							{
 								PM_SetAnim(pm, SETANIM_LEGS, BOTH_JOG_PISTOL, set_anim_flags);
 
-								if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
+								if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING ||
+									pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 								{
 									pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+									pm->ps->PlayerEffectFlags &= ~(1 << PEF_WEAPONSPRINTING);
 									g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 								}
 							}
@@ -11082,9 +11102,13 @@ static void PM_Footsteps()
 						{
 							PM_SetAnim(pm, SETANIM_LEGS, BOTH_SPRINT_BLASTER, set_anim_flags);
 
-							if (!(pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING))
+							if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 							{
-								pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
+								pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+							}
+							if (!(pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING))
+							{
+								pm->ps->PlayerEffectFlags |= 1 << PEF_WEAPONSPRINTING;
 								g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 								if (pm->ps->sprintFuel < 17) // single sprint here
 								{
@@ -11103,9 +11127,11 @@ static void PM_Footsteps()
 								PM_SetAnim(pm, SETANIM_LEGS, BOTH_JOG_BLASTER, set_anim_flags);
 							}
 
-							if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
+							if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING ||
+								pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 							{
 								pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+								pm->ps->PlayerEffectFlags &= ~(1 << PEF_WEAPONSPRINTING);
 								g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 							}
 						}
@@ -11119,11 +11145,14 @@ static void PM_Footsteps()
 						if (pm->cmd.buttons & BUTTON_BLOCK && pm->ps->sprintFuel > 15)
 						{
 							PM_SetAnim(pm, SETANIM_LEGS, BOTH_SPRINT_HEAVY, set_anim_flags);
-							g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 
-							if (!(pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING))
+							if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 							{
-								pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
+								pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+							}
+							if (!(pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING))
+							{
+								pm->ps->PlayerEffectFlags |= 1 << PEF_WEAPONSPRINTING;
 								g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 								if (pm->ps->sprintFuel < 17) // single sprint here
 								{
@@ -11142,9 +11171,11 @@ static void PM_Footsteps()
 								PM_SetAnim(pm, SETANIM_LEGS, BOTH_JOG_HEAVY, set_anim_flags);
 							}
 
-							if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
+							if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING ||
+								pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 							{
 								pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+								pm->ps->PlayerEffectFlags &= ~(1 << PEF_WEAPONSPRINTING);
 								g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 							}
 						}
@@ -11157,9 +11188,13 @@ static void PM_Footsteps()
 						{
 							PM_SetAnim(pm, SETANIM_LEGS, BOTH_SPRINT_GRENADE, set_anim_flags);
 
-							if (!(pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING))
+							if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
 							{
-								pm->ps->PlayerEffectFlags |= 1 << PEF_SPRINTING;
+								pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+							}
+							if (!(pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING))
+							{
+								pm->ps->PlayerEffectFlags |= 1 << PEF_WEAPONSPRINTING;
 								g_entities[pm->ps->client_num].client->IsSprinting = qtrue;
 								if (pm->ps->sprintFuel < 17) // single sprint here
 								{
@@ -11171,9 +11206,11 @@ static void PM_Footsteps()
 						{
 							PM_SetAnim(pm, SETANIM_LEGS, BOTH_JOG_GRENADE, set_anim_flags);
 
-							if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
+							if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING ||
+								pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 							{
 								pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+								pm->ps->PlayerEffectFlags &= ~(1 << PEF_WEAPONSPRINTING);
 								g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 							}
 						}
@@ -11251,9 +11288,11 @@ static void PM_Footsteps()
 					{
 						PM_SetAnim(pm, SETANIM_LEGS, BOTH_RUN1, set_anim_flags);
 
-						if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
+						if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING ||
+							pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 						{
 							pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+							pm->ps->PlayerEffectFlags &= ~(1 << PEF_WEAPONSPRINTING);
 							g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 						}
 					}
@@ -11538,9 +11577,11 @@ static void PM_Footsteps()
 					AddSoundEvent(pm->gent, pm->ps->origin, 16, AEL_MINOR, qtrue, qtrue);
 				}
 
-				if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING)
+				if (pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING ||
+					pm->ps->PlayerEffectFlags & 1 << PEF_WEAPONSPRINTING)
 				{
 					pm->ps->PlayerEffectFlags &= ~(1 << PEF_SPRINTING);
+					pm->ps->PlayerEffectFlags &= ~(1 << PEF_WEAPONSPRINTING);
 					g_entities[pm->ps->client_num].client->IsSprinting = qfalse;
 				}
 			}

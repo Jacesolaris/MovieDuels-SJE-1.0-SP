@@ -3553,6 +3553,7 @@ using PlayerEffectFlags_e = enum
 	PEF_BURNING,
 	PEF_FREEZING,
 	PEF_SPRINTING,
+	PEF_WEAPONSPRINTING,
 };
 
 qboolean Q_InBitflags(const uint32_t* bits, int index, uint32_t bitsPerByte);

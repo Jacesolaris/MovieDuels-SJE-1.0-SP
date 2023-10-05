@@ -412,7 +412,7 @@ static void CG_CalcIdealThirdPersonViewTarget()
 	else if (cg.renderingThirdPerson && cg.predicted_player_state.communicatingflags & (1 << CF_SABERLOCKING) && cg_saberLockCinematicCamera.integer)
 	{
 		VectorCopy(cameraFocusLoc, cameraIdealTarget);
-		cameraIdealTarget[2] -= 9.0f;
+		cameraIdealTarget[2] -= 15.5f;
 	}
 	else
 	{
@@ -836,7 +836,7 @@ static void CG_OffsetThirdPersonView()
 	}
 	else if (cg.renderingThirdPerson && cg.predicted_player_state.communicatingflags & (1 << CF_SABERLOCKING) && cg_saberLockCinematicCamera.integer)
 	{
-		cameraFocusAngles[YAW] += cg.overrides.thirdPersonAngle = 27.5f;
+		cameraFocusAngles[YAW] += cg.overrides.thirdPersonAngle = 40.5f;
 		cameraFocusAngles[PITCH] += cg.overrides.thirdPersonPitchOffset = -11.25f; 
 	}
 	else
@@ -1542,6 +1542,11 @@ void CG_SaberClashFlare()
 	const int t = cg.time - g_saberFlashTime;
 
 	if (t <= 0 || t >= max_time)
+	{
+		return;
+	}
+
+	if (cg.predicted_player_state.communicatingflags & (1 << CF_SABERLOCKING))
 	{
 		return;
 	}
