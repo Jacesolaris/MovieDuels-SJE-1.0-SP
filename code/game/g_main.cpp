@@ -2534,7 +2534,7 @@ void G_RunFrame(const int level_time)
 
 			if (g_SerenityJediEngineMode->integer)
 			{
-				if (ent->client->jetPackOn || ent->client->flamethrowerOn)
+				if ((ent->s.number < MAX_CLIENTS || G_ControlledByPlayer(ent)) && (ent->client->jetPackOn || ent->client->flamethrowerOn))
 				{
 					//using jetpack, drain fuel
 					if (ent->client->jetPackDebReduce < level.time)
