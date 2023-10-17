@@ -323,7 +323,7 @@ void SV_SpawnServer(const char* server, const ForceReload_e e_force_reload, cons
 	SV_InitGameProgs();
 
 	// run a few frames to allow everything to settle
-	for (i = 0; i < 3; i++)
+	for (i = 0; i < 4; i++)
 	{
 		ge->RunFrame(sv.time);
 		sv.time += 100;

@@ -5716,12 +5716,12 @@ void PM_SaberStartTransAnim(const int saber_anim_level, const int anim, float* a
 						{
 							if (gent->client->ps.saberFatigueChainCount >= MISHAPLEVEL_LIGHT)
 							{//Slow down saber moves...
-								constexpr float fatiguedanimscale = 0.97f;
+								constexpr float fatiguedanimscale = 0.96f;
 								*anim_speed *= fatiguedanimscale;
 							}
 							else
 							{
-								constexpr float realisticanimscale = 0.99f;
+								constexpr float realisticanimscale = 0.98f;
 								*anim_speed *= realisticanimscale;
 							}
 						}
