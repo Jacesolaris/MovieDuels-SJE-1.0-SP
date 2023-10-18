@@ -12771,42 +12771,34 @@ qboolean WP_SaberLaunch(gentity_t* self, gentity_t* saber, const qboolean thrown
 		//dropping it
 		vectoangles(self->client->renderInfo.muzzleDir, saber->s.apos.trBase);
 	}
+
 	VectorClear(saber->s.apos.trDelta);
 
-
-	if (saber->client->ps.saber[0].type == SABER_VADER || self->client->NPC_class == CLASS_VADER) //saber kylo
+	if (g_SerenityJediEngineMode->integer == 2)
 	{
-		saber->s.apos.trDelta[1] = 600;
-	}
-	else
-	{
-
-		if (g_SerenityJediEngineMode->integer == 2)
+		if (self->client->ps.saber_anim_level == SS_STAFF)
 		{
-			if (self->client->ps.saber_anim_level == SS_STAFF)
-			{
-				saber->s.apos.trDelta[1] = 800;
-			}
-			else
-			{
-				saber->s.apos.trDelta[1] = 800;
-			}
+			saber->s.apos.trDelta[1] = 800;
 		}
 		else
 		{
-			switch (self->client->ps.forcePowerLevel[FP_SABERTHROW])
-			{
-			default:
-			case FORCE_LEVEL_1:
-				saber->s.apos.trDelta[1] = 600;
-				break;
-			case FORCE_LEVEL_2:
-				saber->s.apos.trDelta[1] = 800;
-				break;
-			case FORCE_LEVEL_3:
-				saber->s.apos.trDelta[1] = 1200;
-				break;
-			}
+			saber->s.apos.trDelta[0] = 600;
+		}
+	}
+	else
+	{
+		switch (self->client->ps.forcePowerLevel[FP_SABERTHROW])
+		{
+		default:
+		case FORCE_LEVEL_1:
+			saber->s.apos.trDelta[1] = 600;
+			break;
+		case FORCE_LEVEL_2:
+			saber->s.apos.trDelta[1] = 800;
+			break;
+		case FORCE_LEVEL_3:
+			saber->s.apos.trDelta[1] = 1200;
+			break;
 		}
 	}
 

@@ -3320,7 +3320,7 @@ void UI_LoadMenus(const char* menuFile, const qboolean reset)
 	Com_Printf("---------------- MovieDuels-SJE-1.0-SP---------------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------Update 9---------------------------------\n");
-	Com_Printf("------------------Build Date 17/10/2023--------------------------\n");
+	Com_Printf("------------------Build Date 18/10/2023--------------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------LightSaber-------------------------------\n");
 	Com_Printf("-----------An elegant weapon for a more civilized age------------\n");
@@ -3980,7 +3980,7 @@ static void UI_Update(const char* name)
 			Cvar_SetValue("ui_r_texturebits", 32);
 			Cvar_SetValue("ui_r_fastSky", 0);
 			Cvar_SetValue("ui_r_inGameVideo", 1);
-			Cvar_SetValue("ui_cg_shadows", 2);
+			Cvar_SetValue("ui_cg_shadows", 3);
 			Cvar_Set("ui_r_texturemode", "GL_LINEAR_MIPMAP_LINEAR");
 			break;
 
@@ -4785,7 +4785,7 @@ void UI_GetVideoSetup()
 	Cvar_Register(nullptr, "ui_r_fastSky", "0", CVAR_ROM);
 	Cvar_Register(nullptr, "ui_r_inGameVideo", "0", CVAR_ROM);
 	Cvar_Register(nullptr, "ui_r_allowExtensions", "0", CVAR_ROM);
-	Cvar_Register(nullptr, "ui_cg_shadows", "2", CVAR_ROM);
+	Cvar_Register(nullptr, "ui_cg_shadows", "3", CVAR_ROM);
 	Cvar_Register(nullptr, "ui_r_modified", "0", CVAR_ROM);
 
 	// Copy over the real video cvars into their temporary counterparts
