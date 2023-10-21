@@ -1458,6 +1458,8 @@ void Cvar_Init()
 
 	g_totgfirststartup = Cvar_Get("g_totgfirststartup", "1", 0);
 
+	com_rend2 = Cvar_Get("com_rend2", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
+
 	Cmd_AddCommand("print", Cvar_Print_f);
 	Cmd_SetCommandCompletionFunc("print", Cvar_CompleteCvarName);
 	Cmd_AddCommand("toggle", Cvar_Toggle_f);

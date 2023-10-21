@@ -69,6 +69,7 @@ cvar_t* com_kotor;
 cvar_t* g_trueguns;
 cvar_t* g_spskill;
 cvar_t* debugNPCFreeze;
+cvar_t* com_rend2;
 
 #ifndef _WIN32
 cvar_t* com_ansiColor = nullptr;
@@ -1193,6 +1194,8 @@ void Com_Init(char* commandLine)
 		com_fixedtime = Cvar_Get("fixedtime", "0", CVAR_CHEAT);
 		com_showtrace = Cvar_Get("com_showtrace", "0", CVAR_CHEAT);
 		com_speeds = Cvar_Get("com_speeds", "0", 0);
+
+		com_rend2 = Cvar_Get("com_rend2", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
 
 #ifdef G2_PERFORMANCE_ANALYSIS
 		com_G2Report = Cvar_Get("com_G2Report", "0", 0);

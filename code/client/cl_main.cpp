@@ -78,6 +78,8 @@ cvar_t* cl_inGameVideo;
 
 cvar_t* cl_consoleKeys;
 cvar_t* cl_consoleUseScanCode;
+cvar_t* cl_com_outcast;
+cvar_t* cl_com_rend2;
 
 clientActive_t cl;
 clientConnection_t clc;
@@ -1138,9 +1140,9 @@ int get_com_frameTime()
 	return com_frameTime;
 }
 
-void* CL_Malloc(const int iSize, const memtag_t eTag, const qboolean bZeroit, int iAlign)
+void* CL_Malloc(const int i_size, const memtag_t e_tag, const qboolean bZeroit, int iAlign)
 {
-	return Z_Malloc(iSize, eTag, bZeroit);
+	return Z_Malloc(i_size, e_tag, bZeroit);
 }
 
 /*
@@ -1192,9 +1194,9 @@ void CL_InitRef()
 
 	memset(&rit, 0, sizeof(rit));
 
-	const auto GetRefAPI = static_cast<GetRefAPI_t>(Sys_LoadFunction(rendererLib, "GetRefAPI"));
-	if (!GetRefAPI)
-		Com_Error(ERR_FATAL, "Can't load symbol GetRefAPI: '%s'", Sys_LibraryError());
+	const auto get_ref_api = static_cast<get_ref_api_t>(Sys_LoadFunction(rendererLib, "get_ref_api"));
+	if (!get_ref_api)
+		Com_Error(ERR_FATAL, "Can't load symbol get_ref_api: '%s'", Sys_LibraryError());
 
 #define RIT(y)	rit.y = y
 	RIT(CIN_PlayCinematic);
@@ -1274,7 +1276,7 @@ void CL_InitRef()
 
 	rit.saved_game = &ojk::SavedGame::get_instance();
 
-	const refexport_t* ret = GetRefAPI(REF_API_VERSION, &rit);
+	const refexport_t* ret = get_ref_api(REF_API_VERSION, &rit);
 
 	if (!ret)
 	{
@@ -1386,6 +1388,10 @@ void CL_Init()
 	//UI_SetSexandSoundForModel changes to match sounds.cfg for model
 	Cvar_Get("handicap", "100", CVAR_USERINFO | CVAR_SAVEGAME | CVAR_NORESTART);
 #endif
+
+	cl_com_outcast = Cvar_Get("com_outcast", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
+
+	cl_com_rend2 = Cvar_Get("com_rend2", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
 
 	//
 	// register our commands

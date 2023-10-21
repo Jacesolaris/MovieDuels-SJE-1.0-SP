@@ -141,7 +141,7 @@ sets mins and maxs for inline bmodels
 */
 void SV_SetBrushModel(gentity_t* ent, const char* name)
 {
-	clipHandle_t h;
+	clip_handle_t h;
 	vec3_t mins, maxs;
 
 	if (!name)
@@ -335,7 +335,7 @@ qboolean SV_EntityContact(const vec3_t mins, const vec3_t maxs, const gentity_t*
 	const float* origin = g_ent->currentOrigin;
 	const float* angles = g_ent->currentAngles;
 
-	const clipHandle_t ch = SV_ClipHandleForEntity(g_ent);
+	const clip_handle_t ch = SV_ClipHandleForEntity(g_ent);
 	CM_TransformedBoxTrace(&trace, vec3_origin, vec3_origin, mins, maxs,
 		ch, -1, origin, angles);
 

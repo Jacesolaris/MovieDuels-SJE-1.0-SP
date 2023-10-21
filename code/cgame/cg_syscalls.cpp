@@ -158,48 +158,48 @@ int cgi_CM_NumInlineModels()
 	return Q_syscall(CG_CM_NUMINLINEMODELS);
 }
 
-clipHandle_t cgi_CM_InlineModel(const int index)
+clip_handle_t cgi_CM_InlineModel(const int index)
 {
 	return Q_syscall(CG_CM_INLINEMODEL, index);
 }
 
-clipHandle_t cgi_CM_TempBoxModel(const vec3_t mins, const vec3_t maxs)
+clip_handle_t cgi_CM_TempBoxModel(const vec3_t mins, const vec3_t maxs)
 {
 	//, const int contents ) {
 	return Q_syscall(CG_CM_TEMPBOXMODEL, mins, maxs); //, contents );
 }
 
-int cgi_CM_PointContents(const vec3_t p, const clipHandle_t model)
+int cgi_CM_PointContents(const vec3_t p, const clip_handle_t model)
 {
 	return Q_syscall(CG_CM_POINTCONTENTS, p, model);
 }
 
-int cgi_CM_TransformedPointContents(const vec3_t p, const clipHandle_t model, const vec3_t origin, const vec3_t angles)
+int cgi_CM_TransformedPointContents(const vec3_t p, const clip_handle_t model, const vec3_t origin, const vec3_t angles)
 {
 	return Q_syscall(CG_CM_TRANSFORMEDPOINTCONTENTS, p, model, origin, angles);
 }
 
 void cgi_CM_BoxTrace(trace_t* results, const vec3_t start, const vec3_t end,
 	const vec3_t mins, const vec3_t maxs,
-	const clipHandle_t model, const int brushmask)
+	const clip_handle_t model, const int brushmask)
 {
 	Q_syscall(CG_CM_BOXTRACE, results, start, end, mins, maxs, model, brushmask);
 }
 
 void cgi_CM_TransformedBoxTrace(trace_t* results, const vec3_t start, const vec3_t end,
 	const vec3_t mins, const vec3_t maxs,
-	const clipHandle_t model, const int brushmask,
+	const clip_handle_t model, const int brushmask,
 	const vec3_t origin, const vec3_t angles)
 {
 	Q_syscall(CG_CM_TRANSFORMEDBOXTRACE, results, start, end, mins, maxs, model, brushmask, origin, angles);
 }
 
-int cgi_CM_MarkFragments(const int numPoints, const vec3_t* points,
+int cgi_CM_MarkFragments(const int num_points, const vec3_t* points,
 	const vec3_t projection,
 	const int maxPoints, vec3_t pointBuffer,
 	const int maxFragments, markFragment_t* fragmentBuffer)
 {
-	return Q_syscall(CG_CM_MARKFRAGMENTS, numPoints, points, projection, maxPoints, pointBuffer, maxFragments,
+	return Q_syscall(CG_CM_MARKFRAGMENTS, num_points, points, projection, maxPoints, pointBuffer, maxFragments,
 		fragmentBuffer);
 }
 

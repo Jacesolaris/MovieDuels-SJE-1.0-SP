@@ -3158,7 +3158,7 @@ qboolean ItemParse_asset_model_go(itemDef_t* item, const char* name)
 	if (!Q_stricmp(&name[strlen(name) - 4], ".glm"))
 	{
 		//it's a ghoul2 model then
-		if (item->ghoul2.size() && item->ghoul2[0].mModelindex >= 0)
+		if (item->ghoul2.size() && item->ghoul2[0].mmodel_index >= 0)
 		{
 			DC->g2_RemoveGhoul2Model(item->ghoul2, 0);
 			item->flags &= ~ITF_G2VALID;
@@ -5677,7 +5677,7 @@ static void Menu_FreeGhoulItems(const menuDef_t* menu)
 	{
 		for (int j = 0; j < menu->items[i]->ghoul2.size(); j++)
 		{
-			if (menu->items[i]->ghoul2[j].mModelindex >= 0)
+			if (menu->items[i]->ghoul2[j].mmodel_index >= 0)
 			{
 				DC->g2_RemoveGhoul2Model(menu->items[i]->ghoul2, j);
 			}

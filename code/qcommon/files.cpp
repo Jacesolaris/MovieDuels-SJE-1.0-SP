@@ -2766,6 +2766,8 @@ void FS_Startup(const char* gameName) {
 
 	Cvar_Get("com_kotor", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
 
+	Cvar_Get("com_rend2", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
+
 	g_trueguns = Cvar_Get("cg_trueguns", "0", 0);
 
 	Cvar_Get("r_weather", "0", CVAR_ARCHIVE);

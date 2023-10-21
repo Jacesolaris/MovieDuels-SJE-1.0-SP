@@ -76,7 +76,7 @@ int G2_Find_Bolt_Surface_Num(const boltInfo_v& bltlist, const int surface_num, c
 int G2_Add_Bolt_Surf_Num(const CGhoul2Info* ghl_info, boltInfo_v& bltlist, const surfaceInfo_v& slist, const int surf_num)
 {
 	assert(ghl_info && ghl_info->mValid);
-	boltInfo_t temp_bolt;
+	boltInfo_t			temp_bolt;
 
 	assert(surf_num >= 0 && surf_num < static_cast<int>(slist.size()));
 	// ensure surface num is valid
@@ -123,11 +123,11 @@ int G2_Add_Bolt_Surf_Num(const CGhoul2Info* ghl_info, boltInfo_v& bltlist, const
 
 void G2_Bolt_Not_Found(const char* bone_name);
 
-int G2_Add_Bolt(const CGhoul2Info* ghl_info, boltInfo_v& bltlist, const char* bone_name)
+int G2_Add_Bolt(const CGhoul2Info* ghl_info, boltInfo_v& bltlist, const surfaceInfo_v& slist, const char* bone_name)
 {
 	assert(ghl_info && ghl_info->mValid);
-	boltInfo_t temp_bolt;
-	uint32_t flags;
+	boltInfo_t			temp_bolt;
+	uint32_t			flags;
 
 	assert(G2_MODEL_OK(ghl_info));
 
@@ -217,7 +217,7 @@ int G2_Add_Bolt(const CGhoul2Info* ghl_info, boltInfo_v& bltlist, const char* bo
 		// if this bone entry has info in it, bounce over it
 		if (bltlist[i].boneNumber == -1 && bltlist[i].surface_number == -1)
 		{
-			// if we found an entry that had a -1 for the bonenumber, then we hit a bone slot that was empty
+			// if we found an entry that had a -1 for the bone number, then we hit a bone slot that was empty
 			bltlist[i].boneNumber = x;
 			bltlist[i].boltUsed = 1;
 			bltlist[i].surfaceType = 0;

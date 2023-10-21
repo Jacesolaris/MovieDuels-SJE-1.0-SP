@@ -156,14 +156,14 @@ using thandle_t = int32_t;
 using fxHandle_t = int32_t;
 using sfxHandle_t = int32_t;
 using fileHandle_t = int32_t;
-using clipHandle_t = int32_t;
+using clip_handle_t = int32_t;
 
 #define NULL_HANDLE ((qhandle_t)0)
 #define NULL_SOUND ((sfxHandle_t)0)
 #define NULL_FX ((fxHandle_t)0)
 #define NULL_SFX ((sfxHandle_t)0)
 #define NULL_FILE ((fileHandle_t)0)
-#define NULL_CLIP ((clipHandle_t)0)
+#define NULL_CLIP ((clip_handle_t)0)
 
 #define PAD(base, alignment)	(((base)+(alignment)-1) & ~((alignment)-1))
 #define PADLEN(base, alignment)	(PAD((base), (alignment)) - (base))
@@ -229,6 +229,7 @@ constexpr auto LS_NUM_STYLES = 32;
 #define	LS_SWITCH_START			(LS_STYLES_START+LS_NUM_STYLES)
 constexpr auto LS_NUM_SWITCH = 32;
 #define MAX_LIGHT_STYLES		64
+#define	LS_LSNONE			0xff
 
 // print levels from renderer (FIXME: set up for game / cgame?)
 using printParm_t = enum
@@ -394,7 +395,7 @@ public:
 	~COM_ParseSession() { COM_EndParseSession(); };
 };
 
-int COM_GetCurrentParseLine();
+int COM_GetCurrentParseLine(void);
 char* COM_Parse(const char** data_p);
 char* COM_ParseExt(const char** data_p, qboolean allow_line_breaks);
 int COM_Compress(char* data_p);
@@ -408,6 +409,7 @@ qboolean COM_ParseVec4(const char** buffer, vec4_t* c);
 void COM_MatchToken(char** buf_p, char* match);
 
 int Q_parseSaberColor(const char* p, float* color);
+qboolean SkipBracedSection(const char** program, int depth);
 void SkipBracedSection(const char** program);
 void SkipRestOfLine(const char** data);
 
@@ -616,7 +618,7 @@ using trace_t = struct
 using markFragment_t = struct
 {
 	int firstPoint;
-	int numPoints;
+	int num_points;
 };
 
 using orientation_t = struct
@@ -2950,8 +2952,8 @@ using entityState_t = struct entityState_s
 	vec3_t angles;
 	vec3_t angles2;
 
-	int otherEntityNum; // shotgun sources, etc
-	int otherEntityNum2;
+	int otherentity_num; // shotgun sources, etc
+	int otherentity_num2;
 
 	int groundEntityNum; // -1 = in air
 
@@ -3099,8 +3101,8 @@ using entityState_t = struct entityState_s
 		saved_game.write<float>(origin2);
 		saved_game.write<float>(angles);
 		saved_game.write<float>(angles2);
-		saved_game.write<int32_t>(otherEntityNum);
-		saved_game.write<int32_t>(otherEntityNum2);
+		saved_game.write<int32_t>(otherentity_num);
+		saved_game.write<int32_t>(otherentity_num2);
 		saved_game.write<int32_t>(groundEntityNum);
 		saved_game.write<int32_t>(constantLight);
 		saved_game.write<int32_t>(loopSound);
@@ -3218,8 +3220,8 @@ using entityState_t = struct entityState_s
 		saved_game.read<float>(origin2);
 		saved_game.read<float>(angles);
 		saved_game.read<float>(angles2);
-		saved_game.read<int32_t>(otherEntityNum);
-		saved_game.read<int32_t>(otherEntityNum2);
+		saved_game.read<int32_t>(otherentity_num);
+		saved_game.read<int32_t>(otherentity_num2);
 		saved_game.read<int32_t>(groundEntityNum);
 		saved_game.read<int32_t>(constantLight);
 		saved_game.read<int32_t>(loopSound);

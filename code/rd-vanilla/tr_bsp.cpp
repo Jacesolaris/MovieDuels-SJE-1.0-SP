@@ -375,7 +375,7 @@ static void ParseFace(const dsurface_t* ds, mapVert_t* verts, msurface_t* surf, 
 	p_face_data_buffer += sface_size;	// :-)
 
 	cv->surfaceType = SF_FACE;
-	cv->numPoints = num_points;
+	cv->num_points = num_points;
 	cv->numIndices = num_indexes;
 	cv->ofsIndices = ofs_indexes;
 

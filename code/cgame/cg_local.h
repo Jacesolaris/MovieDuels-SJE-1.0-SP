@@ -1033,20 +1033,20 @@ void cgi_RE_InitRendererTerrain(const char* terrainInfo);
 // model collision
 void cgi_CM_LoadMap(const char* mapname, qboolean subBSP);
 int cgi_CM_NumInlineModels();
-clipHandle_t cgi_CM_InlineModel(int index); // 0 = world, 1+ = bmodels
-clipHandle_t cgi_CM_TempBoxModel(const vec3_t mins, const vec3_t maxs); //, const int contents );
-int cgi_CM_PointContents(const vec3_t p, clipHandle_t model);
-int cgi_CM_TransformedPointContents(const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles);
+clip_handle_t cgi_CM_InlineModel(int index); // 0 = world, 1+ = bmodels
+clip_handle_t cgi_CM_TempBoxModel(const vec3_t mins, const vec3_t maxs); //, const int contents );
+int cgi_CM_PointContents(const vec3_t p, clip_handle_t model);
+int cgi_CM_TransformedPointContents(const vec3_t p, clip_handle_t model, const vec3_t origin, const vec3_t angles);
 void cgi_CM_BoxTrace(trace_t* results, const vec3_t start, const vec3_t end,
 	const vec3_t mins, const vec3_t maxs,
-	clipHandle_t model, int brushmask);
+	clip_handle_t model, int brushmask);
 void cgi_CM_TransformedBoxTrace(trace_t* results, const vec3_t start, const vec3_t end,
 	const vec3_t mins, const vec3_t maxs,
-	clipHandle_t model, int brushmask,
+	clip_handle_t model, int brushmask,
 	const vec3_t origin, const vec3_t angles);
 
 // Returns the projection of a polygon onto the solid brushes in the world
-int cgi_CM_MarkFragments(int numPoints, const vec3_t* points,
+int cgi_CM_MarkFragments(int num_points, const vec3_t* points,
 	const vec3_t projection,
 	int maxPoints, vec3_t pointBuffer,
 	int maxFragments, markFragment_t* fragmentBuffer);

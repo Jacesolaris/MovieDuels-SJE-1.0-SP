@@ -60,7 +60,7 @@ given entity.  If the entity is a bsp model, the headnode will
 be returned, otherwise a custom box tree will be constructed.
 ================
 */
-clipHandle_t SV_ClipHandleForEntity(const gentity_t* ent)
+clip_handle_t SV_ClipHandleForEntity(const gentity_t* ent)
 {
 	if (ent->bmodel)
 	{
@@ -159,7 +159,7 @@ void SV_ClearWorld()
 	sv_numworldSectors = 0;
 
 	// get world map bounds
-	const clipHandle_t h = CM_InlineModel(0);
+	const clip_handle_t h = CM_InlineModel(0);
 	CM_ModelBounds(h, mins, maxs);
 	SV_CreateworldSector(0, mins, maxs);
 }
@@ -670,7 +670,7 @@ void SV_ClipMoveToEntities(moveclip_t* clip)
 		}
 
 		// might intersect, so do an exact clip
-		clipHandle_t clipHandle = SV_ClipHandleForEntity(touch);
+		clip_handle_t clipHandle = SV_ClipHandleForEntity(touch);
 
 		const float* origin = touch->currentOrigin;
 		const float* angles = touch->currentAngles;
@@ -778,7 +778,7 @@ void SV_ClipMoveToEntities(moveclip_t* clip)
 				// set our trace record size
 				for (z = 0; z < MAX_G2_COLLISIONS; z++)
 				{
-					if (clip->trace.G2CollisionMap[z].mEntityNum != -1)
+					if (clip->trace.G2CollisionMap[z].mentity_num != -1)
 					{
 						oldTraceRecSize++;
 					}
@@ -825,7 +825,7 @@ void SV_ClipMoveToEntities(moveclip_t* clip)
 
 				for (z = 0; z < MAX_G2_COLLISIONS; z++)
 				{
-					if (clip->trace.G2CollisionMap[z].mEntityNum != -1)
+					if (clip->trace.G2CollisionMap[z].mentity_num != -1)
 					{
 						newTraceRecSize++;
 					}
@@ -840,7 +840,7 @@ void SV_ClipMoveToEntities(moveclip_t* clip)
 				{
 					for (z = 0; z < MAX_G2_COLLISIONS; z++)
 					{
-						if (clip->trace.G2CollisionMap[z].mEntityNum == touch->s.number)
+						if (clip->trace.G2CollisionMap[z].mentity_num == touch->s.number)
 						{
 							clip->trace.plane.normal[0] = clip->trace.G2CollisionMap[z].mCollisionNormal[0];
 							clip->trace.plane.normal[1] = clip->trace.G2CollisionMap[z].mCollisionNormal[1];
@@ -1011,7 +1011,7 @@ int SV_PointContents(const vec3_t p, const int pass_entity_num)
 			continue;
 		}
 		// might intersect, so do an exact clip
-		const clipHandle_t clipHandle = SV_ClipHandleForEntity(hit);
+		const clip_handle_t clipHandle = SV_ClipHandleForEntity(hit);
 
 		const int c2 = CM_TransformedPointContents(p, clipHandle, hit->s.origin, hit->s.angles);
 

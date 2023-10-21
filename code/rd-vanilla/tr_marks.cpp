@@ -232,7 +232,7 @@ void R_AddMarkFragments(int num_clip_points, vec3_t clip_points[2][MAX_VERTS_ON_
 
 	markFragment_t* mf = fragment_buffer + *returned_fragments;
 	mf->firstPoint = *returned_points;
-	mf->numPoints = num_clip_points;
+	mf->num_points = num_clip_points;
 	memcpy(point_buffer + *returned_points * 3, clip_points[ping_pong], num_clip_points * sizeof(vec3_t));
 
 	*returned_points += num_clip_points;

@@ -41,9 +41,9 @@ using refimport_t = struct
 	int (*Milliseconds)();
 
 	void (*Hunk_ClearToMark)();
-	void* (*Malloc)(int iSize, memtag_t eTag, qboolean zeroIt, int iAlign);
+	void* (*Malloc)(int i_size, memtag_t e_tag, qboolean zeroIt, int iAlign);
 	int (*Z_Free)(void* memory);
-	int (*Z_MemSize)(memtag_t eTag);
+	int (*Z_MemSize)(memtag_t e_tag);
 	void (*Z_MorphMallocTag)(void* pvBuffer, memtag_t eDesiredTag);
 
 	void (*Cmd_ExecuteString)(const char* text);
@@ -78,10 +78,10 @@ using refimport_t = struct
 	int (*FS_Write)(const void* buffer, int len, fileHandle_t f);
 	void (*FS_WriteFile)(const char* qpath, const void* buffer, int size);
 
-	void (*CM_DrawDebugSurface)(void (*drawPoly)(int color, int numPoints, const float* points));
+	void (*CM_DrawDebugSurface)(void (*drawPoly)(int color, int num_points, const float* points));
 	bool (*CM_CullWorldBox)(const cplane_t* frustrum, const vec3pair_t bounds);
 	byte* (*CM_ClusterPVS)(int cluster);
-	int (*CM_PointContents)(const vec3_t p, clipHandle_t model);
+	int (*CM_PointContents)(const vec3_t p, clip_handle_t model);
 	void (*S_RestartMusic)();
 	qboolean(*SND_RegisterAudio_LevelLoadEnd)(qboolean bDeleteEverythingNotUsedThisLevel);
 
@@ -113,7 +113,7 @@ using refimport_t = struct
 
 	ojk::ISavedGame* saved_game;
 
-	int (*SV_PointContents)(const vec3_t p, clipHandle_t model);
+	int (*SV_PointContents)(const vec3_t p, clip_handle_t model);
 
 	qboolean(*CM_DeleteCachedMap)(qboolean bGuaranteedOkToDelete); // NOT IN MP
 
@@ -221,12 +221,11 @@ using refexport_t = struct
 	void (*TempRawImage_CleanUp)();
 
 	//misc stuff
-	int (*MarkFragments)(int numPoints, const vec3_t* points, const vec3_t projection,
+	int (*MarkFragments)(int num_points, const vec3_t* points, const vec3_t projection,
 		int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t* fragmentBuffer);
 
 	//model stuff
-	void (*LerpTag)(orientation_t* tag, qhandle_t model, int start_frame, int end_frame,
-		float frac, const char* tagName);
+	int (*LerpTag)(orientation_t* tag, qhandle_t model, int start_frame, int end_frame, float frac, const char* tagName);
 	void (*ModelBounds)(qhandle_t model, vec3_t mins, vec3_t maxs);
 
 	void (*GetLightStyle)(int style, color4ub_t color);
@@ -280,8 +279,8 @@ using refexport_t = struct
 	// GHOUL 2 API
 	int (*G2API_AddBolt)(CGhoul2Info* ghl_info, const char* bone_name);
 	int (*G2API_AddBoltSurfNum)(CGhoul2Info* ghl_info, int surf_index);
-	int (*G2API_AddSurface)(CGhoul2Info* ghl_info, int surface_number, int polyNumber,
-		float BarycentricI, float BarycentricJ, int lod);
+	int (*G2API_AddSurface)(CGhoul2Info* ghl_info, int surface_number, int poly_number,
+		float barycentric_i, float barycentric_j, int lod);
 	void (*G2API_AnimateG2Models)(CGhoul2Info_v& ghoul2, int acurrent_time, CRagDollUpdateParams* params);
 	qboolean(*G2API_AttachEnt)(int* bolt_info, CGhoul2Info* ghlInfoTo, int toBoltIndex, int ent_num, int toModelNum);
 	qboolean(*G2API_AttachG2Model)(CGhoul2Info* ghl_info, CGhoul2Info* ghlInfoTo, int toBoltIndex, int toModel);
@@ -322,7 +321,7 @@ using refexport_t = struct
 	qboolean(*G2API_HaveWeGhoul2Models)(const CGhoul2Info_v& ghoul2);
 	qboolean(*G2API_IKMove)(CGhoul2Info_v& ghoul2, int time, sharedIKMoveParams_t* params);
 	int (*G2API_InitGhoul2Model)(CGhoul2Info_v& ghoul2, const char* fileName, int model_index,
-		qhandle_t customSkin, qhandle_t customShader, int modelFlags, int lodBias);
+		qhandle_t customSkin, qhandle_t custom_shader, int modelFlags, int lodBias);
 	qboolean(*G2API_IsPaused)(CGhoul2Info* ghl_info, const char* bone_name);
 	void (*G2API_ListBones)(CGhoul2Info* ghl_info, int frame);
 	void (*G2API_ListSurfaces)(CGhoul2Info* ghl_info);
@@ -357,10 +356,11 @@ using refexport_t = struct
 		Eorientations yaw, Eorientations pitch, Eorientations roll,
 		qhandle_t* model_list,
 		int blend_time, int acurrent_time);
-	qboolean(*G2API_SetBoneAnglesMatrix)(CGhoul2Info* ghl_info, const char* bone_name, const mdxaBone_t& matrix,
-		int flags, qhandle_t* model_list, int blend_time, int acurrent_time);
-	qboolean(*G2API_SetBoneAnglesMatrixIndex)(CGhoul2Info* ghl_info, int index, const mdxaBone_t& matrix,
-		int flags, qhandle_t* model_list, int blandeTime, int acurrent_time);
+
+	qboolean(*G2API_SetBoneAnglesMatrix)(CGhoul2Info* ghl_info, const char* bone_name, const mdxaBone_t& matrix,int flags, qhandle_t* model_list, int blend_time, int acurrent_time);
+
+	qboolean(*G2API_SetBoneAnglesMatrixIndex)(CGhoul2Info* ghl_info, int index, const mdxaBone_t& matrix,int flags, qhandle_t* model_list, int blandeTime, int acurrent_time);
+
 	qboolean(*G2API_SetBoneIKState)(CGhoul2Info_v& ghoul2, int time, const char* bone_name, int ikState,
 		sharedSetBoneIKStateParams_t* params);
 	qboolean(*G2API_SetGhoul2ModelFlags)(CGhoul2Info* ghl_info, int flags);
@@ -369,7 +369,7 @@ using refexport_t = struct
 	qboolean(*G2API_SetNewOrigin)(CGhoul2Info* ghl_info, int bolt_index);
 	void (*G2API_SetRagDoll)(CGhoul2Info_v& ghoul2, CRagDollParams* parms);
 	qboolean(*G2API_SetRootSurface)(CGhoul2Info_v& ghl_info, int model_index, const char* surface_name);
-	qboolean(*G2API_SetShader)(CGhoul2Info* ghl_info, qhandle_t customShader);
+	qboolean(*G2API_SetShader)(CGhoul2Info* ghl_info, qhandle_t custom_shader);
 	qboolean(*G2API_SetSkin)(CGhoul2Info* ghl_info, qhandle_t customSkin, qhandle_t renderSkin);
 	qboolean(*G2API_SetSurfaceOnOff)(CGhoul2Info* ghl_info, const char* surface_name, int flags);
 	void (*G2API_SetTime)(int current_time, int clock);
@@ -392,4 +392,4 @@ using refexport_t = struct
 // If the module can't init to a valid rendering state, NULL will be
 // returned.
 
-using GetRefAPI_t = refexport_t * (QDECL*)(int apiVersion, refimport_t* rimp);
+using get_ref_api_t = refexport_t * (QDECL*)(int apiVersion, refimport_t* rimp);

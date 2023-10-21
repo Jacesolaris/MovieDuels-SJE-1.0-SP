@@ -346,11 +346,11 @@ void R_AddMD3Surfaces(trRefEntity_t* ent) {
 	//
 	// draw all surfaces
 	//
-	const shader_t* main_shader = R_GetShaderByHandle(ent->e.customShader);
+	const shader_t* main_shader = R_GetShaderByHandle(ent->e.custom_shader);
 
 	auto surface = reinterpret_cast<md3Surface_t*>(reinterpret_cast<byte*>(header) + header->ofsSurfaces);
 	for (int i = 0; i < header->numSurfaces; i++) {
-		if (ent->e.customShader) {// a little more efficient
+		if (ent->e.custom_shader) {// a little more efficient
 			shader = main_shader;
 		}
 		else if (ent->e.customSkin > 0 && ent->e.customSkin < tr.numSkins) {

@@ -874,9 +874,9 @@ static qboolean SurfIsOffscreen(const drawSurf_t* draw_surf) {
 	RB_BeginSurface(shader, fog_num);
 	rb_surfaceTable[*draw_surf->surface](draw_surf->surface);
 
-	assert(tess.numVertexes < 128);
+	assert(tess.num_vertexes < 128);
 
-	for (i = 0; i < tess.numVertexes; i++)
+	for (i = 0; i < tess.num_vertexes; i++)
 	{
 		vec4_t eye;
 		vec4_t clip;
@@ -1265,6 +1265,7 @@ void R_AddEntitySurfaces() {
 		case RT_CLOUDS:
 		case RT_LINE:
 		case RT_ELECTRICITY:
+		case RT_LIGHTNING:
 		case RT_SABER_GLOW:
 			// self blood sprites, talk balloons, etc should not be drawn in the primary
 			// view.  We can't just do this check for all entities, because md3
@@ -1272,7 +1273,7 @@ void R_AddEntitySurfaces() {
 			if (ent->e.renderfx & RF_THIRD_PERSON && !tr.viewParms.is_portal) {
 				continue;
 			}
-			shader = R_GetShaderByHandle(ent->e.customShader);
+			shader = R_GetShaderByHandle(ent->e.custom_shader);
 			R_AddDrawSurf(&entitySurface, shader, R_SpriteFogNum(ent), 0);
 			break;
 

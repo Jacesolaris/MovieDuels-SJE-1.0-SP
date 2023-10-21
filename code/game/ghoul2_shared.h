@@ -251,9 +251,7 @@ struct boneInfo_t
 		animFrameMatrix(),
 		hasAnimFrameMatrix(0), airTime(0)
 	{
-		matrix.matrix[0][0] = matrix.matrix[0][1] = matrix.matrix[0][2] = matrix.matrix[0][3] =
-			matrix.matrix[1][0] = matrix.matrix[1][1] = matrix.matrix[1][2] = matrix.matrix[1][3] =
-			matrix.matrix[2][0] = matrix.matrix[2][1] = matrix.matrix[2][2] = matrix.matrix[2][3] = 0.0f;
+		Com_Memset(&matrix, 0, sizeof(matrix));
 	}
 
 	void sg_export(
@@ -457,7 +455,7 @@ constexpr auto GHOUL2_NORENDER = 0x002;
 constexpr auto GHOUL2_NOMODEL = 0x004;
 constexpr auto GHOUL2_NEWORIGIN = 0x008;
 
-// NOTE order in here matters. We save out from mModelindex to mFlags, but not the STL vectors that are at the top or the bottom.
+// NOTE order in here matters. We save out from mmodel_index to mFlags, but not the STL vectors that are at the top or the bottom.
 class CBoneCache;
 struct model_s;
 //struct mdxaHeader_t;
@@ -491,8 +489,8 @@ public:
 	boltInfo_v mBltlist;
 	boneInfo_v mBlist;
 	// save from here (do not put any ptrs etc within this save block unless you adds special handlers to G2_SaveGhoul2Models / G2_LoadGhoul2Models!!!!!!!!!!!!
-#define BSAVE_START_FIELD mModelindex	// this is the start point for loadsave, keep it up to date it you change anything
-	int mModelindex;
+#define BSAVE_START_FIELD mmodel_index	// this is the start point for loadsave, keep it up to date it you change anything
+	int mmodel_index;
 	int animModelIndexOffset;
 	qhandle_t mCustomShader;
 	qhandle_t mCustomSkin;
@@ -529,7 +527,7 @@ public:
 	const mdxaHeader_t* aHeader;
 
 	CGhoul2Info() :
-		mModelindex(-1),
+		mmodel_index(-1),
 		animModelIndexOffset(0),
 		mCustomShader(0),
 		mCustomSkin(0),
@@ -561,7 +559,7 @@ public:
 	void sg_export(
 		ojk::SavedGameHelper& saved_game) const
 	{
-		saved_game.write<int32_t>(mModelindex);
+		saved_game.write<int32_t>(mmodel_index);
 
 #ifndef JK2_MODE
 		saved_game.write<int32_t>(animModelIndexOffset);
@@ -589,7 +587,7 @@ public:
 	void sg_import(
 		ojk::SavedGameHelper& saved_game)
 	{
-		saved_game.read<int32_t>(mModelindex);
+		saved_game.read<int32_t>(mmodel_index);
 
 #ifndef JK2_MODE
 		saved_game.read<int32_t>(animModelIndexOffset);
@@ -800,7 +798,7 @@ class CCollisionRecord
 {
 public:
 	float mDistance;
-	int mEntityNum;
+	int mentity_num;
 	int mModelIndex;
 	int mPolyIndex;
 	int mSurfaceIndex;
@@ -814,7 +812,7 @@ public:
 
 	CCollisionRecord() :
 		mDistance(100000),
-		mEntityNum(-1), mModelIndex(0), mPolyIndex(0), mSurfaceIndex(0), mCollisionPosition{}, mCollisionNormal{},
+		mentity_num(-1), mModelIndex(0), mPolyIndex(0), mSurfaceIndex(0), mCollisionPosition{}, mCollisionNormal{},
 		mFlags(0),
 		mMaterial(0),
 		mLocation(0),
@@ -826,7 +824,7 @@ public:
 		ojk::SavedGameHelper& saved_game) const
 	{
 		saved_game.write<float>(mDistance);
-		saved_game.write<int32_t>(mEntityNum);
+		saved_game.write<int32_t>(mentity_num);
 		saved_game.write<int32_t>(mModelIndex);
 		saved_game.write<int32_t>(mPolyIndex);
 		saved_game.write<int32_t>(mSurfaceIndex);
@@ -843,7 +841,7 @@ public:
 		ojk::SavedGameHelper& saved_game)
 	{
 		saved_game.read<float>(mDistance);
-		saved_game.read<int32_t>(mEntityNum);
+		saved_game.read<int32_t>(mentity_num);
 		saved_game.read<int32_t>(mModelIndex);
 		saved_game.read<int32_t>(mPolyIndex);
 		saved_game.read<int32_t>(mSurfaceIndex);

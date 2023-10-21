@@ -249,9 +249,9 @@ using game_import_t = struct
 	int* VoiceVolume;
 
 	// dynamic memory allocator for things that need to be freed
-	void* (*Malloc)(int iSize, memtag_t eTag, qboolean bZeroIt); // see qcommon/tags.h for choices
+	void* (*Malloc)(int i_size, memtag_t e_tag, qboolean bZeroIt); // see qcommon/tags.h for choices
 	int (*Free)(void* buf);
-	qboolean(*bIsFromZone)(const void* buf, memtag_t eTag); // see qcommon/tags.h for choices
+	qboolean(*bIsFromZone)(const void* buf, memtag_t e_tag); // see qcommon/tags.h for choices
 
 	/*
 	Ghoul2 Insert Start
@@ -259,7 +259,7 @@ using game_import_t = struct
 	qhandle_t(*G2API_PrecacheGhoul2Model)(const char* fileName);
 
 	int (*G2API_InitGhoul2Model)(CGhoul2Info_v& ghoul2, const char* fileName, int model_index, qhandle_t customSkin,
-		qhandle_t customShader, int modelFlags, int lodBias);
+		qhandle_t custom_shader, int modelFlags, int lodBias);
 	qboolean(*G2API_SetSkin)(CGhoul2Info* ghl_info, qhandle_t customSkin, qhandle_t renderSkin);
 	qboolean(*G2API_SetBoneAnim)(CGhoul2Info* ghl_info, const char* bone_name, int start_frame, int end_frame,
 		int flags, float anim_speed, int current_time, float setFrame, int blend_time);
@@ -281,13 +281,13 @@ using game_import_t = struct
 		float anim_speed, int current_time, float setFrame, int blend_time);
 
 	qboolean(*G2API_SetLodBias)(CGhoul2Info* ghl_info, int lodBias);
-	qboolean(*G2API_SetShader)(CGhoul2Info* ghl_info, qhandle_t customShader);
+	qboolean(*G2API_SetShader)(CGhoul2Info* ghl_info, qhandle_t custom_shader);
 	qboolean(*G2API_RemoveGhoul2Model)(CGhoul2Info_v& ghl_info, int model_index);
 	qboolean(*G2API_SetSurfaceOnOff)(CGhoul2Info* ghl_info, const char* surface_name, int flags);
 	qboolean(*G2API_SetRootSurface)(CGhoul2Info_v& ghl_info, int model_index, const char* surface_name);
 	qboolean(*G2API_RemoveSurface)(CGhoul2Info* ghl_info, int index);
-	int (*G2API_AddSurface)(CGhoul2Info* ghl_info, int surface_number, int polyNumber, float BarycentricI,
-		float BarycentricJ, int lod);
+	int (*G2API_AddSurface)(CGhoul2Info* ghl_info, int surface_number, int poly_number, float barycentric_i,
+		float barycentric_j, int lod);
 	qboolean(*G2API_GetBoneAnim)(CGhoul2Info* ghl_info, const char* bone_name, int current_time, float* current_frame,
 		int* start_frame, int* end_frame, int* flags, float* anim_speed, int* model_list);
 	qboolean(*G2API_GetBoneAnimIndex)(CGhoul2Info* ghl_info, int i_bone_index, int current_time, float* current_frame,

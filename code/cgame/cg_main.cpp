@@ -482,6 +482,8 @@ vmCvar_t cg_jumpSounds;
 
 vmCvar_t cg_rollSounds;
 
+vmCvar_t cg_com_rend2;
+
 using cvarTable_t = struct
 {
 	vmCvar_t* vmCvar;
@@ -494,7 +496,7 @@ static cvarTable_t cvarTable[] = {
 	{&cg_autoswitch, "cg_autoswitch", "1", CVAR_ARCHIVE},
 	{&cg_drawGun, "cg_drawGun", "1", CVAR_ARCHIVE},
 	{&cg_fov, "cg_fov", "80", CVAR_ARCHIVE},
-	{&cg_fovAspectAdjust, "cg_fovAspectAdjust", "0", CVAR_ARCHIVE},
+	{&cg_fovAspectAdjust, "cg_fovAspectAdjust", "1", CVAR_ARCHIVE},
 	{&cg_stereoSeparation, "cg_stereoSeparation", "0.4", CVAR_ARCHIVE},
 	{&cg_shadows, "cg_shadows", "3", CVAR_ARCHIVE},
 	{&cg_renderToTextureFX, "cg_renderToTextureFX", "1", CVAR_ARCHIVE},
@@ -701,6 +703,8 @@ static cvarTable_t cvarTable[] = {
 	{&cg_jumpSounds, "cg_jumpSounds", "1", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART},
 
 	{&cg_rollSounds, "cg_rollSounds", "2", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART},
+
+	{ &cg_com_rend2, "com_rend2", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART },
 };
 
 static constexpr size_t cvarTableSize = std::size(cvarTable);
@@ -3323,7 +3327,7 @@ void CG_DrawNode(vec3_t origin, const int type)
 	ex->endTime = ex->startTime + 51;
 	VectorCopy(origin, ex->refEntity.origin);
 
-	ex->refEntity.customShader = cgi_R_RegisterShader("gfx/misc/nav_node");
+	ex->refEntity.custom_shader = cgi_R_RegisterShader("gfx/misc/nav_node");
 
 	float scale = 16.0f;
 
@@ -3376,7 +3380,7 @@ void CG_DrawRadius(vec3_t origin, const unsigned int radius, const int type)
 	ex->endTime = ex->startTime + 51;
 	VectorCopy(origin, ex->refEntity.origin);
 
-	ex->refEntity.customShader = cgi_R_RegisterShader("gfx/misc/nav_radius");
+	ex->refEntity.custom_shader = cgi_R_RegisterShader("gfx/misc/nav_radius");
 
 	switch (type)
 	{
@@ -3608,7 +3612,7 @@ void CG_DrawCombatPoint(vec3_t origin, int type)
 	ex->endTime = ex->startTime + 51;
 	VectorCopy(origin, ex->refEntity.origin);
 
-	ex->refEntity.customShader = cgi_R_RegisterShader("gfx/misc/nav_cpoint");
+	ex->refEntity.custom_shader = cgi_R_RegisterShader("gfx/misc/nav_cpoint");
 
 	ex->color[0] = 255;
 	ex->color[1] = 0;

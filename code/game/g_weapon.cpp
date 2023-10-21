@@ -276,7 +276,7 @@ int G_GetHitLocFromTrace(trace_t* trace, const int mod)
 	int hit_loc = HL_NONE;
 	for (auto& i : trace->G2CollisionMap)
 	{
-		if (i.mEntityNum == -1)
+		if (i.mentity_num == -1)
 		{
 			break;
 		}
@@ -284,8 +284,8 @@ int G_GetHitLocFromTrace(trace_t* trace, const int mod)
 		CCollisionRecord& coll = i;
 		if (coll.mFlags & G2_FRONTFACE)
 		{
-			G_GetHitLocFromSurfName(&g_entities[coll.mEntityNum],
-				gi.G2API_GetSurfaceName(&g_entities[coll.mEntityNum].ghoul2[coll.mModelIndex],
+			G_GetHitLocFromSurfName(&g_entities[coll.mentity_num],
+				gi.G2API_GetSurfaceName(&g_entities[coll.mentity_num].ghoul2[coll.mModelIndex],
 					coll.mSurfaceIndex), &hit_loc, coll.mCollisionPosition,
 				nullptr, nullptr, mod);
 			//we only want the first "entrance wound", so break
@@ -971,8 +971,8 @@ void WP_FireVehicleWeapon(gentity_t* ent, vec3_t start, vec3_t dir, const vehWea
 		{
 			missile->owner = ent;
 		}
-		missile->s.otherEntityNum = ent->s.number;
-		missile->s.otherEntityNum2 = veh_weapon - &g_vehWeaponInfo[0];
+		missile->s.otherentity_num = ent->s.number;
+		missile->s.otherentity_num2 = veh_weapon - &g_vehWeaponInfo[0];
 
 		if (veh_weapon->iLifeTime)
 		{

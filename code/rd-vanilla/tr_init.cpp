@@ -191,6 +191,8 @@ cvar_t* r_screenshotJpegQuality;
 
 cvar_t* g_Weather;
 
+cvar_t* r_com_rend2;
+
 #if !defined(__APPLE__)
 PFNGLSTENCILOPSEPARATEPROC qglStencilOpSeparate;
 #endif
@@ -301,6 +303,11 @@ void R_Splash()
 		qglTexCoord2f(1, 1);
 		qglVertex2f(x2, y2);
 		qglEnd();
+	}
+
+	if (r_com_rend2->integer != 0)
+	{
+		ri.Cvar_Set("com_rend2", "0");
 	}
 
 	ri.WIN_Present(&window);
@@ -1677,6 +1684,8 @@ void R_Register()
 	broadsword_ragtobase = ri.Cvar_Get("broadsword_ragtobase", "2", 0);
 	broadsword_dircap = ri.Cvar_Get("broadsword_dircap", "64", 0);
 
+	r_com_rend2 = ri.Cvar_Get("com_rend2", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
+
 	g_Weather = ri.Cvar_Get("r_weather", "0", CVAR_ARCHIVE);
 	/*
 	Ghoul2 Insert End
@@ -1972,7 +1981,7 @@ void RE_SVModelInit()
 
 /*
 @@@@@@@@@@@@@@@@@@@@@
-GetRefAPI
+get_ref_api
 
 @@@@@@@@@@@@@@@@@@@@@
 */
@@ -2003,7 +2012,7 @@ unsigned int AnyLanguage_ReadCharFromString_JK2(char** text, qboolean* pbIsTrail
 }
 #endif
 
-extern "C" Q_EXPORT refexport_t * QDECL GetRefAPI(const int api_version, const refimport_t * refimp) {
+extern "C" Q_EXPORT refexport_t * QDECL get_ref_api(const int api_version, const refimport_t * refimp) {
 	static refexport_t	re;
 
 	ri = *refimp;

@@ -80,13 +80,13 @@ static void DestroyGoreTexCoordinates(const int tag)
 }
 
 //TODO: This needs to be set via a scalability cvar with some reasonable minimum value if pgore is used at all
-#define MAX_GORE_RECORDS (500)
+constexpr auto MAX_GORE_RECORDS = 500;
 
 int AllocGoreRecord()
 {
 	while (GoreRecords.size() > MAX_GORE_RECORDS)
 	{
-		const int tag_high = (*GoreRecords.begin()).first & GORE_TAG_MASK;
+		const int tagHigh = (*GoreRecords.begin()).first & GORE_TAG_MASK;
 		std::map<int, GoreTextureCoordinates>::iterator it;
 
 		it = GoreRecords.begin();
@@ -99,7 +99,7 @@ int AllocGoreRecord()
 		GoreRecords.erase(GoreRecords.begin());
 		while (GoreRecords.size())
 		{
-			if (((*GoreRecords.begin()).first & GORE_TAG_MASK) != tag_high)
+			if (((*GoreRecords.begin()).first & GORE_TAG_MASK) != tagHigh)
 			{
 				break;
 			}
@@ -187,9 +187,9 @@ void DeleteGoreSet(const int goreSetTag)
 
 CGoreSet::~CGoreSet()
 {
-	for (const auto& m_gore_record : mGoreRecords)
+	for (auto i = mGoreRecords.begin(); i != mGoreRecords.end(); ++i)
 	{
-		DeleteGoreRecord(m_gore_record.second.mGoreTag);
+		DeleteGoreRecord((*i).second.mGoreTag);
 	}
 };
 #endif
@@ -287,9 +287,9 @@ public:
 
 // assorted Ghoul 2 functions.
 // list all surfaces associated with a model
-void G2_List_Model_Surfaces(const char* fileName)
+void G2_List_Model_Surfaces(const char* file_name)
 {
-	const model_t* mod_m = R_GetModelByHandle(RE_RegisterModel(fileName));
+	const model_t* mod_m = R_GetModelByHandle(RE_RegisterModel(file_name));
 
 	auto surf = reinterpret_cast<mdxmSurfHierarchy_t*>(reinterpret_cast<byte*>(mod_m->mdxm) + mod_m->mdxm->ofsSurfHierarchy);
 	auto surface = reinterpret_cast<mdxmSurface_t*>(reinterpret_cast<byte*>(mod_m->mdxm) + mod_m->mdxm->ofsLODs + sizeof(mdxmLOD_t));
@@ -313,7 +313,7 @@ void G2_List_Model_Surfaces(const char* fileName)
 }
 
 // list all bones associated with a model
-void G2_List_Model_Bones(const char* file_name)
+void G2_List_Model_Bones(const char* file_name, int frame)
 {
 	const model_t* mod_m = R_GetModelByHandle(RE_RegisterModel(file_name));
 	const model_t* mod_a = R_GetModelByHandle(mod_m->mdxm->animIndex);
@@ -379,12 +379,12 @@ qboolean G2_GetAnimFileName(const char* file_name, char** filename)
 
 int G2_DecideTraceLod(const CGhoul2Info& ghoul2, const int use_lod)
 {
-	int return_lod = use_lod;
+	int returnLod = use_lod;
 
 	// if we are overriding the LOD at top level, then we can afford to only check this level of model
-	if (ghoul2.mLodBias > return_lod)
+	if (ghoul2.mLodBias > returnLod)
 	{
-		return_lod = ghoul2.mLodBias;
+		returnLod = ghoul2.mLodBias;
 	}
 	assert(G2_MODEL_OK(&ghoul2));
 
@@ -393,76 +393,76 @@ int G2_DecideTraceLod(const CGhoul2Info& ghoul2, const int use_lod)
 	//what about r_lodBias?
 
 	// now ensure that we haven't selected a lod that doesn't exist for this model
-	if (return_lod >= ghoul2.current_model->mdxm->numLODs)
+	if (returnLod >= ghoul2.current_model->mdxm->numLODs)
 	{
-		return_lod = ghoul2.current_model->mdxm->numLODs - 1;
+		returnLod = ghoul2.current_model->mdxm->numLODs - 1;
 	}
 
-	return return_lod;
+	return returnLod;
 }
 
-void R_TransformEachSurface(const mdxmSurface_t* surface, vec3_t scale, CMiniHeap* g2_vert_space, intptr_t* transformed_verts_array, CBoneCache* bone_cache)
+void R_TransformEachSurface(const mdxmSurface_t* surface, vec3_t scale, CMiniHeap* G2VertSpace, intptr_t* TransformedVertsArray, CBoneCache* bone_cache)
 {
 	int				 j, k;
 
 	//
 	// deform the vertexes by the lerped bones
 	//
-	const int* pi_bone_references = reinterpret_cast<int*>((byte*)surface + surface->ofsBoneReferences);
+	const int* piBoneReferences = reinterpret_cast<int*>((byte*)surface + surface->ofsBoneReferences);
 
 	// alloc some space for the transformed verts to get put in
-	auto transformed_verts = reinterpret_cast<float*>(g2_vert_space->MiniHeapAlloc(surface->num_verts * 5 * 4));
-	transformed_verts_array[surface->thisSurfaceIndex] = reinterpret_cast<intptr_t>(transformed_verts);
-	if (!transformed_verts)
+	auto TransformedVerts = reinterpret_cast<float*>(G2VertSpace->MiniHeapAlloc(surface->num_verts * 5 * 4));
+	TransformedVertsArray[surface->thisSurfaceIndex] = reinterpret_cast<intptr_t>(TransformedVerts);
+	if (!TransformedVerts)
 	{
-		assert(transformed_verts);
+		assert(TransformedVerts);
 		Com_Error(ERR_DROP, "Ran out of transform space for Ghoul2 Models. Adjust G2_MINIHEAP_SIZE in sv_init.cpp.\n");
 	}
 
 	// whip through and actually transform each vertex
 	const int num_verts = surface->num_verts;
 	auto v = reinterpret_cast<mdxmVertex_t*>((byte*)surface + surface->ofsVerts);
-	const mdxmVertexTexCoord_t* p_tex_coords = reinterpret_cast<mdxmVertexTexCoord_t*>(&v[num_verts]);
+	const mdxmVertexTexCoord_t* pTexCoords = reinterpret_cast<mdxmVertexTexCoord_t*>(&v[num_verts]);
 
 	// optimisation issue
 	if (scale[0] != 1.0 || scale[1] != 1.0 || scale[2] != 1.0)
 	{
 		for (j = 0; j < num_verts; j++)
 		{
-			vec3_t			temp_vert, temp_normal;
+			vec3_t			tempVert, tempNormal;
 			//			mdxmWeight_t	*w;
 
-			VectorClear(temp_vert);
-			VectorClear(temp_normal);
+			VectorClear(tempVert);
+			VectorClear(tempNormal);
 			//			w = v->weights;
 
-			const int i_num_weights = G2_GetVertWeights(v);
+			const int iNumWeights = G2_GetVertWeights(v);
 
-			float f_total_weight = 0.0f;
-			for (k = 0; k < i_num_weights; k++)
+			float fTotalWeight = 0.0f;
+			for (k = 0; k < iNumWeights; k++)
 			{
-				const int		i_bone_index = G2_GetVertBoneIndex(v, k);
-				const float	f_bone_weight = G2_GetVertBoneWeight(v, k, f_total_weight, i_num_weights);
+				const int		iBoneIndex = G2_GetVertBoneIndex(v, k);
+				const float	fBoneWeight = G2_GetVertBoneWeight(v, k, fTotalWeight, iNumWeights);
 
-				const mdxaBone_t& bone = EvalBoneCache(pi_bone_references[i_bone_index], bone_cache);
+				const mdxaBone_t& bone = EvalBoneCache(piBoneReferences[iBoneIndex], bone_cache);
 
-				temp_vert[0] += f_bone_weight * (DotProduct(bone.matrix[0], v->vertCoords) + bone.matrix[0][3]);
-				temp_vert[1] += f_bone_weight * (DotProduct(bone.matrix[1], v->vertCoords) + bone.matrix[1][3]);
-				temp_vert[2] += f_bone_weight * (DotProduct(bone.matrix[2], v->vertCoords) + bone.matrix[2][3]);
+				tempVert[0] += fBoneWeight * (DotProduct(bone.matrix[0], v->vertCoords) + bone.matrix[0][3]);
+				tempVert[1] += fBoneWeight * (DotProduct(bone.matrix[1], v->vertCoords) + bone.matrix[1][3]);
+				tempVert[2] += fBoneWeight * (DotProduct(bone.matrix[2], v->vertCoords) + bone.matrix[2][3]);
 
-				temp_normal[0] += f_bone_weight * DotProduct(bone.matrix[0], v->normal);
-				temp_normal[1] += f_bone_weight * DotProduct(bone.matrix[1], v->normal);
-				temp_normal[2] += f_bone_weight * DotProduct(bone.matrix[2], v->normal);
+				tempNormal[0] += fBoneWeight * DotProduct(bone.matrix[0], v->normal);
+				tempNormal[1] += fBoneWeight * DotProduct(bone.matrix[1], v->normal);
+				tempNormal[2] += fBoneWeight * DotProduct(bone.matrix[2], v->normal);
 			}
 			int pos = j * 5;
 
 			// copy tranformed verts into temp space
-			transformed_verts[pos++] = temp_vert[0] * scale[0];
-			transformed_verts[pos++] = temp_vert[1] * scale[1];
-			transformed_verts[pos++] = temp_vert[2] * scale[2];
+			TransformedVerts[pos++] = tempVert[0] * scale[0];
+			TransformedVerts[pos++] = tempVert[1] * scale[1];
+			TransformedVerts[pos++] = tempVert[2] * scale[2];
 			// we will need the S & T coors too for hitlocation and hitmaterial stuff
-			transformed_verts[pos++] = p_tex_coords[j].texCoords[0];
-			transformed_verts[pos] = p_tex_coords[j].texCoords[1];
+			TransformedVerts[pos++] = pTexCoords[j].texCoords[0];
+			TransformedVerts[pos] = pTexCoords[j].texCoords[1];
 
 			v++;// = (mdxmVertex_t *)&v->weights[/*v->numWeights*/surface->maxVertBoneWeights];
 		}
@@ -472,69 +472,69 @@ void R_TransformEachSurface(const mdxmSurface_t* surface, vec3_t scale, CMiniHea
 		int pos = 0;
 		for (j = 0; j < num_verts; j++)
 		{
-			vec3_t			temp_vert, temp_normal;
+			vec3_t			tempVert, tempNormal;
 			//			const mdxmWeight_t	*w;
 
-			VectorClear(temp_vert);
-			VectorClear(temp_normal);
+			VectorClear(tempVert);
+			VectorClear(tempNormal);
 			//			w = v->weights;
 
-			const int i_num_weights = G2_GetVertWeights(v);
+			const int iNumWeights = G2_GetVertWeights(v);
 
-			float f_total_weight = 0.0f;
-			for (k = 0; k < i_num_weights; k++)
+			float fTotalWeight = 0.0f;
+			for (k = 0; k < iNumWeights; k++)
 			{
-				const int		i_bone_index = G2_GetVertBoneIndex(v, k);
-				const float	f_bone_weight = G2_GetVertBoneWeight(v, k, f_total_weight, i_num_weights);
+				const int		iBoneIndex = G2_GetVertBoneIndex(v, k);
+				const float	fBoneWeight = G2_GetVertBoneWeight(v, k, fTotalWeight, iNumWeights);
 
-				const mdxaBone_t& bone = EvalBoneCache(pi_bone_references[i_bone_index], bone_cache);
+				const mdxaBone_t& bone = EvalBoneCache(piBoneReferences[iBoneIndex], bone_cache);
 
-				temp_vert[0] += f_bone_weight * (DotProduct(bone.matrix[0], v->vertCoords) + bone.matrix[0][3]);
-				temp_vert[1] += f_bone_weight * (DotProduct(bone.matrix[1], v->vertCoords) + bone.matrix[1][3]);
-				temp_vert[2] += f_bone_weight * (DotProduct(bone.matrix[2], v->vertCoords) + bone.matrix[2][3]);
+				tempVert[0] += fBoneWeight * (DotProduct(bone.matrix[0], v->vertCoords) + bone.matrix[0][3]);
+				tempVert[1] += fBoneWeight * (DotProduct(bone.matrix[1], v->vertCoords) + bone.matrix[1][3]);
+				tempVert[2] += fBoneWeight * (DotProduct(bone.matrix[2], v->vertCoords) + bone.matrix[2][3]);
 
-				temp_normal[0] += f_bone_weight * DotProduct(bone.matrix[0], v->normal);
-				temp_normal[1] += f_bone_weight * DotProduct(bone.matrix[1], v->normal);
-				temp_normal[2] += f_bone_weight * DotProduct(bone.matrix[2], v->normal);
+				tempNormal[0] += fBoneWeight * DotProduct(bone.matrix[0], v->normal);
+				tempNormal[1] += fBoneWeight * DotProduct(bone.matrix[1], v->normal);
+				tempNormal[2] += fBoneWeight * DotProduct(bone.matrix[2], v->normal);
 			}
 
 			// copy tranformed verts into temp space
-			transformed_verts[pos++] = temp_vert[0];
-			transformed_verts[pos++] = temp_vert[1];
-			transformed_verts[pos++] = temp_vert[2];
+			TransformedVerts[pos++] = tempVert[0];
+			TransformedVerts[pos++] = tempVert[1];
+			TransformedVerts[pos++] = tempVert[2];
 			// we will need the S & T coors too for hitlocation and hitmaterial stuff
-			transformed_verts[pos++] = p_tex_coords[j].texCoords[0];
-			transformed_verts[pos++] = p_tex_coords[j].texCoords[1];
+			TransformedVerts[pos++] = pTexCoords[j].texCoords[0];
+			TransformedVerts[pos++] = pTexCoords[j].texCoords[1];
 
 			v++;// = (mdxmVertex_t *)&v->weights[/*v->numWeights*/surface->maxVertBoneWeights];
 		}
 	}
 }
 
-void G2_TransformSurfaces(const int surface_num, surfaceInfo_v& root_s_list,
-	CBoneCache* bone_cache, const model_t* current_model, const int lod, vec3_t scale, CMiniHeap* g2_vert_space, intptr_t* transformed_vert_array, const bool second_time_around)
+void G2_TransformSurfaces(const int surface_num, surfaceInfo_v& rootSList,
+	CBoneCache* bone_cache, const model_t* current_model, const int lod, vec3_t scale, CMiniHeap* G2VertSpace, intptr_t* TransformedVertArray, const bool secondTimeAround)
 {
 	assert(current_model);
 	assert(current_model->mdxm);
 	// back track and get the surfinfo struct for this surface
 	const mdxmSurface_t* surface = static_cast<mdxmSurface_t*>(G2_FindSurface(current_model, surface_num, lod));
-	const mdxmHierarchyOffsets_t* surf_indexes = reinterpret_cast<mdxmHierarchyOffsets_t*>(reinterpret_cast<byte*>(current_model->mdxm) + sizeof(mdxmHeader_t));
-	const mdxmSurfHierarchy_t* surf_info = reinterpret_cast<mdxmSurfHierarchy_t*>((byte*)surf_indexes + surf_indexes->offsets[surface->thisSurfaceIndex]);
+	const mdxmHierarchyOffsets_t* surfIndexes = reinterpret_cast<mdxmHierarchyOffsets_t*>(reinterpret_cast<byte*>(current_model->mdxm) + sizeof(mdxmHeader_t));
+	const mdxmSurfHierarchy_t* surfInfo = reinterpret_cast<mdxmSurfHierarchy_t*>((byte*)surfIndexes + surfIndexes->offsets[surface->thisSurfaceIndex]);
 
 	// see if we have an override surface in the surface list
-	const surfaceInfo_t* surf_override = G2_FindOverrideSurface(surface_num, root_s_list);
+	const surfaceInfo_t* surfOverride = G2_FindOverrideSurface(surface_num, rootSList);
 
 	// really, we should use the default flags for this surface unless it's been overriden
-	int off_flags = surf_info->flags;
+	int off_flags = surfInfo->flags;
 
-	if (surf_override)
+	if (surfOverride)
 	{
-		off_flags = surf_override->off_flags;
+		off_flags = surfOverride->off_flags;
 	}
 	// if this surface is not off, add it to the shader render list
 	if (!off_flags)
 	{
-		R_TransformEachSurface(surface, scale, g2_vert_space, transformed_vert_array, bone_cache);
+		R_TransformEachSurface(surface, scale, G2VertSpace, TransformedVertArray, bone_cache);
 	}
 
 	// if we are turning off all descendants, then stop this recursion now
@@ -544,27 +544,27 @@ void G2_TransformSurfaces(const int surface_num, surfaceInfo_v& root_s_list,
 	}
 
 	// now recursively call for the children
-	for (int i = 0; i < surf_info->numChildren; i++)
+	for (int i = 0; i < surfInfo->numChildren; i++)
 	{
-		G2_TransformSurfaces(surf_info->childIndexes[i], root_s_list, bone_cache, current_model, lod, scale, g2_vert_space, transformed_vert_array, second_time_around);
+		G2_TransformSurfaces(surfInfo->childIndexes[i], rootSList, bone_cache, current_model, lod, scale, G2VertSpace, TransformedVertArray, secondTimeAround);
 	}
 }
 
 // main calling point for the model transform for collision detection. At this point all of the skeleton has been transformed.
 #ifdef _G2_GORE
-void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frame_num, vec3_t scale, CMiniHeap* g2_vert_space, int use_lod, const bool apply_gore, const SSkinGoreData* gore)
+void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frame_num, vec3_t scale, CMiniHeap* G2VertSpace, int use_lod, const bool ApplyGore, const SSkinGoreData* gore)
 #else
-void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frame_num, vec3_t scale, CMiniHeap* g2_vert_space, int use_lod)
+void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frame_num, vec3_t scale, CMiniHeap* G2VertSpace, int use_lod)
 #endif
 {
 	int lod;
-	vec3_t			correct_scale;
+	vec3_t			correctScale;
 
 #if !defined(JK2_MODE) || defined(_G2_GORE)
-	qboolean		first_model_only = qfalse;
+	qboolean		firstModelOnly = qfalse;
 #endif // !JK2_MODE || _G2_GORE
 
-#ifndef JK2_MODE
+#ifdef _G2_GORE
 	if (cg_g2MarksAllModels == nullptr)
 	{
 		cg_g2MarksAllModels = ri.Cvar_Get("cg_g2MarksAllModels", "0", 0);
@@ -573,7 +573,7 @@ void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frame_num, vec3_t scale,
 	if (cg_g2MarksAllModels == nullptr
 		|| !cg_g2MarksAllModels->integer)
 	{
-		first_model_only = qtrue;
+		firstModelOnly = qtrue;
 	}
 #endif // !JK2_MODE
 
@@ -581,23 +581,23 @@ void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frame_num, vec3_t scale,
 	if (gore
 		&& gore->firstModel > 0)
 	{
-		first_model_only = qfalse;
+		firstModelOnly = qfalse;
 	}
 #endif
 
-	VectorCopy(scale, correct_scale);
+	VectorCopy(scale, correctScale);
 	// check for scales of 0 - that's the default I believe
 	if (!scale[0])
 	{
-		correct_scale[0] = 1.0;
+		correctScale[0] = 1.0;
 	}
 	if (!scale[1])
 	{
-		correct_scale[1] = 1.0;
+		correctScale[1] = 1.0;
 	}
 	if (!scale[2])
 	{
-		correct_scale[2] = 1.0;
+		correctScale[2] = 1.0;
 	}
 
 	// walk each possible model for this entity and try rendering it out
@@ -616,14 +616,14 @@ void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frame_num, vec3_t scale,
 
 		// decide the LOD
 #ifdef _G2_GORE
-		if (apply_gore)
+		if (ApplyGore)
 		{
 			lod = use_lod;
 			assert(g.current_model);
 			if (lod >= g.current_model->numLods)
 			{
 				g.mTransformedVertsArray = nullptr;
-				if (first_model_only)
+				if (firstModelOnly)
 				{
 					// we don't really need to do multiple models for gore.
 					return;
@@ -639,7 +639,7 @@ void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frame_num, vec3_t scale,
 		}
 
 		// give us space for the transformed vertex array to be put in
-		g.mTransformedVertsArray = reinterpret_cast<intptr_t*>(g2_vert_space->MiniHeapAlloc(g.current_model->mdxm->numSurfaces * sizeof(intptr_t)));
+		g.mTransformedVertsArray = reinterpret_cast<intptr_t*>(G2VertSpace->MiniHeapAlloc(g.current_model->mdxm->numSurfaces * sizeof(intptr_t)));
 		if (!g.mTransformedVertsArray)
 		{
 			Com_Error(ERR_DROP, "Ran out of transform space for Ghoul2 Models. Adjust G2_MINIHEAP_SIZE in sv_init.cpp.\n");
@@ -649,11 +649,11 @@ void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frame_num, vec3_t scale,
 
 		G2_FindOverrideSurface(-1, g.mSlist); //reset the quick surface override lookup;
 		// recursively call the model surface transform
-		G2_TransformSurfaces(g.mSurfaceRoot, g.mSlist, g.mBoneCache, g.current_model, lod, correct_scale, g2_vert_space, g.mTransformedVertsArray, false);
+		G2_TransformSurfaces(g.mSurfaceRoot, g.mSlist, g.mBoneCache, g.current_model, lod, correctScale, G2VertSpace, g.mTransformedVertsArray, false);
 
 #ifdef _G2_GORE
 
-		if (apply_gore && first_model_only)
+		if (ApplyGore && firstModelOnly)
 		{
 			// we don't really need to do multiple models for gore.
 			break;
@@ -680,13 +680,13 @@ static void G2_BuildHitPointST(const vec3_t A, const float SA, const float TA,
 	const vec3_t C, const float SC, const float TC,
 	const vec3_t P, float* s, float* t, float& bary_i, float& bary_j)
 {
-	const float	area_abc = G2_AreaOfTri(A, B, C);
+	const float	areaABC = G2_AreaOfTri(A, B, C);
 
-	const float i = G2_AreaOfTri(P, B, C) / area_abc;
+	const float i = G2_AreaOfTri(P, B, C) / areaABC;
 	bary_i = i;
-	const float j = G2_AreaOfTri(A, P, C) / area_abc;
+	const float j = G2_AreaOfTri(A, P, C) / areaABC;
 	bary_j = j;
-	const float k = G2_AreaOfTri(A, B, P) / area_abc;
+	const float k = G2_AreaOfTri(A, B, P) / areaABC;
 
 	*s = SA * i + SB * j + SC * k;
 	*t = TA * i + TB * j + TC * k;
@@ -707,33 +707,33 @@ static void G2_BuildHitPointST(const vec3_t A, const float SA, const float TA,
 // routine that works out given a ray whether or not it hits a poly
 static qboolean G2_SegmentTriangleTest(const vec3_t start, const vec3_t end,
 	const vec3_t A, const vec3_t B, const vec3_t C,
-	const qboolean back_faces, const qboolean front_faces, vec3_t returned_point, vec3_t returned_normal, float* denom)
+	const qboolean backFaces, const qboolean frontFaces, vec3_t returnedPoint, vec3_t returnedNormal, float* denom)
 {
 	static constexpr float tiny = 1E-10f;
-	vec3_t returned_normal_t;
-	vec3_t edge_ac;
+	vec3_t returnedNormalT;
+	vec3_t edgeAC;
 
-	VectorSubtract(C, A, edge_ac);
-	VectorSubtract(B, A, returned_normal_t);
+	VectorSubtract(C, A, edgeAC);
+	VectorSubtract(B, A, returnedNormalT);
 
-	CrossProduct(returned_normal_t, edge_ac, returned_normal);
+	CrossProduct(returnedNormalT, edgeAC, returnedNormal);
 
 	vec3_t ray;
 	VectorSubtract(end, start, ray);
 
-	*denom = DotProduct(ray, returned_normal);
+	*denom = DotProduct(ray, returnedNormal);
 
 	if (Q_fabs(*denom) < tiny ||        // triangle parallel to ray
-		!back_faces && *denom > 0 ||		// not accepting back faces
-		!front_faces && *denom < 0)		//not accepting front faces
+		!backFaces && *denom > 0 ||		// not accepting back faces
+		!frontFaces && *denom < 0)		//not accepting front faces
 	{
 		return qfalse;
 	}
 
-	vec3_t to_plane;
-	VectorSubtract(A, start, to_plane);
+	vec3_t toPlane;
+	VectorSubtract(A, start, toPlane);
 
-	const float t = DotProduct(to_plane, returned_normal) / *denom;
+	const float t = DotProduct(toPlane, returnedNormal) / *denom;
 
 	if (t < 0.0f || t>1.0f)
 	{
@@ -742,33 +742,33 @@ static qboolean G2_SegmentTriangleTest(const vec3_t start, const vec3_t end,
 
 	VectorScale(ray, t, ray);
 
-	VectorAdd(ray, start, returned_point);
+	VectorAdd(ray, start, returnedPoint);
 
-	vec3_t edge_pa;
-	VectorSubtract(A, returned_point, edge_pa);
+	vec3_t edgePA;
+	VectorSubtract(A, returnedPoint, edgePA);
 
-	vec3_t edge_pb;
-	VectorSubtract(B, returned_point, edge_pb);
+	vec3_t edgePB;
+	VectorSubtract(B, returnedPoint, edgePB);
 
-	vec3_t edge_pc;
-	VectorSubtract(C, returned_point, edge_pc);
+	vec3_t edgePC;
+	VectorSubtract(C, returnedPoint, edgePC);
 
 	vec3_t temp;
 
-	CrossProduct(edge_pa, edge_pb, temp);
-	if (DotProduct(temp, returned_normal) < 0.0f)
+	CrossProduct(edgePA, edgePB, temp);
+	if (DotProduct(temp, returnedNormal) < 0.0f)
 	{
 		return qfalse; // off triangle
 	}
 
-	CrossProduct(edge_pc, edge_pa, temp);
-	if (DotProduct(temp, returned_normal) < 0.0f)
+	CrossProduct(edgePC, edgePA, temp);
+	if (DotProduct(temp, returnedNormal) < 0.0f)
 	{
 		return qfalse; // off triangle
 	}
 
-	CrossProduct(edge_pb, edge_pc, temp);
-	if (DotProduct(temp, returned_normal) < 0.0f)
+	CrossProduct(edgePB, edgePC, temp);
+	if (DotProduct(temp, returnedNormal) < 0.0f)
 	{
 		return qfalse; // off triangle
 	}
@@ -788,19 +788,19 @@ struct SVertexTemp
 	}
 };
 
-#define MAX_GORE_VERTS (3000)
+constexpr auto MAX_GORE_VERTS = 3000;
 static SVertexTemp GoreVerts[MAX_GORE_VERTS];
 static int GoreIndexCopy[MAX_GORE_VERTS];
 static int GoreTouch = 1;
 
-#define MAX_GORE_INDECIES (6000)
+constexpr auto MAX_GORE_INDECIES = 6000;
 static int GoreIndecies[MAX_GORE_INDECIES];
 
-#define GORE_MARGIN (0.0f)
+constexpr auto GORE_MARGIN = 0.0f;
 int	G2API_GetTime(int arg_time);
 
 // now we at poly level, check each model space transformed poly against the model world transfomed ray
-static void G2_GorePolys(const mdxmSurface_t* surface, CTraceSurface& ts)
+static void G2_GorePolys(const mdxmSurface_t* surface, CTraceSurface& TS, const mdxmSurfHierarchy_t* surfInfo)
 {
 	int			j;
 	vec3_t basis1;
@@ -808,37 +808,37 @@ static void G2_GorePolys(const mdxmSurface_t* surface, CTraceSurface& ts)
 	vec3_t taxis;
 	vec3_t saxis;
 
-	if (!ts.gore)
+	if (!TS.gore)
 	{
 		return;
 	}
 
-	if (!ts.gore->useTheta)
+	if (!TS.gore->useTheta)
 	{
-		VectorCopy(ts.gore->uaxis, basis2);
-		CrossProduct(ts.rayEnd, basis2, basis1);
+		VectorCopy(TS.gore->uaxis, basis2);
+		CrossProduct(TS.rayEnd, basis2, basis1);
 		if (DotProduct(basis1, basis1) < 0.005f)
 		{	//shot dir and slash dir are too close
 			return;
 		}
 	}
 
-	if (ts.gore->useTheta)
+	if (TS.gore->useTheta)
 	{
 		basis2[0] = 0.0f;
 		basis2[1] = 0.0f;
 		basis2[2] = 1.0f;
 
-		CrossProduct(ts.rayEnd, basis2, basis1);
+		CrossProduct(TS.rayEnd, basis2, basis1);
 
 		if (DotProduct(basis1, basis1) < .1f)
 		{
 			basis2[0] = 0.0f;
 			basis2[1] = 1.0f;
 			basis2[2] = 0.0f;
-			CrossProduct(ts.rayEnd, basis2, basis1);
+			CrossProduct(TS.rayEnd, basis2, basis1);
 		}
-		CrossProduct(ts.rayEnd, basis1, basis2);
+		CrossProduct(TS.rayEnd, basis1, basis2);
 	}
 
 	// Give me a shot direction not a bunch of zeros :) -Gil
@@ -848,17 +848,17 @@ static void G2_GorePolys(const mdxmSurface_t* surface, CTraceSurface& ts)
 	VectorNormalize(basis1);
 	VectorNormalize(basis2);
 
-	const float c = cos(ts.theta);
-	const float s = sin(ts.theta);
+	const float c = cos(TS.theta);
+	const float s = sin(TS.theta);
 
-	VectorScale(basis1, .5f * c / ts.tsize, taxis);
-	VectorMA(taxis, .5f * s / ts.tsize, basis2, taxis);
+	VectorScale(basis1, .5f * c / TS.tsize, taxis);
+	VectorMA(taxis, .5f * s / TS.tsize, basis2, taxis);
 
-	VectorScale(basis1, -.5f * s / ts.ssize, saxis);
-	VectorMA(saxis, .5f * c / ts.ssize, basis2, saxis);
+	VectorScale(basis1, -.5f * s / TS.ssize, saxis);
+	VectorMA(saxis, .5f * c / TS.ssize, basis2, saxis);
 
 	//fixme, everything above here should be pre-calculated in G2API_AddSkinGore
-	const float* verts = reinterpret_cast<float*>(ts.TransformedVertsArray[surface->thisSurfaceIndex]);
+	const float* verts = reinterpret_cast<float*>(TS.TransformedVertsArray[surface->thisSurfaceIndex]);
 	const int num_verts = surface->num_verts;
 	int flags = 63;
 	assert(num_verts < MAX_GORE_VERTS);
@@ -866,12 +866,12 @@ static void G2_GorePolys(const mdxmSurface_t* surface, CTraceSurface& ts)
 	{
 		const int pos = j * 5;
 		vec3_t delta{};
-		delta[0] = verts[pos + 0] - ts.rayStart[0];
-		delta[1] = verts[pos + 1] - ts.rayStart[1];
-		delta[2] = verts[pos + 2] - ts.rayStart[2];
+		delta[0] = verts[pos + 0] - TS.rayStart[0];
+		delta[1] = verts[pos + 1] - TS.rayStart[1];
+		delta[2] = verts[pos + 2] - TS.rayStart[2];
 		const float x = DotProduct(delta, saxis) + 0.5f;
 		const float t = DotProduct(delta, taxis) + 0.5f;
-		const float depth = DotProduct(delta, ts.rayEnd);
+		const float depth = DotProduct(delta, TS.rayEnd);
 		int vflags = 0;
 		if (x > GORE_MARGIN)
 		{
@@ -889,11 +889,11 @@ static void G2_GorePolys(const mdxmSurface_t* surface, CTraceSurface& ts)
 		{
 			vflags |= 8;
 		}
-		if (depth > ts.gore->depthStart)
+		if (depth > TS.gore->depthStart)
 		{
 			vflags |= 16;
 		}
-		if (depth < ts.gore->depthEnd)
+		if (depth < TS.gore->depthEnd)
 		{
 			vflags |= 32;
 		}
@@ -907,13 +907,13 @@ static void G2_GorePolys(const mdxmSurface_t* surface, CTraceSurface& ts)
 	{
 		return; // completely off the gore splotch.
 	}
-	const int num_tris = surface->numTriangles;
+	const int numTris = surface->numTriangles;
 	const mdxmTriangle_t* tris = reinterpret_cast<mdxmTriangle_t*>((byte*)surface + surface->ofsTriangles);
-	verts = reinterpret_cast<float*>(ts.TransformedVertsArray[surface->thisSurfaceIndex]);
-	int new_num_tris = 0;
-	int new_num_verts = 0;
+	verts = reinterpret_cast<float*>(TS.TransformedVertsArray[surface->thisSurfaceIndex]);
+	int newNumTris = 0;
+	int newNumVerts = 0;
 	GoreTouch++;
-	for (j = 0; j < num_tris; j++)
+	for (j = 0; j < numTris; j++)
 	{
 		assert(tris[j].indexes[0] >= 0 && tris[j].indexes[0] < num_verts);
 		assert(tris[j].indexes[1] >= 0 && tris[j].indexes[1] < num_verts);
@@ -926,7 +926,7 @@ static void G2_GorePolys(const mdxmSurface_t* surface, CTraceSurface& ts)
 		{
 			continue;
 		}
-		if (!ts.gore->frontFaces || !ts.gore->backFaces)
+		if (!TS.gore->frontFaces || !TS.gore->backFaces)
 		{
 			// we need to back/front face cull
 			vec3_t e1, e2, n;
@@ -934,94 +934,94 @@ static void G2_GorePolys(const mdxmSurface_t* surface, CTraceSurface& ts)
 			VectorSubtract(&verts[tris[j].indexes[1] * 5], &verts[tris[j].indexes[0] * 5], e1);
 			VectorSubtract(&verts[tris[j].indexes[2] * 5], &verts[tris[j].indexes[0] * 5], e2);
 			CrossProduct(e1, e2, n);
-			if (DotProduct(ts.rayEnd, n) > 0.0f)
+			if (DotProduct(TS.rayEnd, n) > 0.0f)
 			{
-				if (!ts.gore->frontFaces)
+				if (!TS.gore->frontFaces)
 				{
 					continue;
 				}
 			}
 			else
 			{
-				if (!ts.gore->backFaces)
+				if (!TS.gore->backFaces)
 				{
 					continue;
 				}
 			}
 		}
 
-		assert(new_num_tris * 3 + 3 < MAX_GORE_INDECIES);
+		assert(newNumTris * 3 + 3 < MAX_GORE_INDECIES);
 		for (int k = 0; k < 3; k++)
 		{
 			if (GoreVerts[tris[j].indexes[k]].touch == GoreTouch)
 			{
-				GoreIndecies[new_num_tris * 3 + k] = GoreVerts[tris[j].indexes[k]].newindex;
+				GoreIndecies[newNumTris * 3 + k] = GoreVerts[tris[j].indexes[k]].newindex;
 			}
 			else
 			{
 				GoreVerts[tris[j].indexes[k]].touch = GoreTouch;
-				GoreVerts[tris[j].indexes[k]].newindex = new_num_verts;
-				GoreIndecies[new_num_tris * 3 + k] = new_num_verts;
-				GoreIndexCopy[new_num_verts] = tris[j].indexes[k];
-				new_num_verts++;
+				GoreVerts[tris[j].indexes[k]].newindex = newNumVerts;
+				GoreIndecies[newNumTris * 3 + k] = newNumVerts;
+				GoreIndexCopy[newNumVerts] = tris[j].indexes[k];
+				newNumVerts++;
 			}
 		}
-		new_num_tris++;
+		newNumTris++;
 	}
-	if (!new_num_verts)
+	if (!newNumVerts)
 	{
 		return;
 	}
 
-	int new_tag;
-	const auto f = GoreTagsTemp.find(std::make_pair(goreModelIndex, ts.surface_num));
+	int newTag;
+	const auto f = GoreTagsTemp.find(std::make_pair(goreModelIndex, TS.surface_num));
 	if (f == GoreTagsTemp.end()) // need to generate a record
 	{
-		new_tag = AllocGoreRecord();
-		CGoreSet* gore_set = nullptr;
-		if (ts.ghoul2info->mGoreSetTag)
+		newTag = AllocGoreRecord();
+		CGoreSet* goreSet = nullptr;
+		if (TS.ghoul2info->mGoreSetTag)
 		{
-			gore_set = FindGoreSet(ts.ghoul2info->mGoreSetTag);
+			goreSet = FindGoreSet(TS.ghoul2info->mGoreSetTag);
 		}
-		if (!gore_set)
+		if (!goreSet)
 		{
-			gore_set = NewGoreSet();
-			ts.ghoul2info->mGoreSetTag = gore_set->mMyGoreSetTag;
+			goreSet = NewGoreSet();
+			TS.ghoul2info->mGoreSetTag = goreSet->mMyGoreSetTag;
 		}
-		assert(gore_set);
+		assert(goreSet);
 		SGoreSurface add{};
-		add.shader = ts.goreShader;
+		add.shader = TS.goreShader;
 		add.mDeleteTime = 0;
-		if (ts.gore->lifeTime)
+		if (TS.gore->lifeTime)
 		{
-			add.mDeleteTime = G2API_GetTime(0) + ts.gore->lifeTime;
+			add.mDeleteTime = G2API_GetTime(0) + TS.gore->lifeTime;
 		}
-		add.mFadeTime = ts.gore->fadeOutTime;
-		add.mFadeRGB = ts.gore->fadeRGB;
-		add.mGoreTag = new_tag;
+		add.mFadeTime = TS.gore->fadeOutTime;
+		add.mFadeRGB = TS.gore->fadeRGB;
+		add.mGoreTag = newTag;
 
 		add.mGoreGrowStartTime = G2API_GetTime(0);
-		if (ts.gore->growDuration == -1)
+		if (TS.gore->growDuration == -1)
 		{
 			add.mGoreGrowEndTime = -1;    // set this to -1 to disable growing
 		}
 		else
 		{
-			add.mGoreGrowEndTime = G2API_GetTime(0) + ts.gore->growDuration;
+			add.mGoreGrowEndTime = G2API_GetTime(0) + TS.gore->growDuration;
 		}
 
-		assert(ts.gore->growDuration != 0);
-		add.mGoreGrowFactor = (1.0f - ts.gore->goreScaleStartFraction) / static_cast<float>(ts.gore->growDuration);	//curscale = (curtime-mGoreGrowStartTime)*mGoreGrowFactor;
-		add.mGoreGrowOffset = ts.gore->goreScaleStartFraction;
+		assert(TS.gore->growDuration != 0);
+		add.mGoreGrowFactor = (1.0f - TS.gore->goreScaleStartFraction) / static_cast<float>(TS.gore->growDuration);	//curscale = (curtime-mGoreGrowStartTime)*mGoreGrowFactor;
+		add.mGoreGrowOffset = TS.gore->goreScaleStartFraction;
 
-		gore_set->mGoreRecords.insert(std::make_pair(ts.surface_num, add));
-		GoreTagsTemp[std::make_pair(goreModelIndex, ts.surface_num)] = new_tag;
+		goreSet->mGoreRecords.insert(std::make_pair(TS.surface_num, add));
+		GoreTagsTemp[std::make_pair(goreModelIndex, TS.surface_num)] = newTag;
 	}
 	else
 	{
-		new_tag = (*f).second;
+		newTag = (*f).second;
 	}
-	GoreTextureCoordinates* gore = FindGoreRecord(new_tag);
+	GoreTextureCoordinates* gore = FindGoreRecord(newTag);
 	if (gore)
 	{
 		assert(sizeof(float) == sizeof(int));
@@ -1029,51 +1029,51 @@ static void G2_GorePolys(const mdxmSurface_t* surface, CTraceSurface& ts)
 		const unsigned int size =
 			sizeof(int) + // num verts
 			sizeof(int) + // num tris
-			sizeof(int) * new_num_verts + // which verts to copy from original surface
-			sizeof(float) * 4 * new_num_verts + // storgage for deformed verts
-			sizeof(float) * 4 * new_num_verts + // storgage for deformed normal
-			sizeof(float) * 2 * new_num_verts + // texture coordinates
-			sizeof(int) * new_num_tris * 3;  // new indecies
+			sizeof(int) * newNumVerts + // which verts to copy from original surface
+			sizeof(float) * 4 * newNumVerts + // storgage for deformed verts
+			sizeof(float) * 4 * newNumVerts + // storgage for deformed normal
+			sizeof(float) * 2 * newNumVerts + // texture coordinates
+			sizeof(int) * newNumTris * 3;  // new indecies
 
 		auto data = static_cast<int*>(R_Malloc(sizeof(int) * size, TAG_GHOUL2, qtrue));
 
-		if (gore->tex[ts.lod])
-			R_Free(gore->tex[ts.lod]);
+		if (gore->tex[TS.lod])
+			R_Free(gore->tex[TS.lod]);
 
-		gore->tex[ts.lod] = reinterpret_cast<float*>(data);
-		*data++ = new_num_verts;
-		*data++ = new_num_tris;
+		gore->tex[TS.lod] = reinterpret_cast<float*>(data);
+		*data++ = newNumVerts;
+		*data++ = newNumTris;
 
-		memcpy(data, GoreIndexCopy, sizeof(int) * new_num_verts);
-		data += new_num_verts * 9; // skip verts and normals
+		memcpy(data, GoreIndexCopy, sizeof(int) * newNumVerts);
+		data += newNumVerts * 9; // skip verts and normals
 		auto fdata = reinterpret_cast<float*>(data);
 
-		for (j = 0; j < new_num_verts; j++)
+		for (j = 0; j < newNumVerts; j++)
 		{
 			*fdata++ = GoreVerts[GoreIndexCopy[j]].tex[0];
 			*fdata++ = GoreVerts[GoreIndexCopy[j]].tex[1];
 		}
 		data = reinterpret_cast<int*>(fdata);
-		memcpy(data, GoreIndecies, sizeof(int) * new_num_tris * 3);
-		data += new_num_tris * 3;
-		assert((data - reinterpret_cast<int*>(gore->tex[ts.lod])) * sizeof(int) == size);
+		memcpy(data, GoreIndecies, sizeof(int) * newNumTris * 3);
+		data += newNumTris * 3;
+		assert((data - reinterpret_cast<int*>(gore->tex[TS.lod])) * sizeof(int) == size);
 		fdata = reinterpret_cast<float*>(data);
 		// build the entity to gore matrix
 		VectorCopy(saxis, fdata + 0);
 		VectorCopy(taxis, fdata + 4);
-		VectorCopy(ts.rayEnd, fdata + 8);
+		VectorCopy(TS.rayEnd, fdata + 8);
 		VectorNormalize(fdata + 0);
 		VectorNormalize(fdata + 4);
 		VectorNormalize(fdata + 8);
 		fdata[3] = -0.5f; // subtract texture center
 		fdata[7] = -0.5f;
 		fdata[11] = 0.0f;
-		vec3_t shot_origin_in_current_space; // unknown space
-		TransformPoint(ts.rayStart, shot_origin_in_current_space, reinterpret_cast<mdxaBone_t*>(fdata)); // dest middle arg
+		vec3_t shotOriginInCurrentSpace; // unknown space
+		TransformPoint(TS.rayStart, shotOriginInCurrentSpace, reinterpret_cast<mdxaBone_t*>(fdata)); // dest middle arg
 		// this will insure the shot origin in our unknown space is now the shot origin, making it a known space
-		fdata[3] -= shot_origin_in_current_space[0];
-		fdata[7] -= shot_origin_in_current_space[1];
-		fdata[11] -= shot_origin_in_current_space[2];
+		fdata[3] -= shotOriginInCurrentSpace[0];
+		fdata[7] -= shotOriginInCurrentSpace[1];
+		fdata[11] -= shotOriginInCurrentSpace[2];
 		Inverse_Matrix(reinterpret_cast<mdxaBone_t*>(fdata), reinterpret_cast<mdxaBone_t*>(fdata + 12));  // dest 2nd arg
 		data += 24;
 
@@ -1098,63 +1098,63 @@ static SVertexTemp GoreVerts[MAX_GORE_VERTS];
 #endif
 
 // now we're at poly level, check each model space transformed poly against the model world transfomed ray
-static bool G2_TracePolys(const mdxmSurface_t* surface, CTraceSurface& ts)
+static bool G2_TracePolys(const mdxmSurface_t* surface, const mdxmSurfHierarchy_t* surfInfo, CTraceSurface& TS)
 {
 	// whip through and actually transform each vertex
 	const mdxmTriangle_t* tris = reinterpret_cast<mdxmTriangle_t*>((byte*)surface + surface->ofsTriangles);
-	const float* verts = reinterpret_cast<float*>(ts.TransformedVertsArray[surface->thisSurfaceIndex]);
-	const int num_tris = surface->numTriangles;
-	for (int j = 0; j < num_tris; j++)
+	const float* verts = reinterpret_cast<float*>(TS.TransformedVertsArray[surface->thisSurfaceIndex]);
+	const int numTris = surface->numTriangles;
+	for (int j = 0; j < numTris; j++)
 	{
 		float			face;
-		vec3_t	hit_point, normal;
+		vec3_t	hitPoint, normal;
 		// determine actual coords for this triangle
 		const float* point1 = &verts[(tris[j].indexes[0] * 5)];
 		const float* point2 = &verts[(tris[j].indexes[1] * 5)];
 		const float* point3 = &verts[(tris[j].indexes[2] * 5)];
 		// did we hit it?
-		if (G2_SegmentTriangleTest(ts.rayStart, ts.rayEnd, point1, point2, point3, qtrue, qtrue, hit_point, normal, &face))
+		if (G2_SegmentTriangleTest(TS.rayStart, TS.rayEnd, point1, point2, point3, qtrue, qtrue, hitPoint, normal, &face))
 		{	// find space in the collision records for this record
 			int i = 0;
 			for (; i < MAX_G2_COLLISIONS; i++)
 			{
-				if (ts.collRecMap[i].mEntityNum == -1)
+				if (TS.collRecMap[i].mentity_num == -1)
 				{
-					CCollisionRecord& new_col = ts.collRecMap[i];
-					vec3_t			  	dist_vect;
+					CCollisionRecord& newCol = TS.collRecMap[i];
+					vec3_t			  	distVect;
 					float				x_pos = 0, y_pos = 0;
 
-					new_col.mPolyIndex = j;
-					new_col.mEntityNum = ts.ent_num;
-					new_col.mSurfaceIndex = surface->thisSurfaceIndex;
-					new_col.mModelIndex = ts.model_index;
+					newCol.mPolyIndex = j;
+					newCol.mentity_num = TS.ent_num;
+					newCol.mSurfaceIndex = surface->thisSurfaceIndex;
+					newCol.mModelIndex = TS.model_index;
 					if (face > 0)
 					{
-						new_col.mFlags = G2_FRONTFACE;
+						newCol.mFlags = G2_FRONTFACE;
 					}
 					else
 					{
-						new_col.mFlags = G2_BACKFACE;
+						newCol.mFlags = G2_BACKFACE;
 					}
 
-					VectorSubtract(hit_point, ts.rayStart, dist_vect);
-					new_col.mDistance = VectorLength(dist_vect);
-					assert(!Q_isnan(new_col.mDistance));
+					VectorSubtract(hitPoint, TS.rayStart, distVect);
+					newCol.mDistance = VectorLength(distVect);
+					assert(!Q_isnan(newCol.mDistance));
 
 					// put the hit point back into world space
-					TransformAndTranslatePoint(hit_point, new_col.mCollisionPosition, &worldMatrix);
+					TransformAndTranslatePoint(hitPoint, newCol.mCollisionPosition, &worldMatrix);
 
 					// transform normal (but don't translate) into world angles
-					TransformPoint(normal, new_col.mCollisionNormal, &worldMatrix);
-					VectorNormalize(new_col.mCollisionNormal);
+					TransformPoint(normal, newCol.mCollisionNormal, &worldMatrix);
+					VectorNormalize(newCol.mCollisionNormal);
 
-					new_col.mMaterial = new_col.mLocation = 0;
+					newCol.mMaterial = newCol.mLocation = 0;
 
 					// Determine our location within the texture, and barycentric coordinates
 					G2_BuildHitPointST(point1, point1[3], point1[4],
 						point2, point2[3], point2[4],
 						point3, point3[3], point3[4],
-						hit_point, &x_pos, &y_pos, new_col.mBarycentricI, new_col.mBarycentricJ);
+						hitPoint, &x_pos, &y_pos, newCol.mBarycentricI, newCol.mBarycentricJ);
 
 					/*
 										const shader_t		*shader = 0;
@@ -1205,9 +1205,9 @@ static bool G2_TracePolys(const mdxmSurface_t* surface, CTraceSurface& ts)
 										}
 					*/
 					// exit now if we should
-					if (ts.e_g2_trace_type == G2_RETURNONHIT)
+					if (TS.e_g2_trace_type == G2_RETURNONHIT)
 					{
-						ts.hitOne = true;
+						TS.hitOne = true;
 						return true;
 					}
 
@@ -1217,7 +1217,7 @@ static bool G2_TracePolys(const mdxmSurface_t* surface, CTraceSurface& ts)
 			if (i == MAX_G2_COLLISIONS)
 			{
 				//assert(i != MAX_G2_COLLISIONS);		// run out of collision record space - will probalbly never happen
-				ts.hitOne = true;	//force stop recursion
+				TS.hitOne = true;	//force stop recursion
 				return true;	// return true to avoid wasting further time, but no hit will result without a record
 			}
 		}
@@ -1241,20 +1241,20 @@ static bool G2_RadiusTracePolys(
 	basis2[1] = 0.0f;
 	basis2[2] = 1.0f;
 
-	vec3_t v3_ray_dir;
-	VectorSubtract(TS.rayEnd, TS.rayStart, v3_ray_dir);
+	vec3_t v3RayDir;
+	VectorSubtract(TS.rayEnd, TS.rayStart, v3RayDir);
 
-	CrossProduct(v3_ray_dir, basis2, basis1);
+	CrossProduct(v3RayDir, basis2, basis1);
 
 	if (DotProduct(basis1, basis1) < .1f)
 	{
 		basis2[0] = 0.0f;
 		basis2[1] = 1.0f;
 		basis2[2] = 0.0f;
-		CrossProduct(v3_ray_dir, basis2, basis1);
+		CrossProduct(v3RayDir, basis2, basis1);
 	}
 
-	CrossProduct(v3_ray_dir, basis1, basis2);
+	CrossProduct(v3RayDir, basis1, basis2);
 	// Give me a shot direction not a bunch of zeros :) -Gil
 //	assert(DotProduct(basis1,basis1)>.0001f);
 //	assert(DotProduct(basis2,basis2)>.0001f);
@@ -1276,10 +1276,10 @@ static bool G2_RadiusTracePolys(
 
 	int flags = 63;
 	//rayDir/=lengthSquared(raydir);
-	const float f = VectorLengthSquared(v3_ray_dir);
-	v3_ray_dir[0] /= f;
-	v3_ray_dir[1] /= f;
-	v3_ray_dir[2] /= f;
+	const float f = VectorLengthSquared(v3RayDir);
+	v3RayDir[0] /= f;
+	v3RayDir[1] /= f;
+	v3RayDir[2] /= f;
 
 	for (j = 0; j < num_verts; j++)
 	{
@@ -1290,7 +1290,7 @@ static bool G2_RadiusTracePolys(
 		delta[2] = verts[pos + 2] - TS.rayStart[2];
 		const float x = DotProduct(delta, saxis) + 0.5f;
 		const float t = DotProduct(delta, taxis) + 0.5f;
-		const float u = DotProduct(delta, v3_ray_dir);
+		const float u = DotProduct(delta, v3RayDir);
 		int vflags = 0;
 
 		if (x > 0)
@@ -1327,10 +1327,10 @@ static bool G2_RadiusTracePolys(
 	{
 		return false; // completely off the gore splotch  (so presumably hit nothing? -Ste)
 	}
-	const int num_tris = surface->numTriangles;
+	const int numTris = surface->numTriangles;
 	const mdxmTriangle_t* const tris = reinterpret_cast<mdxmTriangle_t*>((byte*)surface + surface->ofsTriangles);
 
-	for (j = 0; j < num_tris; j++)
+	for (j = 0; j < numTris; j++)
 	{
 		assert(tris[j].indexes[0] >= 0 && tris[j].indexes[0] < num_verts);
 		assert(tris[j].indexes[1] >= 0 && tris[j].indexes[1] < num_verts);
@@ -1348,12 +1348,12 @@ static bool G2_RadiusTracePolys(
 		int i = 0;
 		for (; i < MAX_G2_COLLISIONS; i++)
 		{
-			if (TS.collRecMap[i].mEntityNum == -1)
+			if (TS.collRecMap[i].mentity_num == -1)
 			{
 				CCollisionRecord& newCol = TS.collRecMap[i];
 
 				newCol.mPolyIndex = j;
-				newCol.mEntityNum = TS.ent_num;
+				newCol.mentity_num = TS.ent_num;
 				newCol.mSurfaceIndex = surface->thisSurfaceIndex;
 				newCol.mModelIndex = TS.model_index;
 				//					if (face>0)
@@ -1370,11 +1370,11 @@ static bool G2_RadiusTracePolys(
 				const float* B = &verts[(tris[j].indexes[1] * 5)];
 				const float* C = &verts[(tris[j].indexes[2] * 5)];
 				vec3_t normal;
-				vec3_t edge_ac, edge_ba;
+				vec3_t edgeAC, edgeBA;
 
-				VectorSubtract(C, A, edge_ac);
-				VectorSubtract(B, A, edge_ba);
-				CrossProduct(edge_ba, edge_ac, normal);
+				VectorSubtract(C, A, edgeAC);
+				VectorSubtract(B, A, edgeBA);
+				CrossProduct(edgeBA, edgeAC, normal);
 
 				// transform normal (but don't translate) into world angles
 				TransformPoint(normal, newCol.mCollisionNormal, &worldMatrix);
@@ -1388,40 +1388,40 @@ static bool G2_RadiusTracePolys(
 					return true;
 				}
 
-				vec3_t			  dist_vect;
+				vec3_t			  distVect;
 #if 0
 				//i don't know the hitPoint, but let's just assume it's the first vert for now...
 				float* hitPoint = (float*)A;
 #else
 				//yeah, I want the collision point. Let's work out the impact point on the triangle. -rww
-				vec3_t hit_point;
+				vec3_t hitPoint;
 				float dist;
 				const float third = -(A[0] * (B[1] * C[2] - C[1] * B[2]) + B[0] * (C[1] * A[2] - A[1] * C[2]) + C[0] * (A[1] * B[2] - B[1] * A[2]));
 
-				VectorSubtract(TS.rayEnd, TS.rayStart, dist_vect);
+				VectorSubtract(TS.rayEnd, TS.rayStart, distVect);
 				const float side = normal[0] * TS.rayStart[0] + normal[1] * TS.rayStart[1] + normal[2] * TS.rayStart[2] + third;
-				const float side2 = normal[0] * dist_vect[0] + normal[1] * dist_vect[1] + normal[2] * dist_vect[2];
+				const float side2 = normal[0] * distVect[0] + normal[1] * distVect[1] + normal[2] * distVect[2];
 				if (fabsf(side2) < 1E-8f)
 				{
 					//i don't know the hitPoint, but let's just assume it's the first vert for now...
-					VectorSubtract(A, TS.rayStart, dist_vect);
-					dist = VectorLength(dist_vect);
-					VectorSubtract(TS.rayEnd, TS.rayStart, dist_vect);
-					VectorMA(TS.rayStart, dist / VectorLength(dist_vect), dist_vect, hit_point);
+					VectorSubtract(A, TS.rayStart, distVect);
+					dist = VectorLength(distVect);
+					VectorSubtract(TS.rayEnd, TS.rayStart, distVect);
+					VectorMA(TS.rayStart, dist / VectorLength(distVect), distVect, hitPoint);
 				}
 				else
 				{
 					dist = side / side2;
-					VectorMA(TS.rayStart, -dist, dist_vect, hit_point);
+					VectorMA(TS.rayStart, -dist, distVect, hitPoint);
 				}
 #endif
 
-				VectorSubtract(hit_point, TS.rayStart, dist_vect);
-				newCol.mDistance = VectorLength(dist_vect);
+				VectorSubtract(hitPoint, TS.rayStart, distVect);
+				newCol.mDistance = VectorLength(distVect);
 				assert(!Q_isnan(newCol.mDistance));
 
 				// put the hit point back into world space
-				TransformAndTranslatePoint(hit_point, newCol.mCollisionPosition, &worldMatrix);
+				TransformAndTranslatePoint(hitPoint, newCol.mCollisionPosition, &worldMatrix);
 				newCol.mBarycentricI = newCol.mBarycentricJ = 0.0f;
 
 				break;
@@ -1445,11 +1445,11 @@ static void G2_TraceSurfaces(CTraceSurface& TS)
 	assert(TS.current_model);
 	assert(TS.current_model->mdxm);
 	const mdxmSurface_t* surface = static_cast<mdxmSurface_t*>(G2_FindSurface(TS.current_model, TS.surface_num, TS.lod));
-	const mdxmHierarchyOffsets_t* surf_indexes = reinterpret_cast<mdxmHierarchyOffsets_t*>(reinterpret_cast<byte*>(TS.current_model->mdxm) + sizeof(mdxmHeader_t));
-	const mdxmSurfHierarchy_t* surf_info = reinterpret_cast<mdxmSurfHierarchy_t*>((byte*)surf_indexes + surf_indexes->offsets[surface->thisSurfaceIndex]);
+	const mdxmHierarchyOffsets_t* surfIndexes = reinterpret_cast<mdxmHierarchyOffsets_t*>(reinterpret_cast<byte*>(TS.current_model->mdxm) + sizeof(mdxmHeader_t));
+	const mdxmSurfHierarchy_t* surfInfo = reinterpret_cast<mdxmSurfHierarchy_t*>((byte*)surfIndexes + surfIndexes->offsets[surface->thisSurfaceIndex]);
 
 	// see if we have an override surface in the surface list
-	const surfaceInfo_t* surf_override = G2_FindOverrideSurface(TS.surface_num, TS.rootSList);
+	const surfaceInfo_t* surfOverride = G2_FindOverrideSurface(TS.surface_num, TS.rootSList);
 
 	// don't allow recursion if we've already hit a polygon
 	if (TS.hitOne)
@@ -1458,12 +1458,12 @@ static void G2_TraceSurfaces(CTraceSurface& TS)
 	}
 
 	// really, we should use the default flags for this surface unless it's been overriden
-	int off_flags = surf_info->flags;
+	int off_flags = surfInfo->flags;
 
 	// set the off flags if we have some
-	if (surf_override)
+	if (surfOverride)
 	{
-		off_flags = surf_override->off_flags;
+		off_flags = surfOverride->off_flags;
 	}
 
 	// if this surface is not off, try to hit it
@@ -1490,7 +1490,7 @@ static void G2_TraceSurfaces(CTraceSurface& TS)
 			else
 			{
 				// go away and trace the polys in this surface
-				if (G2_TracePolys(surface, TS)
+				if (G2_TracePolys(surface, surfInfo, TS)
 					&& TS.e_g2_trace_type == G2_RETURNONHIT
 					)
 				{
@@ -1504,7 +1504,7 @@ static void G2_TraceSurfaces(CTraceSurface& TS)
 		}
 		else
 		{
-			G2_GorePolys(surface, TS);
+			G2_GorePolys(surface, TS, surfInfo);
 		}
 #endif
 	}
@@ -1516,9 +1516,9 @@ static void G2_TraceSurfaces(CTraceSurface& TS)
 	}
 
 	// now recursively call for the children
-	for (int i = 0; i < surf_info->numChildren && !TS.hitOne; i++)
+	for (int i = 0; i < surfInfo->numChildren && !TS.hitOne; i++)
 	{
-		TS.surface_num = surf_info->childIndexes[i];
+		TS.surface_num = surfInfo->childIndexes[i];
 		G2_TraceSurfaces(TS);
 	}
 }
@@ -1537,7 +1537,7 @@ void G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, CColl
 #endif // !JK2_MODE || _G2_GORE
 	int				firstModel = 0;
 
-#ifndef JK2_MODE
+#ifdef _G2_GORE
 	if (cg_g2MarksAllModels == nullptr)
 	{
 		cg_g2MarksAllModels = ri.Cvar_Get("cg_g2MarksAllModels", "0", 0);
@@ -1566,7 +1566,7 @@ void G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, CColl
 #ifdef _G2_GORE
 		goreModelIndex = i;
 		// don't bother with models that we don't care about.
-		if (g.mModelindex == -1)
+		if (g.mmodel_index == -1)
 		{
 			continue;
 		}
@@ -1604,7 +1604,7 @@ void G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, CColl
 
 		lod = G2_DecideTraceLod(g, use_lod);
 
-#ifndef JK2_MODE
+#ifdef _G2_GORE
 		if (skipIfLODNotMatch)
 		{//we only want to hit this SPECIFIC LOD...
 			if (lod != use_lod)
@@ -1724,8 +1724,8 @@ void* G2_FindSurface(const model_s* mod, const int index, const int lod)
 	assert(lod >= 0 && lod < mod->mdxm->numLODs);
 	for (int i = 0; i < lod; i++)
 	{
-		const mdxmLOD_t* lod_data = reinterpret_cast<mdxmLOD_t*>(current);
-		current += lod_data->ofsEnd;
+		const mdxmLOD_t* lodData = reinterpret_cast<mdxmLOD_t*>(current);
+		current += lodData->ofsEnd;
 	}
 
 	// avoid the lod pointer data structure
@@ -1835,9 +1835,7 @@ void G2_SaveGhoul2Models(
 }
 
 // FIXME Remove 'buffer' parameter
-void G2_LoadGhoul2Model(
-	CGhoul2Info_v& ghoul2,
-	const char* buffer)
+void G2_LoadGhoul2Model(CGhoul2Info_v& ghoul2, const char* buffer)
 {
 	static_cast<void>(buffer);
 
@@ -1873,7 +1871,7 @@ void G2_LoadGhoul2Model(
 	for (decltype(model_count) i = 0; i < model_count; ++i)
 	{
 		ghoul2[i].mSkelFrameNum = 0;
-		ghoul2[i].mModelindex = -1;
+		ghoul2[i].mmodel_index = -1;
 		ghoul2[i].mFileName[0] = 0;
 		ghoul2[i].mValid = false;
 
@@ -1881,9 +1879,9 @@ void G2_LoadGhoul2Model(
 		ghoul2[i].sg_import(
 			saved_game);
 
-		if (ghoul2[i].mModelindex != -1 && ghoul2[i].mFileName[0])
+		if (ghoul2[i].mmodel_index != -1 && ghoul2[i].mFileName[0])
 		{
-			ghoul2[i].mModelindex = i;
+			ghoul2[i].mmodel_index = i;
 
 			::G2_SetupModelPointers(
 				&ghoul2[i]);

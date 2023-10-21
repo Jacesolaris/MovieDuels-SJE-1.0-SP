@@ -238,7 +238,7 @@ using displayContextDef_t = struct
 		int flags, float anim_speed, int current_time, float setFrame, int blend_time);
 	qboolean(*g2_RemoveGhoul2Model)(CGhoul2Info_v& ghl_info, int model_index);
 	int (*g2_InitGhoul2Model)(CGhoul2Info_v& ghoul2, const char* fileName, int, qhandle_t customSkin,
-		qhandle_t customShader, int modelFlags, int lodBias);
+		qhandle_t custom_shader, int modelFlags, int lodBias);
 	void (*g2_CleanGhoul2Models)(CGhoul2Info_v& ghoul2);
 	int (*g2_AddBolt)(CGhoul2Info* ghl_info, const char* bone_name);
 	qboolean(*g2_GetBoltMatrix)(CGhoul2Info_v& ghoul2, int model_index, int bolt_index, mdxaBone_t* matrix,
