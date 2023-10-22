@@ -147,14 +147,17 @@ qhandle_t G2API_PrecacheGhoul2Model(const char* file_name);
 
 int G2API_InitGhoul2Model(CGhoul2Info_v& ghoul2, const char* file_name, const int model_index, const qhandle_t custom_skin = NULL_HANDLE, qhandle_t custom_shader = NULL_HANDLE, const int model_flags = 0, const int lod_bias = 0);
 
-qboolean G2API_SetLodBias(CGhoul2Info* ghl_info, int lod_bias);
-qboolean G2API_SetSkin(CGhoul2Info* ghl_info, qhandle_t custom_skin, qhandle_t render_skin = 0);
+qboolean G2API_SetLodBias(CGhoul2Info* ghl_info, const int lod_bias);
+
+qboolean G2API_SetSkin(CGhoul2Info* ghl_info, const qhandle_t custom_skin, const qhandle_t render_skin = 0);
+
 qboolean G2API_SetShader(CGhoul2Info* ghl_info, const qhandle_t custom_shader);
 qboolean G2API_RemoveGhoul2Model(CGhoul2Info_v& ghl_info, int model_index);
-qboolean G2API_SetSurfaceOnOff(CGhoul2Info* ghl_info, const char* surface_name, int flags);
+qboolean G2API_SetSurfaceOnOff(CGhoul2Info* ghl_info, const char* surface_name, const int flags);
 qboolean G2API_SetRootSurface(CGhoul2Info_v& ghl_info, int model_index, const char* surface_name);
 qboolean G2API_RemoveSurface(CGhoul2Info* ghl_info, int index);
-int G2API_AddSurface(CGhoul2Info* ghl_info, int surface_number, int poly_number, float barycentric_i, float barycentric_j, int lod);
+
+int G2API_AddSurface(CGhoul2Info* ghl_info, const int surface_number, const int poly_number, const float barycentric_i, const float barycentric_j, const int lod);
 
 qboolean G2API_SetBoneAnim(CGhoul2Info* ghl_info, const char* bone_name, const int start_frame, const int end_frame, const int flags, const float anim_speed, const int acurrent_time, const float set_frame = -1, const int blend_time = -1);
 

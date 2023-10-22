@@ -1736,7 +1736,7 @@ void R_Init()
 	int	err;
 	int i;
 
-	//ri.Printf( PRINT_ALL, "----- R_Init -----\n" );
+	ri.Printf(PRINT_ALL, "----- Loading Vanilla renderer-----\n");
 
 	ShaderEntryPtrs_Clear();
 
@@ -1805,10 +1805,13 @@ void R_Init()
 		ri.Printf(PRINT_ALL, "glGetError() = 0x%x\n", err);
 
 	RestoreGhoul2InfoArray();
+
+	ri.Cvar_Set("com_rend2", "0");
+
 	// print info
 	GfxInfo_f();
 
-	//ri.Printf( PRINT_ALL, "----- finished R_Init -----\n" );
+	ri.Printf(PRINT_ALL, "----- Vanilla renderer loaded-----\n");
 }
 
 /*

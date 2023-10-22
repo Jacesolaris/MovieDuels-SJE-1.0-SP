@@ -833,7 +833,7 @@ qboolean G2API_SetLodBias(CGhoul2Info* ghl_info, const int lod_bias)
 	return qfalse;
 }
 
-extern void G2API_SetSurfaceOnOffFromSkin(CGhoul2Info* ghl_info, qhandle_t renderSkin); //tr_ghoul2.cpp
+extern void G2API_SetSurfaceOnOffFromSkin(CGhoul2Info* ghl_info, qhandle_t render_skin); //tr_ghoul2.cpp
 qboolean G2API_SetSkin(CGhoul2Info* ghl_info, const qhandle_t custom_skin, const qhandle_t render_skin)
 {
 	G2ERROR(ghl_info, "NULL ghl_info");
@@ -897,8 +897,7 @@ qboolean G2API_SetRootSurface(CGhoul2Info_v& ghl_info, const int model_index, co
 	return qfalse;
 }
 
-int G2API_AddSurface(CGhoul2Info* ghl_info, const int surface_number, const int poly_number, const float barycentric_i, const float barycentric_j,
-	const int lod)
+int G2API_AddSurface(CGhoul2Info* ghl_info, const int surface_number, const int poly_number, const float barycentric_i, const float barycentric_j, const int lod)
 {
 	if (G2_SetupModelPointers(ghl_info))
 	{

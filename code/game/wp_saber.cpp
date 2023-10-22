@@ -73,6 +73,7 @@ extern cvar_t* g_saberPickuppableDroppedSabers;
 extern cvar_t* debug_subdivision;
 extern cvar_t* d_slowmoaction;
 extern cvar_t* g_SaberAttackSpeedMD;
+extern cvar_t* g_overpoweredsaberthrow;
 void wp_block_points_regenerate_over_ride(const gentity_t* self, int override_amt);
 extern qboolean NPC_IsOversized(const gentity_t* self);
 extern void npc_check_speak(gentity_t* speaker_npc);
@@ -12790,7 +12791,14 @@ qboolean WP_SaberLaunch(gentity_t* self, gentity_t* saber, const qboolean thrown
 		}
 		else
 		{
-			saber->s.apos.trDelta[0] = 600;
+			if (g_overpoweredsaberthrow->integer == 1)
+			{
+				saber->s.apos.trDelta[1] = 800;
+			}
+			else 
+			{
+				saber->s.apos.trDelta[0] = 600;
+			}
 		}
 	}
 	else
