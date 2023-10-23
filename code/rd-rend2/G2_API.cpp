@@ -2142,8 +2142,8 @@ char* G2API_GetSurfaceName(CGhoul2Info* ghl_info, int surfNumber)
 		surf = (mdxmSurface_t*)G2_FindSurface(mod, surfNumber, 0);
 		if (surf)
 		{
-			mdxmHierarchyOffsets_t* surfIndexes = (mdxmHierarchyOffsets_t*)((byte*)ghl_info->current_model->data.glm->header + sizeof(mdxmHeader_t));
-			surfInfo = (mdxmSurfHierarchy_t*)((byte*)surfIndexes + surfIndexes->offsets[surf->thisSurfaceIndex]);
+			mdxmHierarchyOffsets_t* surf_indexes = (mdxmHierarchyOffsets_t*)((byte*)ghl_info->current_model->data.glm->header + sizeof(mdxmHeader_t));
+			surfInfo = (mdxmSurfHierarchy_t*)((byte*)surf_indexes + surf_indexes->offsets[surf->thisSurfaceIndex]);
 			return surfInfo->name;
 		}
 	}

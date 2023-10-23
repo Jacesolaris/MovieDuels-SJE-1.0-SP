@@ -53,7 +53,7 @@ int G2_AddSurface(CGhoul2Info* ghoul2, const int surface_number, const int poly_
 
 qboolean G2_RemoveSurface(surfaceInfo_v& slist, int index);
 
-const surfaceInfo_t* G2_FindOverrideSurface(int surface_num, const surfaceInfo_v& surface_list);
+const surfaceInfo_t* G2_FindOverrideSurface(const int surface_num, const surfaceInfo_v& surface_list);
 
 int G2_IsSurfaceLegal(const model_s* mod_m, const char* surface_name, uint32_t* flags);
 

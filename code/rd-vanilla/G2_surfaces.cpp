@@ -165,8 +165,7 @@ int G2_IsSurfaceLegal(const model_s* mod_m, const char* surface_name, uint32_t* 
  *    pointer to surface if successful, false otherwise
  *
  ************************************************************************************************/
-const mdxmSurface_t* G2_FindSurface(const CGhoul2Info* ghl_info, const surfaceInfo_v& slist, const char* surface_name,
-	int* surf_index)
+const mdxmSurface_t* G2_FindSurface(const CGhoul2Info* ghl_info, const surfaceInfo_v& slist, const char* surface_name, int* surf_index)
 {
 	// find the model we want
 	assert(G2_MODEL_OK(ghl_info));

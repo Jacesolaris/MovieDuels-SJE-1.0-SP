@@ -39,7 +39,7 @@ extern refimport_t ri;
 // 13 bits
 // can't be increased without changing bit packing for drawsurfs
 // see QSORT_SHADERNUM_SHIFT
-#define SHADERNUM_BITS	13
+#define SHADERNUM_BITS	14
 #define MAX_SHADERS		(1<<SHADERNUM_BITS)
 
 using dlight_t = struct dlight_s {
@@ -851,7 +851,7 @@ the bits are allocated as follows:
 #define	QSORT_SHADERNUM_SHIFT	(QSORT_REFENTITYNUM_SHIFT+REFENTITYNUM_BITS)
 // Note: 32nd bit is reserved for RF_ALPHA_FADE voodoo magic
 // see R_AddEntitySurfaces tr.shiftedEntityNum
-#if (QSORT_SHADERNUM_SHIFT+SHADERNUM_BITS) > 31
+#if (QSORT_SHADERNUM_SHIFT+SHADERNUM_BITS) > 32
 #error "Need to update sorting, too many bits."
 #endif
 

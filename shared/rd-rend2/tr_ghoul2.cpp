@@ -270,7 +270,7 @@ const mdxaBone_t operator *(const float scale, const mdxaBone_t& rhs)
 class CConstructBoneList
 {
 public:
-	int				surfaceNum;
+	int				surface_num;
 	int* boneUsedList;
 	surfaceInfo_v& rootSList;
 	model_t* current_model;
@@ -282,7 +282,7 @@ public:
 		surfaceInfo_v& initrootSList,
 		model_t* initcurrentModel,
 		boneInfo_v& initboneList)
-		: surfaceNum(initsurfaceNum)
+		: surface_num(initsurfaceNum)
 		, boneUsedList(initboneUsedList)
 		, rootSList(initrootSList)
 		, current_model(initcurrentModel)
@@ -807,7 +807,7 @@ int G2_GetParentBoneMatrixLow(
 class CRenderSurface
 {
 public:
-	int				surfaceNum;
+	int				surface_num;
 	surfaceInfo_v& rootSList;
 	shader_t* cust_shader;
 	int				fogNum;
@@ -842,7 +842,7 @@ public:
 		boltInfo_v& initboltList
 #endif
 	)
-		: surfaceNum(initsurfaceNum)
+		: surface_num(initsurfaceNum)
 		, rootSList(initrootSList)
 		, cust_shader(initcust_shader)
 		, fogNum(initfogNum)
@@ -2382,14 +2382,14 @@ void RenderSurfaces(CRenderSurface& RS, const trRefEntity_t* ent, int entity_num
 	assert(RS.current_model->data.glm && RS.current_model->data.glm->header);
 	// back track and get the surfinfo struct for this surface
 	mdxmSurface_t* surface =
-		(mdxmSurface_t*)G2_FindSurface(RS.current_model, RS.surfaceNum, RS.lod);
-	mdxmHierarchyOffsets_t* surfIndexes = (mdxmHierarchyOffsets_t*)
+		(mdxmSurface_t*)G2_FindSurface(RS.current_model, RS.surface_num, RS.lod);
+	mdxmHierarchyOffsets_t* surf_indexes = (mdxmHierarchyOffsets_t*)
 		((byte*)RS.current_model->data.glm->header + sizeof(mdxmHeader_t));
 	mdxmSurfHierarchy_t* surfInfo = (mdxmSurfHierarchy_t*)
-		((byte*)surfIndexes + surfIndexes->offsets[surface->thisSurfaceIndex]);
+		((byte*)surf_indexes + surf_indexes->offsets[surface->thisSurfaceIndex]);
 
 	// see if we have an override surface in the surface list
-	const surfaceInfo_t* surfOverride = G2_FindOverrideSurface(RS.surfaceNum, RS.rootSList);
+	const surfaceInfo_t* surfOverride = G2_FindOverrideSurface(RS.surface_num, RS.rootSList);
 
 	// really, we should use the default flags for this surface unless it's been overriden
 	off_flags = surfInfo->flags;
@@ -2442,8 +2442,8 @@ void RenderSurfaces(CRenderSurface& RS, const trRefEntity_t* ent, int entity_num
 			// set the surface info to point at the where the transformed bone
 			// list is going to be for when the surface gets rendered out
 			CRenderableSurface* newSurf = AllocGhoul2RenderableSurface();
-			newSurf->vboMesh = &RS.current_model->data.glm->vboModels[RS.lod].vboMeshes[RS.surfaceNum];
-			assert(newSurf->vboMesh != NULL && RS.surfaceNum == surface->thisSurfaceIndex);
+			newSurf->vboMesh = &RS.current_model->data.glm->vboModels[RS.lod].vboMeshes[RS.surface_num];
+			assert(newSurf->vboMesh != NULL && RS.surface_num == surface->thisSurfaceIndex);
 			newSurf->surfaceData = surface;
 			newSurf->boneCache = RS.boneCache;
 			newSurf->dlightBits = dlightBits;
@@ -2468,7 +2468,7 @@ void RenderSurfaces(CRenderSurface& RS, const trRefEntity_t* ent, int entity_num
 			{
 				int curTime = G2API_GetTime(tr.refdef.time);
 
-				auto range = RS.gore_set->mGoreRecords.equal_range(RS.surfaceNum);
+				auto range = RS.gore_set->mGoreRecords.equal_range(RS.surface_num);
 				CRenderableSurface* last = newSurf;
 				for (auto k = range.first; k != range.second; /* blank */)
 				{
@@ -2561,8 +2561,8 @@ void RenderSurfaces(CRenderSurface& RS, const trRefEntity_t* ent, int entity_num
 			&& (RS.renderfx & (RF_NOSHADOW | RF_DEPTHHACK))
 			&& shader->sort == SS_OPAQUE) {
 			CRenderableSurface* newSurf = AllocGhoul2RenderableSurface();
-			newSurf->vboMesh = &RS.current_model->data.glm->vboModels[RS.lod].vboMeshes[RS.surfaceNum];
-			assert(newSurf->vboMesh != NULL && RS.surfaceNum == surface->thisSurfaceIndex);
+			newSurf->vboMesh = &RS.current_model->data.glm->vboModels[RS.lod].vboMeshes[RS.surface_num];
+			assert(newSurf->vboMesh != NULL && RS.surface_num == surface->thisSurfaceIndex);
 			newSurf->surfaceData = surface;
 			newSurf->boneCache = RS.boneCache;
 			R_AddDrawSurf((surfaceType_t*)newSurf, entity_num, tr.projectionShadowShader, 0, qfalse, qfalse, 0);
@@ -2578,7 +2578,7 @@ void RenderSurfaces(CRenderSurface& RS, const trRefEntity_t* ent, int entity_num
 	// now recursively call for the children
 	for (i = 0; i < surfInfo->numChildren; i++)
 	{
-		RS.surfaceNum = surfInfo->childIndexes[i];
+		RS.surface_num = surfInfo->childIndexes[i];
 		RenderSurfaces(RS, ent, entity_num);
 	}
 
@@ -2591,7 +2591,7 @@ void RenderSurfaces(CRenderSurface& RS, const trRefEntity_t* ent, int entity_num
 // Go through the model and deal with just the surfaces that are tagged as bolt
 // on points - this is for the server side skeleton construction
 void ProcessModelBoltSurfaces(
-	int surfaceNum,
+	int surface_num,
 	surfaceInfo_v &rootSList,
 	mdxaBone_v &bonePtr,
 	model_t *current_model,
@@ -2606,14 +2606,14 @@ void ProcessModelBoltSurfaces(
 
 	// back track and get the surfinfo struct for this surface
 	mdxmSurface_t *surface = (mdxmSurface_t *)
-		G2_FindSurface((void *)current_model, surfaceNum, 0);
-	mdxmHierarchyOffsets_t *surfIndexes = (mdxmHierarchyOffsets_t *)
+		G2_FindSurface((void *)current_model, surface_num, 0);
+	mdxmHierarchyOffsets_t *surf_indexes = (mdxmHierarchyOffsets_t *)
 		((byte *)current_model->data.glm->header + sizeof(mdxmHeader_t));
 	mdxmSurfHierarchy_t *surfInfo = (mdxmSurfHierarchy_t *)
-		((byte *)surfIndexes + surfIndexes->offsets[surface->thisSurfaceIndex]);
+		((byte *)surf_indexes + surf_indexes->offsets[surface->thisSurfaceIndex]);
 
 	// see if we have an override surface in the surface list
-	surfaceInfo_t *surfOverride = G2_FindOverrideSurface(surfaceNum, rootSList);
+	surfaceInfo_t *surfOverride = G2_FindOverrideSurface(surface_num, rootSList);
 
 	// really, we should use the default flags for this surface unless it's been overriden
 	off_flags = surfInfo->flags;
@@ -2628,7 +2628,7 @@ void ProcessModelBoltSurfaces(
 	if (surfInfo->flags & G2SURFACEFLAG_ISBOLT)
 	{
 		// well alrighty then. Lets see if there is a bolt that is attempting to use it
-		int boltNum = G2_Find_Bolt_Surface_Num(boltList, surfaceNum, 0);
+		int boltNum = G2_Find_Bolt_Surface_Num(boltList, surface_num, 0);
 		// yes - ok, processing time.
 		if (boltNum != -1)
 		{
@@ -2664,19 +2664,19 @@ void G2_ConstructUsedBoneList(CConstructBoneList& CBL)
 
 	// back track and get the surfinfo struct for this surface
 #ifndef REND2_SP
-	const mdxmSurface_t* surface = (mdxmSurface_t*)G2_FindSurface((void*)CBL.current_model, CBL.surfaceNum, 0);
+	const mdxmSurface_t* surface = (mdxmSurface_t*)G2_FindSurface((void*)CBL.current_model, CBL.surface_num, 0);
 #else
-	const mdxmSurface_t* surface = (mdxmSurface_t*)G2_FindSurface(CBL.current_model, CBL.surfaceNum, 0);
+	const mdxmSurface_t* surface = (mdxmSurface_t*)G2_FindSurface(CBL.current_model, CBL.surface_num, 0);
 #endif
-	const mdxmHierarchyOffsets_t* surfIndexes = (mdxmHierarchyOffsets_t*)((byte*)mdxm + sizeof(mdxmHeader_t));
-	const mdxmSurfHierarchy_t* surfInfo = (mdxmSurfHierarchy_t*)((byte*)surfIndexes + surfIndexes->offsets[surface->thisSurfaceIndex]);
+	const mdxmHierarchyOffsets_t* surf_indexes = (mdxmHierarchyOffsets_t*)((byte*)mdxm + sizeof(mdxmHeader_t));
+	const mdxmSurfHierarchy_t* surfInfo = (mdxmSurfHierarchy_t*)((byte*)surf_indexes + surf_indexes->offsets[surface->thisSurfaceIndex]);
 	const model_t* mod_a = R_GetModelByHandle(mdxm->animIndex);
 	mdxaHeader_t* mdxa = mod_a->data.gla;
 	const mdxaSkelOffsets_t* offsets = (mdxaSkelOffsets_t*)((byte*)mdxa + sizeof(mdxaHeader_t));
 	const mdxaSkel_t* skel, * childSkel;
 
 	// see if we have an override surface in the surface list
-	const surfaceInfo_t* surfOverride = G2_FindOverrideSurface(CBL.surfaceNum, CBL.rootSList);
+	const surfaceInfo_t* surfOverride = G2_FindOverrideSurface(CBL.surface_num, CBL.rootSList);
 
 	// really, we should use the default flags for this surface unless it's been overriden
 	off_flags = surfInfo->flags;
@@ -2737,7 +2737,7 @@ void G2_ConstructUsedBoneList(CConstructBoneList& CBL)
 	// now recursively call for the children
 	for (i = 0; i < surfInfo->numChildren; i++)
 	{
-		CBL.surfaceNum = surfInfo->childIndexes[i];
+		CBL.surface_num = surfInfo->childIndexes[i];
 		G2_ConstructUsedBoneList(CBL);
 	}
 }

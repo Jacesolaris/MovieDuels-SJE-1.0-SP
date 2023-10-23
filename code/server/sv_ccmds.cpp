@@ -620,7 +620,7 @@ static void SV_CompleteSaveName(char* args, const int argNum)
 {
 	if (argNum == 2)
 	{
-		Field_CompleteFilename("Saved-Missions-MovieDuels/", "sav", qtrue, qtrue);
+		Field_CompleteFilename("Account/Saved-Missions-MovieDuels/", "sav", qtrue, qtrue);
 	}
 }
 
