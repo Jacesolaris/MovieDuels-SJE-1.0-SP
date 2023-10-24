@@ -11599,7 +11599,7 @@ void WP_SaberDamageTrace_MD(gentity_t* ent, int saber_num, int blade_num)
 		if (ent->s.number < ent->client->ps.saberLockEnemy)
 		{
 			vec3_t hit_norm = { 0, 0, 1 };
-
+			
 			if (wp_sabers_intersection(ent, &g_entities[ent->client->ps.saberLockEnemy], g_saberFlashPos))
 			{
 				int index = 1;
@@ -12795,7 +12795,7 @@ qboolean WP_SaberLaunch(gentity_t* self, gentity_t* saber, const qboolean thrown
 			{
 				saber->s.apos.trDelta[1] = 800;
 			}
-			else
+			else 
 			{
 				saber->s.apos.trDelta[0] = 600;
 			}

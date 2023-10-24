@@ -4551,7 +4551,7 @@ void NPC_LoadParms()
 				totallen++;
 				marker++;
 			}
-			len = COM_CompressShader(buffer);
+			len = COM_Compress(buffer);
 
 			if (totallen + len >= MAX_NPC_DATA_SIZE)
 			{

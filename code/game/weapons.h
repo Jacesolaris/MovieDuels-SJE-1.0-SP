@@ -248,6 +248,7 @@ using ammoData_t = struct ammoData_s
 #define	BLASTER_NPC_DAMAGE_HARD		35
 #define	SJE_BLASTER_NPC_DAMAGE_HARD	35
 
+
 // DC-15
 //---------
 #define CLONERIFLE_MAIN_SPREAD			0.1f

@@ -1231,13 +1231,13 @@ qboolean SG_ReadSavegame(
 			sv_testsave->integer = 0;
 		},
 
-		[&]
+			[&]
 		{
 			saved_game.close();
 
 			sv_testsave->integer = iPrevTestSave;
 		}
-	);
+		);
 
 	if (!saved_game.open(psPathlessBaseName))
 	{

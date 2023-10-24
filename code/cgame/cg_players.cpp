@@ -5921,12 +5921,12 @@ void CG_AddRefEntityWithPowerups(refEntity_t* ent, int powerups, centity_t* cent
 		theFxScheduler.PlayEffect(cgs.effects.forceInvincibility, cent->lerpOrigin);
 	}
 
-	if (cg_SerenityJediEngineMode.integer == 2
+	if (cg_SerenityJediEngineMode.integer == 2 
 		&& cent->gent->client->ps.forcePower > 80
 		&& cent->gent->health > 1
 		&& powerups & 1 << PW_MEDITATE && !in_camera)
 	{
-		theFxScheduler.PlayEffect(cgs.effects.forceInvincibility, cent->lerpOrigin);
+		theFxScheduler.PlayEffect(cgs.effects.forceInvincibility, cent->lerpOrigin); 
 		cgi_R_AddLightToScene(cent->lerpOrigin, 60 + (rand() & 20), 0.9f, 0.9f, 0.9f); //white
 	}
 

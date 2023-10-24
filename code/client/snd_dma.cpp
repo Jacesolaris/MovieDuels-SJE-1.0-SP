@@ -5309,8 +5309,8 @@ static int SND_FreeSFXMem(sfx_t* sfx)
 		{
 			iBytesFreed += Z_Free(sfx->lipSyncData);
 			sfx->lipSyncData = nullptr;
+			}
 		}
-	}
 #endif
 
 	if (sfx->pSoundData)
@@ -5328,7 +5328,7 @@ static int SND_FreeSFXMem(sfx_t* sfx)
 	}
 
 	return iBytesFreed;
-}
+	}
 
 void S_DisplayFreeMemory()
 {
@@ -6063,12 +6063,12 @@ static void UpdateEAXListener()
 							NULL, &s_eaxLPCur, sizeof(EAXREVERBPROPERTIES));
 
 						s_EnvironmentID = lID;
-					}
 				}
 			}
+		}
 
 			return;
-		}
+	}
 
 		// Convert Listener position and orientation to left-handed system
 		ListPos.fX = listener_pos[0];
@@ -6198,7 +6198,7 @@ static void UpdateEAXListener()
 				}
 				s_FXSlotInfo[i].lEnvID = -1;
 			}
-		}
+}
 
 		// Make sure all the reverbs we want are being rendered, if not, find an empty slot
 		// and apply appropriate reverb settings
@@ -6460,7 +6460,7 @@ static void UpdateEAXListener()
 			if (s_eaxSet(&s_FXSlotInfo[i].FXSlotGuid, EAXFXSLOT_VOLUME, NULL, &lVolume, sizeof(long)) != AL_NO_ERROR)
 				OutputDebugString("Failed to set FX Slot Volume to 0\n");
 		}
-	}
+}
 }
 
 /*
