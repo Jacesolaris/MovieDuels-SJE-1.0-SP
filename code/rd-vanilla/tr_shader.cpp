@@ -51,7 +51,7 @@ constexpr auto RETAIL_ROCKET_WEDGE_SHADER_HASH = 1217042;
 constexpr auto RETAIL_ARROW_W_SHADER_HASH = 1650186;
 
 constexpr auto FILE_HASH_SIZE = 1024;
-static	shader_t* sh_hashTable[FILE_HASH_SIZE];
+static	shader_t* hashTable[FILE_HASH_SIZE];
 
 const int lightmapsNone[MAXLIGHTMAPS] =
 {
@@ -172,7 +172,7 @@ shader_t* R_FindShaderByName(const char* name) {
 	//
 	// see if the shader is already loaded
 	//
-	for (shader_t* sh = sh_hashTable[hash]; sh; sh = sh->next) {
+	for (shader_t* sh = hashTable[hash]; sh; sh = sh->next) {
 		// NOTE: if there was no shader or image available with the name strippedName
 		// then a default shader is created with lightmapIndex == LIGHTMAP_NONE, so we
 		// have to check all default shaders otherwise for every call to R_FindShader
@@ -218,7 +218,7 @@ void R_RemapShader(const char *shaderName, const char *newShaderName, const char
 	// even tho they might have different lightmaps
 	COM_StripExtension( shaderName, strippedName, sizeof(strippedName) );
 	hash = generateHashValue(strippedName);
-	for (sh = sh_hashTable[hash]; sh; sh = sh->next) {
+	for (sh = hashTable[hash]; sh; sh = sh->next) {
 		if (Q_stricmp(sh->name, strippedName) == 0) {
 			if (sh != sh2) {
 				sh->remappedShader = sh2;
@@ -2794,8 +2794,8 @@ static shader_t* GeneratePermanentShader() {
 	SortNewShader();
 
 	const int hash = generateHashValue(new_shader->name);
-	new_shader->next = sh_hashTable[hash];
-	sh_hashTable[hash] = new_shader;
+	new_shader->next = hashTable[hash];
+	hashTable[hash] = new_shader;
 
 	return new_shader;
 }
@@ -3401,7 +3401,7 @@ shader_t* R_FindShader(const char* name, const int* lightmap_index, const byte* 
 	//
 	// see if the shader is already loaded
 	//
-	for (sh = sh_hashTable[hash]; sh; sh = sh->next) {
+	for (sh = hashTable[hash]; sh; sh = sh->next) {
 		// NOTE: if there was no shader or image available with the name strippedName
 		// then a default shader is created with lightmapIndex == LIGHTMAP_NONE, so we
 		// have to check all default shaders otherwise for every call to R_FindShader
@@ -3805,22 +3805,18 @@ static void CreateExternalShaders() {
 R_InitShaders
 ==================
 */
-void R_InitShaders() {
-	//ri.Printf( PRINT_ALL, "Initializing Shaders\n" );
+void R_InitShaders(const qboolean server)
+{
+	ri.Printf(PRINT_ALL, "Initializing Shaders\n");
 
-	memset(sh_hashTable, 0, sizeof sh_hashTable);
-	/*
-	Ghoul2 Insert Start
-	*/
-	//	memset(hitMatReg, 0, sizeof(hitMatReg));
-	//	hitMatCount = 0;
-	/*
-	Ghoul2 Insert End
-	*/
+	memset(hashTable, 0, sizeof hashTable);
 
-	CreateInternalShaders();
+	if (!server)
+	{
+		CreateInternalShaders();
 
-	Scan_And_Load_Shader_Files();
+		Scan_And_Load_Shader_Files();
 
-	CreateExternalShaders();
+		CreateExternalShaders();
+	}
 }
