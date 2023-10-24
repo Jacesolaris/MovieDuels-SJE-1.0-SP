@@ -1336,10 +1336,11 @@ extern	const byte	stylesDefault[MAXLIGHTMAPS];
 qhandle_t		 RE_RegisterShader(const char* name);
 qhandle_t		 RE_RegisterShaderNoMip(const char* name);
 
-shader_t* R_FindShader(const char* name, const int* lightmap_index, const byte* styles, qboolean mip_raw_image);
-shader_t* R_GetShaderByHandle(qhandle_t h_shader);
-void		R_InitShaders();
-void		R_ShaderList_f();
+shader_t* R_FindShader(const char* name, const int* lightmap_index, const byte* styles, const qboolean mip_raw_image);
+
+shader_t* R_GetShaderByHandle(const qhandle_t h_shader);
+void R_InitShaders(const qboolean server);
+void R_ShaderList_f();
 
 //
 // tr_arb.c

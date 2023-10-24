@@ -4111,7 +4111,7 @@ void CG_LoadMenus(const char* menuFile)
 	buf[len] = 0;
 	cgi_FS_FCloseFile(f);
 
-	//	COM_Compress(buf);
+	//	COM_CompressShader(buf);
 
 	//	cgi_UI_Menu_Reset();
 

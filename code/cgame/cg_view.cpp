@@ -360,14 +360,14 @@ static void CG_CalcIdealThirdPersonViewTarget()
 	{
 		const gentity_t* gent = &g_entities[cg.snap->ps.viewEntity];
 
-		if (gent->client && 
+		if (gent->client &&
 			(gent->client->NPC_class == CLASS_GONK
-			|| gent->client->NPC_class == CLASS_INTERROGATOR
-			|| gent->client->NPC_class == CLASS_SENTRY
-			|| gent->client->NPC_class == CLASS_PROBE
-			|| gent->client->NPC_class == CLASS_MOUSE
-			|| gent->client->NPC_class == CLASS_R2D2
-			|| gent->client->NPC_class == CLASS_R5D2))
+				|| gent->client->NPC_class == CLASS_INTERROGATOR
+				|| gent->client->NPC_class == CLASS_SENTRY
+				|| gent->client->NPC_class == CLASS_PROBE
+				|| gent->client->NPC_class == CLASS_MOUSE
+				|| gent->client->NPC_class == CLASS_R2D2
+				|| gent->client->NPC_class == CLASS_R5D2))
 		{
 			// Droids use a generic offset
 			cameraFocusLoc[2] += 4;
@@ -390,7 +390,7 @@ static void CG_CalcIdealThirdPersonViewTarget()
 
 	// Add in the new viewheight
 	cameraFocusLoc[2] += cg.predicted_player_state.viewheight;
-	
+
 	if (cg.snap
 		&& cg.snap->ps.eFlags & EF_HELD_BY_SAND_CREATURE)
 	{
@@ -837,7 +837,7 @@ static void CG_OffsetThirdPersonView()
 	else if (cg.renderingThirdPerson && cg.predicted_player_state.communicatingflags & (1 << CF_SABERLOCKING) && cg_saberLockCinematicCamera.integer)
 	{
 		cameraFocusAngles[YAW] += cg.overrides.thirdPersonAngle = 40.5f;
-		cameraFocusAngles[PITCH] += cg.overrides.thirdPersonPitchOffset = -11.25f; 
+		cameraFocusAngles[PITCH] += cg.overrides.thirdPersonPitchOffset = -11.25f;
 	}
 	else
 	{

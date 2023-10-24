@@ -357,9 +357,9 @@ using refexport_t = struct
 		qhandle_t* model_list,
 		int blend_time, int acurrent_time);
 
-	qboolean(*G2API_SetBoneAnglesMatrix)(CGhoul2Info* ghl_info, const char* bone_name, const mdxaBone_t& matrix,int flags, qhandle_t* model_list, int blend_time, int acurrent_time);
+	qboolean(*G2API_SetBoneAnglesMatrix)(CGhoul2Info* ghl_info, const char* bone_name, const mdxaBone_t& matrix, int flags, qhandle_t* model_list, int blend_time, int acurrent_time);
 
-	qboolean(*G2API_SetBoneAnglesMatrixIndex)(CGhoul2Info* ghl_info, int index, const mdxaBone_t& matrix,int flags, qhandle_t* model_list, int blandeTime, int acurrent_time);
+	qboolean(*G2API_SetBoneAnglesMatrixIndex)(CGhoul2Info* ghl_info, int index, const mdxaBone_t& matrix, int flags, qhandle_t* model_list, int blandeTime, int acurrent_time);
 
 	qboolean(*G2API_SetBoneIKState)(CGhoul2Info_v& ghoul2, int time, const char* bone_name, int ikState,
 		sharedSetBoneIKStateParams_t* params);

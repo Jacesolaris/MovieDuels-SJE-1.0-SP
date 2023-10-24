@@ -2885,7 +2885,7 @@ void CG_StasisEffectLong(const centity_t* cent)
 	if (stop_effect)
 	{
 		//time is up or this is a falling spin and they hit the ground or mission end screen is up
-		cg.overrides.active &= ~( CG_OVERRIDE_3RD_PERSON_RNG | CG_OVERRIDE_3RD_PERSON_ANG | CG_OVERRIDE_3RD_PERSON_POF);
+		cg.overrides.active &= ~(CG_OVERRIDE_3RD_PERSON_RNG | CG_OVERRIDE_3RD_PERSON_ANG | CG_OVERRIDE_3RD_PERSON_POF);
 		cg.overrides.thirdPersonHorzOffset = 0;
 		cg.overrides.thirdPersonAngle = 0;
 		cg.overrides.thirdPersonPitchOffset = 0;

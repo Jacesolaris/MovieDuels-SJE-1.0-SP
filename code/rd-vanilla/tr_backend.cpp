@@ -1271,7 +1271,7 @@ RB_DrawSurfs
 
 =============
 */
-const void* RB_DrawSurfs(const void* data) 
+const void* RB_DrawSurfs(const void* data)
 {
 	// finish any 2D drawing if needed
 	if (tess.num_indexes) {
