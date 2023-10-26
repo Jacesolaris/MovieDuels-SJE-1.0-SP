@@ -215,7 +215,7 @@ output= qualified names to three skins if return is true, undefined if false
 ===============
 */
 bool RE_SplitSkins(const char* i_nname, char* skinhead, char* skintorso, char* skinlower)
-{	//INname= "models/players/jedi_tf/|head01_skin1|torso01|lower01";
+{	//i_nname= "models/players/jedi_tf/|head01_skin1|torso01|lower01";
 	if (strchr(i_nname, '|'))
 	{
 		char name[MAX_QPATH];
@@ -362,10 +362,10 @@ qhandle_t RE_RegisterSkin(const char* name)
 	}
 
 	// see if the skin is already loaded
-	for (h_skin = 1; h_skin < tr.numSkins; h_skin++) 
+	for (h_skin = 1; h_skin < tr.numSkins; h_skin++)
 	{
 		skin = tr.skins[h_skin];
-		if (!Q_stricmp(skin->name, name)) 
+		if (!Q_stricmp(skin->name, name))
 		{
 			if (skin->numSurfaces == 0)
 			{

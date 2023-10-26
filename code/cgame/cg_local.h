@@ -1048,8 +1048,8 @@ void cgi_CM_TransformedBoxTrace(trace_t* results, const vec3_t start, const vec3
 // Returns the projection of a polygon onto the solid brushes in the world
 int cgi_CM_MarkFragments(int num_points, const vec3_t* points,
 	const vec3_t projection,
-	int maxPoints, vec3_t pointBuffer,
-	int maxFragments, markFragment_t* fragmentBuffer);
+	int max_points, vec3_t point_buffer,
+	int max_fragments, markFragment_t* fragment_buffer);
 
 // normal sounds will have their volume dynamically changed as their entity
 // moves and the listener moves

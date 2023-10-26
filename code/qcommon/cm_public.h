@@ -77,7 +77,7 @@ void CM_ReadPortalState();
 
 // cm_marks.c
 int CM_MarkFragments(int num_points, const vec3_t* points, const vec3_t projection,
-	int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t* fragmentBuffer);
+	int max_points, vec3_t point_buffer, int max_fragments, markFragment_t* fragment_buffer);
 
 // cm_patch.c
 void CM_DrawDebugSurface(void (*draw_poly)(int color, int num_points, const float* points));

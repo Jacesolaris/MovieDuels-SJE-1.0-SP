@@ -44,9 +44,9 @@ use the shader system.
 RB_CheckOverflow
 ==============
 */
-void RB_CheckOverflow(int verts, int indexes) {
-	if ((tess.num_vertexes + verts) < SHADER_MAX_VERTEXES &&
-		(tess.num_indexes + indexes) < SHADER_MAX_INDEXES)
+void RB_CheckOverflow(const int verts, const int indexes)
+{
+	if ((tess.num_vertexes + verts) < SHADER_MAX_VERTEXES && (tess.num_indexes + indexes) < SHADER_MAX_INDEXES)
 	{
 		return;
 	}
@@ -251,7 +251,7 @@ void RB_InstantTriangle()
 RB_SurfaceSprite
 ==============
 */
-static void RB_SurfaceSprite(void) {
+static void RB_SurfaceSprite() {
 	vec3_t		left, up;
 	float		radius;
 	float			colors[4];
@@ -693,7 +693,7 @@ static void RB_SurfaceBeam(void)
 //------------------
 // DoSprite
 //------------------
-static void DoSprite(vec3_t origin, float radius, float rotation)
+static void DoSprite(vec3_t origin, const float radius, const float rotation)
 {
 	float	s, c;
 	float	ang;
@@ -725,24 +725,22 @@ static void DoSprite(vec3_t origin, float radius, float rotation)
 //------------------
 static void RB_SurfaceSaberGlow()
 {
-	vec3_t		end;
-	refEntity_t* e;
-
-	e = &backEnd.currentEntity->e;
+	refEntity_t* e = &backEnd.currentEntity->e;
 
 	// Render the glow part of the blade
 	for (float i = e->saberLength; i > 0; i -= e->radius * 0.65f)
 	{
+		vec3_t end;
 		VectorMA(e->origin, i, e->axis[0], end);
 
-		DoSprite(end, e->radius, 0.0f);//random() * 360.0f );
+		DoSprite(end, e->radius, 0.0f);//Q_flrand(0.0f, 1.0f) * 360.0f );
 		e->radius += 0.017f;
 	}
 
 	// Big hilt sprite
 	// Please don't kill me Pat...I liked the hilt glow blob, but wanted a subtle pulse.:)  Feel free to ditch it if you don't like it.  --Jeff
 	// Please don't kill me Jeff...  The pulse is good, but now I want the halo bigger if the saber is shorter...  --Pat
-	DoSprite(e->origin, 5.5f + Q_flrand(0.0f, 1.0f) * 0.25f, 0.0f);//random() * 360.0f );
+	DoSprite(e->origin, 2.5f + Q_flrand(0.0f, 0.5f) * 0.15f, 0.0f);
 }
 
 /*
@@ -1127,7 +1125,7 @@ static void CreateShape()
 }
 
 //----------------------------------------------------------------------------
-static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, float sradius, float eradius, int count, float startPerc = 0.0f, float endPerc = 1.0f)
+static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, const float sradius, const float eradius, const int count, const float start_perc = 0.0f, const float end_perc = 1.0f)
 //----------------------------------------------------------------------------
 {
 	vec3_t	point1, point2, fwd;
@@ -1137,7 +1135,7 @@ static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, float sradius, fl
 	if (count < 1)
 	{
 		// done recursing
-		DoLine2(start, end, right, sradius, eradius, startPerc, endPerc);
+		DoLine2(start, end, right, sradius, eradius, start_perc, end_perc);
 		return;
 	}
 
@@ -1164,7 +1162,7 @@ static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, float sradius, fl
 #ifndef REND2_SP
 	ApplyShape(start, point1, right, sradius, rads1, count - 1);
 #else
-	ApplyShape(start, point1, right, sradius, rads1, count - 1, startPerc, startPerc * 0.666f + endPerc * 0.333f);
+	ApplyShape(start, point1, right, sradius, rads1, count - 1, start_perc, start_perc * 0.666f + end_perc * 0.333f);
 #endif
 
 	perc = sh2[0];
@@ -1179,13 +1177,13 @@ static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, float sradius, fl
 	ApplyShape(point2, point1, right, rads1, rads2, count - 1);
 	ApplyShape(point2, end, right, rads2, eradius, count - 1);
 #else
-	ApplyShape(point2, point1, right, rads1, rads2, count - 1, startPerc * 0.333f + endPerc * 0.666f, startPerc * 0.666f + endPerc * 0.333f);
-	ApplyShape(point2, end, right, rads2, eradius, count - 1, startPerc * 0.333f + endPerc * 0.666f, endPerc);
+	ApplyShape(point2, point1, right, rads1, rads2, count - 1, start_perc * 0.333f + end_perc * 0.666f, start_perc * 0.666f + end_perc * 0.333f);
+	ApplyShape(point2, end, right, rads2, eradius, count - 1, start_perc * 0.333f + end_perc * 0.666f, end_perc);
 #endif
 }
 
 //----------------------------------------------------------------------------
-static void DoBoltSeg(vec3_t start, vec3_t end, vec3_t right, float radius)
+static void DoBoltSeg(vec3_t start, vec3_t end, vec3_t right, const float radius)
 //----------------------------------------------------------------------------
 {
 	refEntity_t* e;
@@ -1842,7 +1840,8 @@ static void RB_SurfaceMesh(mdvSurface_t * surface) {
 RB_SurfaceFace
 ==============
 */
-static void RB_SurfaceBSPFace(srfBspSurface_t * srf) {
+static void RB_SurfaceBSPFace(srfBspSurface_t * srf)
+{
 	if (RB_SurfaceVbo(srf->vbo, srf->ibo, srf->num_verts, srf->num_indexes,
 		srf->firstIndex, srf->minIndex, srf->maxIndex, srf->dlightBits, srf->pshadowBits, qtrue))
 	{

@@ -1008,7 +1008,7 @@ typedef struct shader_s {
 	qboolean	useDistortion;
 
 	float clampTime;                                  // time this shader is clamped to
-	float timeOffset;                                 // current time offset for this shader
+	float time_offset;                                 // current time offset for this shader
 
 	struct shader_s* remappedShader;                  // current shader this one is remapped too
 
@@ -2186,10 +2186,10 @@ void		R_Modellist_f(void);
 
 //====================================================
 
-#define	MAX_DRAWIMAGES			2048
-#define	MAX_SKINS				1024
+constexpr auto MAX_DRAWIMAGES = 4096;
+#define	MAX_SKINS				2048
 
-#define	MAX_DRAWSURFS			0x10000
+constexpr auto MAX_DRAWSURFS = 0x20000;
 #define	DRAWSURF_MASK			(MAX_DRAWSURFS-1)
 
 extern	int gl_filter_min, gl_filter_max;
@@ -2882,7 +2882,7 @@ void R_LocalNormalToWorld(const vec3_t local, vec3_t world);
 void R_LocalPointToWorld(const vec3_t local, vec3_t world);
 int R_CullBox(vec3_t bounds[2]);
 int R_CullLocalBox(vec3_t bounds[2]);
-int R_CullPointAndRadiusEx(const vec3_t origin, float radius, const cplane_t* frustum, int numPlanes);
+int R_CullPointAndRadiusEx(const vec3_t origin, float radius, const cplane_t* frustum, int num_planes);
 int R_CullPointAndRadius(const vec3_t origin, float radius);
 int R_CullLocalPointAndRadius(const vec3_t origin, float radius);
 
@@ -2973,7 +2973,7 @@ void	R_LoadHDRImage(const char* filename, byte** data, int* width, int* height);
 void	R_DeleteTextures(void);
 int		R_SumOfUsedImages(void);
 void	R_InitSkins(void);
-skin_t* R_GetSkinByHandle(qhandle_t hSkin);
+skin_t* R_GetSkinByHandle(const qhandle_t h_skin);
 
 int R_ComputeLOD(trRefEntity_t* ent);
 
@@ -2989,12 +2989,12 @@ extern const int lightmapsVertex[MAXLIGHTMAPS];
 extern const int lightmapsFullBright[MAXLIGHTMAPS];
 extern const byte stylesDefault[MAXLIGHTMAPS];
 
-shader_t* R_FindShader(const char* name, const int* lightmapIndexes, const byte* styles, qboolean mipRawImage);
+shader_t* R_FindShader(const char* name, const int* lightmapIndex, const byte* styles, const qboolean mip_raw_image);
 shader_t* R_GetShaderByHandle(qhandle_t hShader);
 shader_t* R_FindShaderByName(const char* name);
 void R_InitShaders(const qboolean server);
 void R_ShaderList_f(void);
-void    R_RemapShader(const char* oldShader, const char* newShader, const char* timeOffset);
+void    R_RemapShader(const char* oldShader, const char* newShader, const char* time_offset);
 shader_t* R_CreateShaderFromTextureBundle(
 	const char* name,
 	const textureBundle_t* bundle,
@@ -3092,7 +3092,7 @@ extern	color4ub_t	styleColors[MAX_LIGHT_STYLES];
 
 void RB_BeginSurface(shader_t* shader, int fogNum, int cubemapIndex);
 void RB_EndSurface(void);
-void RB_CheckOverflow(int verts, int indexes);
+void RB_CheckOverflow(const int verts, const int indexes);
 #define RB_CHECKOVERFLOW(v,i) if (tess.num_vertexes + (v) >= SHADER_MAX_VERTEXES || tess.num_indexes + (i) >= SHADER_MAX_INDEXES ) {RB_CheckOverflow(v,i);}
 
 void R_DrawElementsVBO(int num_indexes, glIndex_t firstIndex, glIndex_t minIndex, glIndex_t maxIndex);
@@ -3147,9 +3147,9 @@ LIGHTS
 ============================================================
 */
 
-void R_DlightBmodel(bmodel_t* bmodel, trRefEntity_t* ent);
+void R_DlightBmodel(const bmodel_t* bmodel, trRefEntity_t* ent);
 void R_SetupEntityLighting(const trRefdef_t* refdef, trRefEntity_t* ent);
-void R_TransformDlights(int count, dlight_t* dl, orientationr_t* ori);
+void R_TransformDlights(const int count, dlight_t* dl, const orientationr_t* ori);
 int R_LightForPoint(vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir);
 int R_LightDirForPoint(vec3_t point, vec3_t lightDir, vec3_t normal, world_t* world);
 int R_DLightsForPoint(const vec3_t point, const float radius);
@@ -3195,8 +3195,7 @@ MARKERS, POLYGON PROJECTION ON WORLD POLYGONS
 ============================================================
 */
 
-int R_MarkFragments(int num_points, const vec3_t* points, const vec3_t projection,
-	int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t* fragmentBuffer);
+int R_MarkFragments(int num_points, const vec3_t* points, const vec3_t projection, const int max_points, vec3_t point_buffer, const int max_fragments, markFragment_t* fragment_buffer);
 
 /*
 ============================================================

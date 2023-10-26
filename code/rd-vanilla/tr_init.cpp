@@ -769,6 +769,10 @@ static void InitOpenGL()
 	}
 	else
 	{
+		if (r_com_rend2->integer != 0)
+		{
+			ri.Cvar_Set("com_rend2", "0");
+		}
 		// set default state
 		GL_SetDefaultState();
 	}
@@ -1156,7 +1160,7 @@ void R_ScreenShot_f() {
 /*
 ** GL_SetDefaultState
 */
-void GL_SetDefaultState()
+void GL_SetDefaultState(void)
 {
 	qglClearDepth(1.0f);
 
@@ -1806,10 +1810,13 @@ void R_Init()
 
 	RestoreGhoul2InfoArray();
 
-	ri.Cvar_Set("com_rend2", "0");
-
 	// print info
 	GfxInfo_f();
+
+	if (r_com_rend2->integer != 0)
+	{
+		ri.Cvar_Set("com_rend2", "0");
+	}
 
 	ri.Printf(PRINT_ALL, "----- Vanilla renderer loaded-----\n");
 }
@@ -1996,7 +2003,7 @@ extern void RE_GetModelBounds(const refEntity_t* ref_ent, vec3_t bounds1, vec3_t
 extern void G2API_AnimateG2Models(CGhoul2Info_v& ghoul2, int acurrent_time, CRagDollUpdateParams* params);
 extern qboolean G2API_GetRagBonePos(CGhoul2Info_v& ghoul2, const char* bone_name, vec3_t pos, vec3_t ent_angles, vec3_t ent_pos, vec3_t ent_scale);
 extern qboolean G2API_RagEffectorKick(CGhoul2Info_v& ghoul2, const char* bone_name, vec3_t velocity);
-extern qboolean G2API_RagForceSolve(CGhoul2Info_v& ghoul2, qboolean force);
+extern qboolean G2API_RagForceSolve(CGhoul2Info_v& ghoul2, const qboolean force);
 extern qboolean G2API_SetBoneIKState(CGhoul2Info_v& ghoul2, int time, const char* bone_name, int ik_state, sharedSetBoneIKStateParams_t* params);
 extern qboolean G2API_IKMove(CGhoul2Info_v& ghoul2, int time, sharedIKMoveParams_t* params);
 extern qboolean G2API_RagEffectorGoal(CGhoul2Info_v& ghoul2, const char* bone_name, vec3_t pos);

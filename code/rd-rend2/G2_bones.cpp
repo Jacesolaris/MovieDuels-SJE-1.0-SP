@@ -3254,7 +3254,7 @@ static bool G2_RagDollSettlePositionNumeroTrois(CGhoul2Info_v& ghoul2_v, const v
 	static mdxaBone_t worldBaseMatrix;
 	static vec3_t parentOrigin;
 	static vec3_t basePos;
-	static vec3_t entScale;
+	static vec3_t ent_scale;
 	static bool hasDaddy;
 	static bool hasBasePos;
 	static vec3_t animPelvisDir, pelvisDir, animPelvisPos, pelvisPos;
@@ -3276,11 +3276,11 @@ static bool G2_RagDollSettlePositionNumeroTrois(CGhoul2Info_v& ghoul2_v, const v
 
 	if (!params->scale[0] && !params->scale[1] && !params->scale[2])
 	{
-		VectorSet(entScale, 1.0f, 1.0f, 1.0f);
+		VectorSet(ent_scale, 1.0f, 1.0f, 1.0f);
 	}
 	else
 	{
-		VectorCopy(params->scale, entScale);
+		VectorCopy(params->scale, ent_scale);
 	}
 
 	if (broadsword_ragtobase &&
@@ -3325,7 +3325,7 @@ static bool G2_RagDollSettlePositionNumeroTrois(CGhoul2Info_v& ghoul2_v, const v
 
 		if (bone.RagFlags & RAG_PCJ_PELVIS)
 		{
-			VectorSet(goalSpot, params->position[0], params->position[1], (params->position[2] + DEFAULT_MINS_2) + ((bone.radius * entScale[2]) + 2));
+			VectorSet(goalSpot, params->position[0], params->position[1], (params->position[2] + DEFAULT_MINS_2) + ((bone.radius * ent_scale[2]) + 2));
 
 			VectorSubtract(goalSpot, e.currentOrigin, desiredPelvisOffset);
 			haveDesiredPelvisOffset = true;
@@ -3353,8 +3353,8 @@ static bool G2_RagDollSettlePositionNumeroTrois(CGhoul2Info_v& ghoul2_v, const v
 			continue;
 		}
 
-		VectorSet(testMins, -e.radius * entScale[0], -e.radius * entScale[1], -e.radius * entScale[2]);
-		VectorSet(testMaxs, e.radius * entScale[0], e.radius * entScale[1], e.radius * entScale[2]);
+		VectorSet(testMins, -e.radius * ent_scale[0], -e.radius * ent_scale[1], -e.radius * ent_scale[2]);
+		VectorSet(testMaxs, e.radius * ent_scale[0], e.radius * ent_scale[1], e.radius * ent_scale[2]);
 
 		assert(ghoul2_v[0].mBoneCache);
 

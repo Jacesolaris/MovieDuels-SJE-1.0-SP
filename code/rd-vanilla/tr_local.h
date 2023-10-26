@@ -459,7 +459,7 @@ using shader_t = struct shader_s {
 	short		numUnfoggedPasses;
 	shaderStage_t* stages;
 
-	float			timeOffset;                                 // current time offset for this shader
+	float			time_offset;                                 // current time offset for this shader
 
 	// True if this shader has a stage with glow in it (just an optimization).
 	bool hasGlow;
@@ -1322,7 +1322,7 @@ void	R_InitImages();
 void	R_DeleteTextures();
 float	R_SumOfUsedImages(qboolean bUseFormat);
 void	R_InitSkins();
-skin_t* R_GetSkinByHandle(qhandle_t h_skin);
+skin_t* R_GetSkinByHandle(const qhandle_t h_skin);
 
 //
 // tr_shader.c
@@ -1336,7 +1336,7 @@ extern	const byte	stylesDefault[MAXLIGHTMAPS];
 qhandle_t		 RE_RegisterShader(const char* name);
 qhandle_t		 RE_RegisterShaderNoMip(const char* name);
 
-shader_t* R_FindShader(const char* name, const int* lightmap_index, const byte* styles, qboolean mip_raw_image);
+shader_t* R_FindShader(const char* name, const int* lightmapIndex, const byte* styles, const qboolean mip_raw_image);
 shader_t* R_GetShaderByHandle(qhandle_t h_shader);
 void R_InitShaders(const qboolean server);
 void R_ShaderList_f();
@@ -1344,7 +1344,7 @@ void R_ShaderList_f();
 //
 // tr_arb.c
 //
-void ARB_InitGlowShaders();
+void ARB_InitGPUShaders();
 
 /*
 ====================================================================
@@ -1418,14 +1418,14 @@ extern	bool		styleUpdated[MAX_LIGHT_STYLES];
 
 void RB_BeginSurface(shader_t* shader, int fog_num);
 void RB_EndSurface();
-void RB_CheckOverflow(int verts, int indexes);
+void RB_CheckOverflow(const int verts, const int indexes);
 #define RB_CHECKOVERFLOW(v,i) if (tess.num_vertexes + (v) >= SHADER_MAX_VERTEXES || tess.num_indexes + (i) >= SHADER_MAX_INDEXES ) {RB_CheckOverflow(v,i);}
 
 void RB_StageIteratorGeneric();
 void RB_StageIteratorSky();
 
 void RB_AddQuadStamp(vec3_t origin, vec3_t left, vec3_t up, byte* color);
-void RB_AddQuadStampExt(vec3_t origin, vec3_t left, vec3_t up, byte* color, float s1, float t1, float s2, float t2);
+void RB_AddQuadStampExt(vec3_t origin, vec3_t left, vec3_t up, byte* color, const float s1, const float t1, const float s2, const float t2);
 
 void RB_ShowImages();
 
@@ -1448,9 +1448,9 @@ LIGHTS
 ============================================================
 */
 
-void R_DlightBmodel(const bmodel_t* bmodel, qboolean NoLight);
+void R_DlightBmodel(const bmodel_t* bmodel, const qboolean NoLight);
 void R_SetupEntityLighting(const trRefdef_t* refdef, trRefEntity_t* ent);
-void R_TransformDlights(int count, dlight_t* dl, const orientationr_t* ori);
+void R_TransformDlights(const int count, dlight_t* dl, const orientationr_t* ori);
 
 /*
 ============================================================
@@ -1504,8 +1504,7 @@ MARKERS, POLYGON PROJECTION ON WORLD POLYGONS
 ============================================================
 */
 
-int R_MarkFragments(int num_points, const vec3_t* points, const vec3_t projection,
-	int max_points, vec3_t point_buffer, int max_fragments, markFragment_t* fragment_buffer);
+int R_MarkFragments(int num_points, const vec3_t * points, const vec3_t projection, const int max_points, vec3_t point_buffer, const int max_fragments, markFragment_t * fragment_buffer);
 
 /*
 ============================================================

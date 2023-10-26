@@ -1566,8 +1566,7 @@ qboolean G2API_RagEffectorGoal(CGhoul2Info_v& ghoul2, const char* bone_name, vec
 	return qtrue;
 }
 
-qboolean G2API_GetRagBonePos(CGhoul2Info_v& ghoul2, const char* bone_name, vec3_t pos, vec3_t ent_angles, vec3_t entPos,
-	vec3_t ent_scale)
+qboolean G2API_GetRagBonePos(CGhoul2Info_v& ghoul2, const char* bone_name, vec3_t pos, vec3_t ent_angles, vec3_t ent_pos, vec3_t ent_scale)
 {
 	//do something?
 	return qfalse;
@@ -1673,8 +1672,8 @@ qboolean G2API_AttachG2Model(CGhoul2Info* ghl_info, CGhoul2Info* ghl_info_to, in
 	qboolean ret = qfalse;
 	if (G2_SetupModelPointers(ghl_info) && G2_SetupModelPointers(ghl_info_to))
 	{
-		G2ERROR(toBoltIndex >= 0 && toBoltIndex < (int)ghlInfoTo->mBltlist.size(), "Invalid Bolt Index");
-		G2ERROR(ghlInfoTo->mBltlist.size() > 0, "Empty Bolt List");
+		G2ERROR(to_bolt_index >= 0 && to_bolt_index < (int)ghl_info_to->mBltlist.size(), "Invalid Bolt Index");
+		G2ERROR(ghl_info_to->mBltlist.size() > 0, "Empty Bolt List");
 		assert(to_bolt_index >= 0);
 		if (to_bolt_index >= 0 && ghl_info_to->mBltlist.size())
 		{
@@ -1909,10 +1908,7 @@ static int QDECL QsortDistance(const void* a, const void* b)
 	return 1;
 }
 
-void G2API_CollisionDetect(CCollisionRecord* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles,
-	const vec3_t position,
-	const int aframe_number, int ent_num, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, CMiniHeap*,
-	EG2_Collision e_g2_trace_type, int use_lod, float fRadius)
+void G2API_CollisionDetect(CCollisionRecord* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles, const vec3_t position, int aframe_number, int ent_num, vec3_t rayStart, vec3_t rayEnd, vec3_t scale, CMiniHeap* G2VertSpace, EG2_Collision e_g2_trace_type, int use_lod, float fRadius)
 {
 	G2ERROR(ghoul2.IsValid(), "Invalid ghl_info");
 	G2ERROR(collRecMap, "NULL Collision Rec");

@@ -60,7 +60,8 @@ R_DlightBmodel
 Determine which dynamic lights may effect this bmodel
 =============
 */
-void R_DlightBmodel(const bmodel_t* bmodel, const qboolean NoLight) {
+void R_DlightBmodel(const bmodel_t* bmodel, const qboolean NoLight)
+{
 	int			i;
 
 	// transform all the lights
@@ -465,7 +466,8 @@ void R_SetupEntityLighting(const trRefdef_t* refdef, trRefEntity_t* ent) {
 }
 
 //pass in origin
-qboolean RE_GetLighting(const vec3_t origin, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir) {
+qboolean RE_GetLighting(const vec3_t origin, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir)
+{
 	trRefEntity_t tr_ent;
 
 	if (!tr.world || !tr.world->lightGridData) {

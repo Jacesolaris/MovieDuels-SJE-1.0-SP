@@ -176,7 +176,7 @@ using netchan_t = struct
 	// incoming fragment assembly buffer
 	int fragmentSequence;
 	int fragmentLength;
-	byte fragmentBuffer[MAX_MSGLEN];
+	byte fragment_buffer[MAX_MSGLEN];
 };
 
 void Netchan_Init(int port);

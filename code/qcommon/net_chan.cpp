@@ -362,7 +362,7 @@ qboolean Netchan_Process(netchan_t* chan, msg_t* msg)
 
 		// copy the fragment to the fragment buffer
 		if (fragmentLength < 0 || msg->readcount + fragmentLength > msg->cursize ||
-			chan->fragmentLength + fragmentLength > static_cast<int>(sizeof(chan->fragmentBuffer)))
+			chan->fragmentLength + fragmentLength > static_cast<int>(sizeof(chan->fragment_buffer)))
 		{
 			if (showdrop->integer || showpackets->integer)
 			{
@@ -372,7 +372,7 @@ qboolean Netchan_Process(netchan_t* chan, msg_t* msg)
 			return qfalse;
 		}
 
-		memcpy(chan->fragmentBuffer + chan->fragmentLength,
+		memcpy(chan->fragment_buffer + chan->fragmentLength,
 			msg->data + msg->readcount, fragmentLength);
 
 		chan->fragmentLength += fragmentLength;
@@ -396,7 +396,7 @@ qboolean Netchan_Process(netchan_t* chan, msg_t* msg)
 		// make sure the sequence number is still there
 		*reinterpret_cast<int*>(msg->data) = LittleLong(sequence);
 
-		memcpy(msg->data + 4, chan->fragmentBuffer, chan->fragmentLength);
+		memcpy(msg->data + 4, chan->fragment_buffer, chan->fragmentLength);
 		msg->cursize = chan->fragmentLength + 4;
 		chan->fragmentLength = 0;
 		msg->readcount = 4; // past the sequence number

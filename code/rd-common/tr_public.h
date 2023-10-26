@@ -222,7 +222,7 @@ using refexport_t = struct
 
 	//misc stuff
 	int (*MarkFragments)(int num_points, const vec3_t* points, const vec3_t projection,
-		int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t* fragmentBuffer);
+		int max_points, vec3_t point_buffer, int max_fragments, markFragment_t* fragment_buffer);
 
 	//model stuff
 	int (*LerpTag)(orientation_t* tag, qhandle_t model, int start_frame, int end_frame, float frac, const char* tagName);
@@ -282,8 +282,8 @@ using refexport_t = struct
 	int (*G2API_AddSurface)(CGhoul2Info* ghl_info, int surface_number, int poly_number,
 		float barycentric_i, float barycentric_j, int lod);
 	void (*G2API_AnimateG2Models)(CGhoul2Info_v& ghoul2, int acurrent_time, CRagDollUpdateParams* params);
-	qboolean(*G2API_AttachEnt)(int* bolt_info, CGhoul2Info* ghlInfoTo, int toBoltIndex, int ent_num, int toModelNum);
-	qboolean(*G2API_AttachG2Model)(CGhoul2Info* ghl_info, CGhoul2Info* ghlInfoTo, int toBoltIndex, int toModel);
+	qboolean(*G2API_AttachEnt)(int* bolt_info, CGhoul2Info* ghl_info_to, int to_bolt_index, int ent_num, int to_model_num);
+	qboolean(*G2API_AttachG2Model)(CGhoul2Info* ghl_info, CGhoul2Info* ghl_info_to, int to_bolt_index, int to_model);
 	void (*G2API_CollisionDetect)(CCollisionRecord* collRecMap, CGhoul2Info_v& ghoul2, const vec3_t angles,
 		const vec3_t position, int AframeNumber, int ent_num, vec3_t rayStart, vec3_t rayEnd,
 		vec3_t scale,
@@ -311,8 +311,8 @@ using refexport_t = struct
 	int (*G2API_GetGhoul2ModelFlags)(CGhoul2Info* ghl_info);
 	char* (*G2API_GetGLAName)(CGhoul2Info* ghl_info);
 	int (*G2API_GetParentSurface)(CGhoul2Info* ghl_info, int index);
-	qboolean(*G2API_GetRagBonePos)(CGhoul2Info_v& ghoul2, const char* bone_name, vec3_t pos, vec3_t entAngles,
-		vec3_t entPos, vec3_t entScale);
+	qboolean(*G2API_GetRagBonePos)(CGhoul2Info_v& ghoul2, const char* bone_name, vec3_t pos, vec3_t ent_angles,
+		vec3_t ent_pos, vec3_t ent_scale);
 	int (*G2API_GetSurfaceIndex)(CGhoul2Info* ghl_info, const char* surface_name);
 	char* (*G2API_GetSurfaceName)(CGhoul2Info* ghl_info, int surf_number);
 	int (*G2API_GetSurfaceRenderStatus)(CGhoul2Info* ghl_info, const char* surface_name);

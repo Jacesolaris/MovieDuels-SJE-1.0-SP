@@ -580,17 +580,6 @@ static qhandle_t RE_RegisterModel_Actual(const char* name)
 		return 0;
 	}
 
-	/*
-	Ghoul2 Insert Start
-	*/
-	//	if (!tr.registered) {
-	//		ri.Printf( PRINT_WARNING, "RE_RegisterModel (%s) called before ready!\n",name );
-	//		return 0;
-	//	}
-		//
-		// search the currently loaded models
-		//
-
 	int hash = generateHashValue(name, FILE_HASH_SIZE);
 
 	//

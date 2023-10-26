@@ -48,9 +48,10 @@ use the shader system.
 RB_CheckOverflow
 ==============
 */
-void RB_CheckOverflow(const int verts, const int indexes) {
-	if (tess.num_vertexes + verts < SHADER_MAX_VERTEXES
-		&& tess.num_indexes + indexes < SHADER_MAX_INDEXES) {
+void RB_CheckOverflow(const int verts, const int indexes)
+{
+	if ((tess.num_vertexes + verts) < SHADER_MAX_VERTEXES && (tess.num_indexes + indexes) < SHADER_MAX_INDEXES)
+	{
 		return;
 	}
 
@@ -71,7 +72,8 @@ void RB_CheckOverflow(const int verts, const int indexes) {
 RB_AddQuadStampExt
 ==============
 */
-void RB_AddQuadStampExt(vec3_t origin, vec3_t left, vec3_t up, byte* color, const float s1, const float t1, const float s2, const float t2) {
+void RB_AddQuadStampExt(vec3_t origin, vec3_t left, vec3_t up, byte* color, const float s1, const float t1, const float s2, const float t2)
+{
 	vec3_t		normal;
 
 	RB_CHECKOVERFLOW(4, 6);
@@ -1035,7 +1037,8 @@ static uint32_t ComputeFinalVertexColor(const byte* colors) {
 RB_SurfaceTriangles
 =============
 */
-void RB_SurfaceTriangles(const srfTriangles_t* srf) {
+void RB_SurfaceTriangles(const srfTriangles_t* srf)
+{
 	int			i;
 
 	const int dlight_bits = srf->dlightBits;

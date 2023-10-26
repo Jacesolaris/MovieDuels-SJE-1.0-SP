@@ -393,19 +393,21 @@ static void CG_LoadBar()
 	CG_DrawPic(tickleft, ticktop, tickwidth * cg.loadLCARSStage, tickheight, cgs.media.loadTick);
 
 	// Draw right cap
-	CG_DrawPic(tickleft + tickwidth * cg.loadLCARSStage, ticktop, capwidth, tickheight, cgs.media.loadTickCap);
-
-	constexpr int x = (640 - LOADBAR_CLIP_WIDTH) / 2;
+	CG_DrawPic(tickleft + tickwidth * cg.loadLCARSStage, ticktop, capwidth, tickheight, cgs.media.loadTickCap); 
 
 	if (cg.loadLCARSStage >= 3)
 	{
-		constexpr int y = 50;
-		CG_DrawPic(x, y, LOADBAR_CLIP_WIDTH, LOADBAR_CLIP_HEIGHT, cgs.media.load_SerenitySaberSystems);
-
-		if (cg_com_rend2.integer == 1) //rend2 is on
+		if (cg.loadLCARSStage <= 6)
 		{
-			cgi_R_Font_DrawString(60, 416, va("Warning: When using Rend2, longer loading times can be expected."), colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 1.0f);
+			if (cg_com_rend2.integer == 1) //rend2 is on
+			{
+				cgi_R_Font_DrawString(60, 2, va("Warning: When using Rend2, longer loading times can be expected."), colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 1.0f);
+			}
 		}
+		constexpr int x = (640 - LOADBAR_CLIP_WIDTH) / 2;
+		constexpr int y = 50;
+
+		CG_DrawPic(x, y, LOADBAR_CLIP_WIDTH, LOADBAR_CLIP_HEIGHT, cgs.media.load_SerenitySaberSystems);
 	}
 }
 
@@ -922,11 +924,7 @@ void CG_DrawInformation()
 		CG_DrawLoadingScreen(levelshot, s);
 		cgi_UI_Menu_Paint(cgi_UI_GetMenuByName("loadscreen"), qtrue);
 		CG_LoadBar();
-
-		if (cg_com_rend2.integer == 0) //rend2 is off
-		{
-			LoadTips();
-		}
+		LoadTips();
 	}
 
 	// draw info string information

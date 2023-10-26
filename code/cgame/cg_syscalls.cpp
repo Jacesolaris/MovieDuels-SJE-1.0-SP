@@ -196,11 +196,11 @@ void cgi_CM_TransformedBoxTrace(trace_t* results, const vec3_t start, const vec3
 
 int cgi_CM_MarkFragments(const int num_points, const vec3_t* points,
 	const vec3_t projection,
-	const int maxPoints, vec3_t pointBuffer,
-	const int maxFragments, markFragment_t* fragmentBuffer)
+	const int max_points, vec3_t point_buffer,
+	const int max_fragments, markFragment_t* fragment_buffer)
 {
-	return Q_syscall(CG_CM_MARKFRAGMENTS, num_points, points, projection, maxPoints, pointBuffer, maxFragments,
-		fragmentBuffer);
+	return Q_syscall(CG_CM_MARKFRAGMENTS, num_points, points, projection, max_points, point_buffer, max_fragments,
+		fragment_buffer);
 }
 
 void cgi_CM_SnapPVS(vec3_t origin, byte* buffer)
