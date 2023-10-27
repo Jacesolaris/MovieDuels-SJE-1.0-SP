@@ -32,6 +32,7 @@ enum weatherType_t
 	WEATHER_SPACEDUST,
 	WEATHER_SAND,
 	WEATHER_FOG,
+	WEATHER_LAVA,
 
 	NUM_WEATHER_TYPES
 };
@@ -116,6 +117,7 @@ void R_InitWeatherSystem();
 void R_InitWeatherForMap();
 void R_AddWeatherSurfaces();
 void R_AddWeatherBrush(uint8_t num_planes, vec4_t* planes);
+void R_LoadWeatherImages();
 void R_ShutdownWeatherSystem();
 void RB_SurfaceWeather(srfWeather_t* surfaceType);
 bool R_IsOutside(vec3_t pos);
@@ -127,3 +129,5 @@ bool R_GetWindGusting(vec3_t atPoint); // doesn't work
 
 void RE_WorldEffectCommand(const char* cmd);
 void R_WorldEffect_f(void);
+void R_WeatherEffect_f(void);
+void R_SetWeatherEffect_f(void);

@@ -977,7 +977,6 @@ InitGame
 int giMapChecksum;
 SavedGameJustLoaded_e g_eSavedGameJustLoaded;
 qboolean g_qbLoadTransition = qfalse;
-extern void R_LoadWeatherParms();
 
 void InitGame(const char* mapname, const char* spawntarget, const int checkSum, const char* entities,
 	const int levelTime,
@@ -1047,6 +1046,8 @@ void InitGame(const char* mapname, const char* spawntarget, const int checkSum, 
 	Pilot_Reset();
 
 	IT_LoadItemParms();
+
+	IT_LoadWeatherParms();
 
 	ClearRegisteredItems();
 

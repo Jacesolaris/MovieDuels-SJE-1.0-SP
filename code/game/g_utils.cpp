@@ -2008,6 +2008,7 @@ void G_ChangeMap(const char* mapname, const char* spawntarget, const qboolean hu
 	{
 		gi.SendConsoleCommand(va("maptransition %s %s\n", mapname, spawntarget));
 	}
+	IT_LoadWeatherParms();
 }
 
 qboolean G_PointInBounds(const vec3_t point, const vec3_t mins, const vec3_t maxs)

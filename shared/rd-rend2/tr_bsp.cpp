@@ -2638,7 +2638,7 @@ static	void R_LoadPlanes(world_t* worldData, lump_t* l) {
 	out = (cplane_t*)Hunk_Alloc(count * 2 * sizeof(*out), h_low);
 
 	worldData->planes = out;
-	worldData->numplanes = count;
+	worldData->num_planes = count;
 
 	for (i = 0; i < count; i++, in++, out++) {
 		bits = 0;
@@ -4264,6 +4264,8 @@ world_t* R_LoadBSP(const char* name, int* bspIndex)
 			worldData,
 			&header->lumps[LUMP_BRUSHES],
 			&header->lumps[LUMP_BRUSHSIDES]);
+
+	R_LoadWeatherImages();
 
 	R_GenerateSurfaceSprites(worldData, worldIndex + 1);
 

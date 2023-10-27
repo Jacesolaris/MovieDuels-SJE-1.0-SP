@@ -575,8 +575,8 @@ static qhandle_t RE_RegisterModel_Actual(const char* name)
 		return 0;
 	}
 
-	if (strlen(name) >= MAX_QPATH) {
-		ri.Printf(PRINT_DEVELOPER, "Model name exceeds MAX_QPATH\n");
+	if (strlen(name) >= MAX_SKINNAME_PATH) {
+		ri.Printf(PRINT_DEVELOPER, "Model name exceeds MAX_SKINNAME_PATH\n");
 		return 0;
 	}
 
@@ -601,13 +601,13 @@ static qhandle_t RE_RegisterModel_Actual(const char* name)
 
 	if (name[0] == '#')
 	{
-		char		temp[MAX_QPATH];
+		char		temp[MAX_SKINNAME_PATH];
 
 		tr.numBSPModels++;
 #ifndef DEDICATED
 		RE_LoadWorldMap_Actual(va("maps/%s.bsp", name + 1), tr.bspModels[tr.numBSPModels - 1], tr.numBSPModels);	//this calls R_LoadSubmodels which will put them into the Hash
 #endif
-		Com_sprintf(temp, MAX_QPATH, "*%d-0", tr.numBSPModels);
+		Com_sprintf(temp, MAX_SKINNAME_PATH, "*%d-0", tr.numBSPModels);
 		hash = generateHashValue(temp, FILE_HASH_SIZE);
 		for (mh = mhHashTable[hash]; mh; mh = mh->next)
 		{

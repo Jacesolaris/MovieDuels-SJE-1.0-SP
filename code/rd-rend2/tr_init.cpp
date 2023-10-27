@@ -283,6 +283,7 @@ cvar_t* r_environmentMapping;
 cvar_t* r_ext_compressed_lightmaps;
 
 cvar_t* r_com_rend2;
+cvar_t* g_Weather;
 
 #define ri_Cvar_Get_NoComm(varname, value, flag, comment) ri.Cvar_Get(varname, value, flag)
 
@@ -327,14 +328,14 @@ void R_Splash()
 	GLSL_BindProgram(&tr.splashScreenShader);
 	RB_InstantTriangle();
 
-	if (r_com_rend2->integer == 0)
+	if (r_com_rend2->integer != 1)
 	{
 		ri.Cvar_Set("com_rend2", "1");
 	}
 
-	if (r_shadows->integer == 2)
+	if (r_shadows->integer != 1)
 	{
-		ri.Cvar_Set("cg_shadows", "3");
+		ri.Cvar_Set("cg_shadows", "1");
 	}
 
 	ri.WIN_Present(&window);
@@ -1449,11 +1450,11 @@ static consoleCommand_t	commands[] = {
 	{ "gfxinfo",			GfxInfo_f },
 	{ "gfxmeminfo",			GfxMemInfo_f },
 	{ "r_we",				R_WorldEffect_f },
-	//{ "imagecacheinfo",		RE_RegisterImages_Info_f },
 	{ "modellist",			R_Modellist_f },
-	//{ "modelcacheinfo",		RE_RegisterModels_Info_f },
 	{ "vbolist",			R_VBOList_f },
 	{ "capframes",			R_CaptureFrameData_f },
+	{ "r_weather",			R_WeatherEffect_f },
+	{ "weather",			R_SetWeatherEffect_f },
 };
 
 static const size_t numCommands = ARRAY_LEN(commands);
@@ -1697,6 +1698,8 @@ void R_Register(void)
 #endif
 	// added for SP
 	// @TODO add all cvars from vanilla
+
+	g_Weather = ri.Cvar_Get("r_weather", "0", CVAR_ARCHIVE);
 	com_buildScript = ri.Cvar_Get("com_buildScript", "0", 0);
 	sv_mapname = ri.Cvar_Get("mapname", "nomap", CVAR_SERVERINFO | CVAR_ROM);
 	sv_mapChecksum = ri.Cvar_Get("sv_mapChecksum", "", CVAR_ROM);

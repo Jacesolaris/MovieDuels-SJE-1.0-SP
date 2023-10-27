@@ -1974,7 +1974,7 @@ typedef struct {
 	int			numBModels;
 	bmodel_t* bmodels;
 
-	int			numplanes;
+	int			num_planes;
 	cplane_t* planes;
 
 	int			numnodes;		// includes leafs

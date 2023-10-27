@@ -3015,7 +3015,7 @@ constexpr auto BUMPCLIP = 1.5f;
 
 void G_RollMissile(gentity_t* ent)
 {
-	int numplanes;
+	int num_planes;
 	vec3_t planes[MAX_CLIP_PLANES]{};
 	vec3_t primal_velocity;
 	int i;
@@ -3051,12 +3051,12 @@ void G_RollMissile(gentity_t* ent)
 	// never turn against the ground plane
 	if (objPML.groundPlane)
 	{
-		numplanes = 1;
+		num_planes = 1;
 		VectorCopy(objPML.groundTrace.plane.normal, planes[0]);
 	}
 	else
 	{
-		numplanes = 0;
+		num_planes = 0;
 	}
 
 	for (int bumpcount = 0; bumpcount < numbumps; bumpcount++)
@@ -3114,7 +3114,7 @@ void G_RollMissile(gentity_t* ent)
 
 		time_left -= time_left * trace.fraction;
 
-		if (numplanes >= MAX_CLIP_PLANES)
+		if (num_planes >= MAX_CLIP_PLANES)
 		{
 			// this shouldn't really happen
 			VectorClear(ent->s.pos.trDelta);
@@ -3126,7 +3126,7 @@ void G_RollMissile(gentity_t* ent)
 		// out along it, which fixes some epsilon issues with
 		// non-axial planes
 		//
-		for (i = 0; i < numplanes; i++)
+		for (i = 0; i < num_planes; i++)
 		{
 			if (DotProduct(trace.plane.normal, planes[i]) > 0.99)
 			{
@@ -3134,12 +3134,12 @@ void G_RollMissile(gentity_t* ent)
 				break;
 			}
 		}
-		if (i < numplanes)
+		if (i < num_planes)
 		{
 			continue;
 		}
-		VectorCopy(trace.plane.normal, planes[numplanes]);
-		numplanes++;
+		VectorCopy(trace.plane.normal, planes[num_planes]);
+		num_planes++;
 
 		//
 		// modify velocity so it parallels all of the clip planes
@@ -3155,7 +3155,7 @@ void G_RollMissile(gentity_t* ent)
 		}
 
 		// find a plane that it enters
-		for (i = 0; i < numplanes; i++)
+		for (i = 0; i < num_planes; i++)
 		{
 			vec3_t end_clip_velocity;
 			vec3_t clip_velocity;
@@ -3178,7 +3178,7 @@ void G_RollMissile(gentity_t* ent)
 			G_ClipVelocity(end_velocity, planes[i], end_clip_velocity, bounceAmt);
 
 			// see if there is a second plane that the new move enters
-			for (int j = 0; j < numplanes; j++)
+			for (int j = 0; j < num_planes; j++)
 			{
 				vec3_t dir;
 				if (j == i)
@@ -3212,7 +3212,7 @@ void G_RollMissile(gentity_t* ent)
 				VectorScale(dir, d, end_clip_velocity);
 
 				// see if there is a third plane the the new move enters
-				for (int k = 0; k < numplanes; k++)
+				for (int k = 0; k < num_planes; k++)
 				{
 					if (k == i || k == j)
 					{
