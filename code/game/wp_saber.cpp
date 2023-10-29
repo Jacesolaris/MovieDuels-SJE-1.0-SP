@@ -66,14 +66,12 @@ extern cvar_t* g_dismemberment;
 extern cvar_t* g_debugSaberLock;
 extern cvar_t* g_saberLockRandomNess;
 extern cvar_t* d_slowmodeath;
-extern cvar_t* com_rend2;
 extern cvar_t* g_cheats;
 extern cvar_t* g_saberRestrictForce;
 extern cvar_t* g_saberPickuppableDroppedSabers;
 extern cvar_t* debug_subdivision;
 extern cvar_t* d_slowmoaction;
 extern cvar_t* g_SaberAttackSpeedMD;
-extern cvar_t* g_overpoweredsaberthrow;
 void wp_block_points_regenerate_over_ride(const gentity_t* self, int override_amt);
 extern qboolean NPC_IsOversized(const gentity_t* self);
 extern void npc_check_speak(gentity_t* speaker_npc);
@@ -635,13 +633,10 @@ void G_CreateG2HolsteredWeaponModel(gentity_t* ent, const char* ps_weapon_model,
 				}
 				else
 				{
-					if (com_rend2->integer == 0) //rend2 is off
-					{
-						gi.G2API_SetBoneAnglesOffset(&ent->ghoul2[ent->holsterModel[weapon_num]],
-							"ModView internal default",
-							angles, BONE_ANGLES_PREMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z,
-							nullptr, 0, 0, offset);
-					}
+					gi.G2API_SetBoneAnglesOffset(&ent->ghoul2[ent->holsterModel[weapon_num]],
+						"ModView internal default",
+						angles, BONE_ANGLES_PREMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z,
+						nullptr, 0, 0, offset);
 				}
 			}
 			else
@@ -730,14 +725,10 @@ void G_CreateG2AttachedWeaponModel(gentity_t* ent, const char* ps_weapon_model, 
 			{
 				constexpr vec3_t gun_angles = { 0.0f, 0.0f, 0.0f };
 				constexpr vec3_t offset = { 0.0f, 0.0f, -10.0f };
-
-				if (com_rend2->integer == 0) //rend2 is off
-				{
-					gi.G2API_SetSurfaceOnOff(&ent->ghoul2[ent->weaponModel[weapon_num]], "eweb_cannon", 0x00000002);
-					gi.G2API_SetBoneAnglesOffset(&ent->ghoul2[ent->weaponModel[weapon_num]], "base", gun_angles,
-						BONE_ANGLES_PREMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0,
-						offset);
-				}
+				gi.G2API_SetSurfaceOnOff(&ent->ghoul2[ent->weaponModel[weapon_num]], "eweb_cannon", 0x00000002);
+				gi.G2API_SetBoneAnglesOffset(&ent->ghoul2[ent->weaponModel[weapon_num]], "base", gun_angles,
+					BONE_ANGLES_PREMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0,
+					offset);
 			}
 			else
 			{
@@ -2247,7 +2238,7 @@ int WP_SaberInitBladeData(gentity_t* ent)
 			saberent->svFlags = SVF_USE_CURRENT_ORIGIN;
 			saberent->s.weapon = WP_SABER;
 			saberent->owner = ent;
-			saberent->s.otherentity_num = ent->s.number;
+			saberent->s.otherEntityNum = ent->s.number;
 			//clear the enemy
 			saberent->enemy = nullptr;
 
@@ -4179,7 +4170,7 @@ qboolean WP_SaberDamageEffects(trace_t* tr, const float length, const float dmg,
 
 	for (auto& z : tr->G2CollisionMap)
 	{
-		if (z.mentity_num == -1)
+		if (z.mEntityNum == -1)
 		{
 			//actually, completely break out of this for loop since nothing after this in the aray should ever be valid either
 			continue; //break;//
@@ -4190,7 +4181,7 @@ qboolean WP_SaberDamageEffects(trace_t* tr, const float length, const float dmg,
 
 		for (i = 0; i < num_hit_ents; i++)
 		{
-			if (hit_ent_num[i] == coll.mentity_num)
+			if (hit_ent_num[i] == coll.mEntityNum)
 			{
 				//we hit this ent before
 				//we'll want to add this dist
@@ -4206,7 +4197,7 @@ qboolean WP_SaberDamageEffects(trace_t* tr, const float length, const float dmg,
 				//hit too many damn ents!
 				continue;
 			}
-			hit_ent_num[num_hit_ents] = coll.mentity_num;
+			hit_ent_num[num_hit_ents] = coll.mEntityNum;
 			if (!coll.mFlags)
 			{
 				//hmm, we came out first, so we must have started inside
@@ -4485,9 +4476,9 @@ qboolean WP_SaberDamageEffects(trace_t* tr, const float length, const float dmg,
 				//FIXME: find closest impact surf *first* (per ent), then call G_GetHitLocFromSurfName?
 				//FIXED: if hit multiple ents in this collision record, these trSurfName, trDismember and trDismemberLoc will get stomped/confused over the multiple ents I hit
 				const char* tr_surf_name = gi.G2API_GetSurfaceName(
-					&g_entities[coll.mentity_num].ghoul2[coll.mModelIndex],
+					&g_entities[coll.mEntityNum].ghoul2[coll.mModelIndex],
 					coll.mSurfaceIndex);
-				tr_dismember[num_hit_ents] = G_GetHitLocFromSurfName(&g_entities[coll.mentity_num], tr_surf_name,
+				tr_dismember[num_hit_ents] = G_GetHitLocFromSurfName(&g_entities[coll.mEntityNum], tr_surf_name,
 					&tr_hit_loc[num_hit_ents], coll.mCollisionPosition,
 					dmg_dir, blade_dir, MOD_SABER, saber_type);
 				if (tr_dismember[num_hit_ents])
@@ -12791,14 +12782,7 @@ qboolean WP_SaberLaunch(gentity_t* self, gentity_t* saber, const qboolean thrown
 		}
 		else
 		{
-			if (g_overpoweredsaberthrow->integer == 1)
-			{
-				saber->s.apos.trDelta[1] = 800;
-			}
-			else 
-			{
-				saber->s.apos.trDelta[0] = 600;
-			}
+			saber->s.apos.trDelta[0] = 600;
 		}
 	}
 	else

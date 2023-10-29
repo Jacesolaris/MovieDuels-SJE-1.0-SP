@@ -375,7 +375,7 @@ void CMod_LoadPlanes(const lump_t* l, clipMap_t& cm)
 	if (count < 1)
 		Com_Error(ERR_DROP, "Map with no planes");
 	cm.planes = static_cast<cplane_s*>(Z_Malloc((BOX_PLANES + count) * sizeof * cm.planes, TAG_BSP, qfalse));
-	cm.num_planes = count;
+	cm.numPlanes = count;
 
 	cplane_t* out = cm.planes;
 
@@ -924,7 +924,7 @@ int CM_TotalMapContents()
 CM_ClipHandleToModel
 ==================
 */
-cmodel_t* CM_ClipHandleToModel(const clip_handle_t handle, clipMap_t** clip_map)
+cmodel_t* CM_ClipHandleToModel(const clipHandle_t handle, clipMap_t** clip_map)
 {
 	if (handle < 0)
 	{
@@ -974,7 +974,7 @@ cmodel_t* CM_ClipHandleToModel(const clip_handle_t handle, clipMap_t** clip_map)
 CM_InlineModel
 ==================
 */
-clip_handle_t CM_InlineModel(const int index)
+clipHandle_t CM_InlineModel(const int index)
 {
 	if (index < 0 || index >= TotalSubModels)
 	{
@@ -1028,7 +1028,7 @@ can just be stored out and get a proper clipping hull structure.
 */
 void CM_InitBoxHull()
 {
-	box_planes = &cmg.planes[cmg.num_planes];
+	box_planes = &cmg.planes[cmg.numPlanes];
 
 	box_brush = &cmg.brushes[cmg.numBrushes];
 	box_brush->numsides = 6;
@@ -1046,7 +1046,7 @@ void CM_InitBoxHull()
 
 		// brush sides
 		cbrushside_t* s = &cmg.brushsides[cmg.numBrushSides + i];
-		s->plane = cmg.planes + (cmg.num_planes + i * 2 + side);
+		s->plane = cmg.planes + (cmg.numPlanes + i * 2 + side);
 		s->shader_num = cmg.numShaders; //not storing flags directly anymore, so be sure to point @ a valid shader
 
 		// planes
@@ -1074,7 +1074,7 @@ To keep everything totally uniform, bounding boxes are turned into small
 BSP trees instead of being compared directly.
 ===================
 */
-clip_handle_t CM_TempBoxModel(const vec3_t mins, const vec3_t maxs)
+clipHandle_t CM_TempBoxModel(const vec3_t mins, const vec3_t maxs)
 {
 	//, const int contents ) {
 	box_planes[0].dist = maxs[0];
@@ -1104,7 +1104,7 @@ clip_handle_t CM_TempBoxModel(const vec3_t mins, const vec3_t maxs)
 CM_ModelBounds
 ===================
 */
-void CM_ModelBounds(const clip_handle_t model, vec3_t mins, vec3_t maxs)
+void CM_ModelBounds(const clipHandle_t model, vec3_t mins, vec3_t maxs)
 {
 	const cmodel_t* cmod = CM_ClipHandleToModel(model);
 	VectorCopy(cmod->mins, mins);
@@ -1164,7 +1164,7 @@ void CM_GetWorldBounds(vec3_t mins, vec3_t maxs)
 	VectorCopy(cmg.cmodels[0].maxs, maxs);
 }
 
-int CM_ModelContents_Actual(const clip_handle_t model, clipMap_t* cm)
+int CM_ModelContents_Actual(const clipHandle_t model, clipMap_t* cm)
 {
 	if (!cm)
 	{
@@ -1192,7 +1192,7 @@ int CM_ModelContents_Actual(const clip_handle_t model, clipMap_t* cm)
 	return contents;
 }
 
-int CM_ModelContents(const clip_handle_t model, const int sub_bsp_index)
+int CM_ModelContents(const clipHandle_t model, const int sub_bsp_index)
 {
 	if (sub_bsp_index < 0)
 	{

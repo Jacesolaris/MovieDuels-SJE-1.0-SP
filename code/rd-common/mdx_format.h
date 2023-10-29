@@ -424,7 +424,7 @@ using mdxaSkel_t = struct
 //  then read the int at that location and AND it with 0x00FFFFFF. I use the struct below simply for easy searches
 using mdxaIndex_t = struct
 {
-	byte iIndex[3];
+	int iIndex; // this struct for pointing purposes, need to and with 0x00FFFFFF to be meaningful
 };
 //
 // (note that there's then an alignement-pad here to get the next struct back onto 32-bit alignement)

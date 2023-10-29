@@ -114,7 +114,7 @@ CG_ConfigStringModified
 ================
 */
 void CG_RegisterClientModels(int entity_num);
-extern void cgi_R_WorldEffectCommand(const char* command);
+extern void cgi_RE_WorldEffectCommand(const char* command);
 
 static void CG_ConfigStringModified()
 {
@@ -183,7 +183,7 @@ static void CG_ConfigStringModified()
 	}
 	else if (num >= CS_WORLD_FX && num < CS_WORLD_FX + MAX_WORLD_FX)
 	{
-		cgi_R_WorldEffectCommand(str);
+		cgi_RE_WorldEffectCommand(str);
 	}
 }
 

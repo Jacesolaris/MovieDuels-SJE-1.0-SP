@@ -470,7 +470,6 @@ cvar_t* g_NPCsabercolor;
 cvar_t* g_NPCsabertwo;
 cvar_t* g_NPCsabertwocolor;
 vmCvar_t ui_com_kotor;
-vmCvar_t ui_com_rend2;
 
 static void UI_UpdateScreenshot()
 {
@@ -606,8 +605,6 @@ static cvarTable_t cvarTable[] =
 	{&ui_npc_sabertwocolor, "ui_npc_sabertwocolor", "", nullptr},
 
 	{&ui_com_kotor, "com_kotor", "0", nullptr, CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART},
-
-	{&ui_com_rend2, "com_rend2", "0", nullptr, CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART},
 };
 
 constexpr auto FP_UPDATED_NONE = -1;
@@ -3323,7 +3320,7 @@ void UI_LoadMenus(const char* menuFile, const qboolean reset)
 	Com_Printf("---------------- MovieDuels-SJE-1.0-SP---------------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------Update 9---------------------------------\n");
-	Com_Printf("------------------Build Date 27/10/2023--------------------------\n");
+	Com_Printf("------------------Build Date 19/10/2023--------------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------LightSaber-------------------------------\n");
 	Com_Printf("-----------An elegant weapon for a more civilized age------------\n");
@@ -7320,7 +7317,7 @@ void ReadSaveDirectory()
 #endif
 
 	// Get everything in saves directory
-	fileCnt = ui.FS_GetFileList("Account/Saved-Missions-MovieDuels/", ".sav", s_savegame.listBuf, LISTBUFSIZE);
+	fileCnt = ui.FS_GetFileList("Saved-Missions-MovieDuels/", ".sav", s_savegame.listBuf, LISTBUFSIZE);
 
 	Cvar_Set("ui_ResumeOK", "0");
 	holdChar = s_savegame.listBuf;

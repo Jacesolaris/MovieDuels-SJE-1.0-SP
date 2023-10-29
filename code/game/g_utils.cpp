@@ -172,7 +172,7 @@ void G_PlayEffect(const int fx_id, const int ent_num, const vec3_t fwd)
 
 	gentity_t* tent = G_TempEntity(g_entities[ent_num].currentOrigin, EV_PLAY_EFFECT);
 	tent->s.eventParm = fx_id;
-	tent->s.otherentity_num = ent_num;
+	tent->s.otherEntityNum = ent_num;
 	VectorSet(tent->maxs, FX_ENT_RADIUS, FX_ENT_RADIUS, FX_ENT_RADIUS);
 	VectorScale(tent->maxs, -1, tent->mins);
 	VectorCopy(fwd, tent->pos3);
@@ -187,7 +187,7 @@ void G_PlayEffect(const char* name, const int client_num)
 {
 	gentity_t* tent = G_TempEntity(g_entities[client_num].currentOrigin, EV_PLAY_MUZZLE_EFFECT);
 	tent->s.eventParm = G_EffectIndex(name);
-	tent->s.otherentity_num = client_num;
+	tent->s.otherEntityNum = client_num;
 	VectorSet(tent->maxs, FX_ENT_RADIUS, FX_ENT_RADIUS, FX_ENT_RADIUS);
 	VectorScale(tent->maxs, -1, tent->mins);
 }
@@ -1226,7 +1226,7 @@ void G_AddEvent(gentity_t* ent, int event, int event_parm)
 
 		temp = G_Spawn();
 		temp->s.eType = ET_EVENT_ONLY;
-		temp->s.otherentity_num = ent->s.number;
+		temp->s.otherEntityNum = ent->s.number;
 		G_SetOrigin(temp, ent->s.origin);
 		G_AddEvent(temp, event, eventParm);
 		temp->freeAfterEvent = qtrue;
@@ -2008,7 +2008,6 @@ void G_ChangeMap(const char* mapname, const char* spawntarget, const qboolean hu
 	{
 		gi.SendConsoleCommand(va("maptransition %s %s\n", mapname, spawntarget));
 	}
-	IT_LoadWeatherParms();
 }
 
 qboolean G_PointInBounds(const vec3_t point, const vec3_t mins, const vec3_t maxs)
@@ -2140,7 +2139,7 @@ void removeBoltSurface(gentity_t* self)
 
 	// check first to be sure the bolt is still there on the model
 	if (hit_ent->ghoul2.size() > self->damage &&
-		hit_ent->ghoul2[self->damage].mmodel_index != -1 &&
+		hit_ent->ghoul2[self->damage].mModelindex != -1 &&
 		hit_ent->ghoul2[self->damage].mSlist.size() > static_cast<unsigned>(self->aimDebounceTime) &&
 		hit_ent->ghoul2[self->damage].mSlist[self->aimDebounceTime].surface != -1 &&
 		hit_ent->ghoul2[self->damage].mSlist[self->aimDebounceTime].off_flags == G2SURFACEFLAG_GENERATED)

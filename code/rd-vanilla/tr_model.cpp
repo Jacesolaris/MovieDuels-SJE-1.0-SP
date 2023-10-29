@@ -575,10 +575,21 @@ static qhandle_t RE_RegisterModel_Actual(const char* name)
 		return 0;
 	}
 
-	if (strlen(name) >= MAX_SKINNAME_PATH) {
-		ri.Printf(PRINT_DEVELOPER, "Model name exceeds MAX_SKINNAME_PATH\n");
+	if (strlen(name) >= MAX_QPATH) {
+		ri.Printf(PRINT_DEVELOPER, "Model name exceeds MAX_QPATH\n");
 		return 0;
 	}
+
+	/*
+	Ghoul2 Insert Start
+	*/
+	//	if (!tr.registered) {
+	//		ri.Printf( PRINT_WARNING, "RE_RegisterModel (%s) called before ready!\n",name );
+	//		return 0;
+	//	}
+		//
+		// search the currently loaded models
+		//
 
 	int hash = generateHashValue(name, FILE_HASH_SIZE);
 
@@ -601,13 +612,13 @@ static qhandle_t RE_RegisterModel_Actual(const char* name)
 
 	if (name[0] == '#')
 	{
-		char		temp[MAX_SKINNAME_PATH];
+		char		temp[MAX_QPATH];
 
 		tr.numBSPModels++;
 #ifndef DEDICATED
 		RE_LoadWorldMap_Actual(va("maps/%s.bsp", name + 1), tr.bspModels[tr.numBSPModels - 1], tr.numBSPModels);	//this calls R_LoadSubmodels which will put them into the Hash
 #endif
-		Com_sprintf(temp, MAX_SKINNAME_PATH, "*%d-0", tr.numBSPModels);
+		Com_sprintf(temp, MAX_QPATH, "*%d-0", tr.numBSPModels);
 		hash = generateHashValue(temp, FILE_HASH_SIZE);
 		for (mh = mhHashTable[hash]; mh; mh = mh->next)
 		{
@@ -1094,45 +1105,41 @@ static md3Tag_t* R_GetTag(md3Header_t* mod, int frame, const char* tag_name) {
 R_LerpTag
 ================
 */
-int	R_LerpTag(orientation_t* tag, qhandle_t handle, int startFrame, int endFrame,
-	float frac, const char* tagName) {
+void	R_LerpTag(orientation_t* tag, const qhandle_t handle, const int start_frame, const int end_frame,
+	const float frac, const char* tag_name) {
 	md3Tag_t* start, * finish;
-	int		i;
-	float		frontLerp, backLerp;
-	model_t* model;
 
-	model = R_GetModelByHandle(handle);
+	const model_t* model = R_GetModelByHandle(handle);
 	if (model->md3[0])
 	{
-		start = R_GetTag(model->md3[0], startFrame, tagName);
-		finish = R_GetTag(model->md3[0], endFrame, tagName);
+		start = R_GetTag(model->md3[0], start_frame, tag_name);
+		finish = R_GetTag(model->md3[0], end_frame, tag_name);
 	}
 	else
 	{
 		AxisClear(tag->axis);
 		VectorClear(tag->origin);
-		return qfalse;
+		return;
 	}
 
 	if (!start || !finish) {
 		AxisClear(tag->axis);
 		VectorClear(tag->origin);
-		return qfalse;
+		return;
 	}
 
-	frontLerp = frac;
-	backLerp = 1.0 - frac;
+	const float front_lerp = frac;
+	const float back_lerp = 1.0 - frac;
 
-	for (i = 0; i < 3; i++) {
-		tag->origin[i] = start->origin[i] * backLerp + finish->origin[i] * frontLerp;
-		tag->axis[0][i] = start->axis[0][i] * backLerp + finish->axis[0][i] * frontLerp;
-		tag->axis[1][i] = start->axis[1][i] * backLerp + finish->axis[1][i] * frontLerp;
-		tag->axis[2][i] = start->axis[2][i] * backLerp + finish->axis[2][i] * frontLerp;
+	for (int i = 0; i < 3; i++) {
+		tag->origin[i] = start->origin[i] * back_lerp + finish->origin[i] * front_lerp;
+		tag->axis[0][i] = start->axis[0][i] * back_lerp + finish->axis[0][i] * front_lerp;
+		tag->axis[1][i] = start->axis[1][i] * back_lerp + finish->axis[1][i] * front_lerp;
+		tag->axis[2][i] = start->axis[2][i] * back_lerp + finish->axis[2][i] * front_lerp;
 	}
 	VectorNormalize(tag->axis[0]);
 	VectorNormalize(tag->axis[1]);
 	VectorNormalize(tag->axis[2]);
-	return qtrue;
 }
 
 /*

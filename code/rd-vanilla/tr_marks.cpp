@@ -42,8 +42,9 @@ Out must have space for two more vertexes than in
 #define	SIDE_FRONT	0
 #define	SIDE_BACK	1
 #define	SIDE_ON		2
-static void R_ChopPolyBehindPlane(const int num_in_points, vec3_t in_points[MAX_VERTS_ON_POLY], int* num_out_points, vec3_t out_points[MAX_VERTS_ON_POLY], vec3_t normal, const vec_t dist, const vec_t epsilon)
-{
+static void R_ChopPolyBehindPlane(const int num_in_points, vec3_t in_points[MAX_VERTS_ON_POLY],
+	int* num_out_points, vec3_t out_points[MAX_VERTS_ON_POLY],
+	vec3_t normal, const vec_t dist, const vec_t epsilon) {
 	float		dists[MAX_VERTS_ON_POLY + 4] = { 0 };
 	int			sides[MAX_VERTS_ON_POLY + 4] = { 0 };
 	int			counts[3]{};
@@ -135,8 +136,7 @@ R_BoxSurfaces_r
 
 =================
 */
-void R_BoxSurfaces_r(const mnode_t* node, vec3_t mins, vec3_t maxs, surfaceType_t** list, const int listsize, int* listlength, vec3_t dir)
-{
+void R_BoxSurfaces_r(const mnode_t* node, vec3_t mins, vec3_t maxs, surfaceType_t** list, const int listsize, int* listlength, vec3_t dir) {
 	int			s;
 
 	// do the tail recursion in a loop
@@ -202,7 +202,11 @@ R_AddMarkFragments
 
 =================
 */
-void R_AddMarkFragments(int num_clip_points, vec3_t clip_points[2][MAX_VERTS_ON_POLY], const int num_planes, vec3_t* normals, const float* dists, const int max_points, vec3_t point_buffer, int max_fragments, markFragment_t* fragment_buffer, int* returned_points, int* returned_fragments, vec3_t mins, vec3_t maxs)
+void R_AddMarkFragments(int num_clip_points, vec3_t clip_points[2][MAX_VERTS_ON_POLY],
+	const int num_planes, vec3_t* normals, const float* dists,
+	const int max_points, vec3_t point_buffer,
+	int max_fragments, markFragment_t* fragment_buffer,
+	int* returned_points, int* returned_fragments, vec3_t mins, vec3_t maxs)
 {
 	// chop the surface by all the bounding planes of the to be projected polygon
 	int ping_pong = 0;
@@ -228,7 +232,7 @@ void R_AddMarkFragments(int num_clip_points, vec3_t clip_points[2][MAX_VERTS_ON_
 
 	markFragment_t* mf = fragment_buffer + *returned_fragments;
 	mf->firstPoint = *returned_points;
-	mf->num_points = num_clip_points;
+	mf->numPoints = num_clip_points;
 	memcpy(point_buffer + *returned_points * 3, clip_points[ping_pong], num_clip_points * sizeof(vec3_t));
 
 	*returned_points += num_clip_points;
@@ -241,8 +245,8 @@ R_MarkFragments
 
 =================
 */
-int R_MarkFragments(int num_points, const vec3_t* points, const vec3_t projection, const int max_points, vec3_t point_buffer, const int max_fragments, markFragment_t* fragment_buffer)
-{
+int R_MarkFragments(int num_points, const vec3_t* points, const vec3_t projection,
+	const int max_points, vec3_t point_buffer, const int max_fragments, markFragment_t* fragment_buffer) {
 	int				numsurfaces;
 	int				i, k;
 	surfaceType_t* surfaces[64];

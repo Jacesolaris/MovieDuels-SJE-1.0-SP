@@ -242,7 +242,7 @@ public:
 	float mDistance; // DO NOT REMOVE THIS: It's a serious runtime optimization for A*
 
 	unsigned short mOwnerNum; // Converted to short.  Largest entity number is 1024
-	unsigned short mentity_num; // Converted to short.  Largest entity number is 1024
+	unsigned short mEntityNum; // Converted to short.  Largest entity number is 1024
 	enum EWayEdgeFlags
 	{
 		WE_NONE = 0,
@@ -565,9 +565,9 @@ public:
 			return false;
 		}
 
-		if (Edge.mentity_num != ENTITYNUM_NONE)
+		if (Edge.mEntityNum != ENTITYNUM_NONE)
 		{
-			const gentity_t* ent = &g_entities[Edge.mentity_num];
+			const gentity_t* ent = &g_entities[Edge.mEntityNum];
 			if (ent)
 			{
 				// Can The Actor Navigate Through The Breakable Entity?
@@ -576,7 +576,7 @@ public:
 					mActor->NPC &&
 					mActor->NPC->aiFlags & NPCAI_NAV_THROUGH_BREAKABLES &&
 					Edge.BlockingBreakable() &&
-					G_EntIsBreakable(Edge.mentity_num, mActor)
+					G_EntIsBreakable(Edge.mEntityNum, mActor)
 					)
 				{
 					return true;
@@ -716,7 +716,7 @@ public:
 		Edge.mNodeA = A;
 		Edge.mNodeB = B;
 		Edge.mDistance = NodeA.mPoint.Dist(NodeB.mPoint);
-		Edge.mentity_num = ENTITYNUM_NONE;
+		Edge.mEntityNum = ENTITYNUM_NONE;
 		Edge.mOwnerNum = ENTITYNUM_NONE;
 		Edge.mFlags.clear();
 		Edge.mFlags.set_bit(CWayEdge::WE_VALID);
@@ -1370,7 +1370,7 @@ bool NAV::TestEdge(const TNodeHandle NodeA, const TNodeHandle NodeB, const qbool
 		if (CanGo && !hit_character)
 		{
 			ent->wayedge = atHandle;
-			at.mentity_num = ent_hit;
+			at.mEntityNum = ent_hit;
 			at.mFlags.set_bit(CWayEdge::WE_CANBEINVAL);
 
 			// Add It To The Edge Map
@@ -2199,7 +2199,7 @@ void NAV::WayEdgesNowClear(gentity_t* ent)
 				{
 					CWayEdge& edge = mGraph.get_edge(EdgeHandle);
 					edge.mFlags.set_bit(CWayEdge::WE_VALID);
-					edge.mentity_num = ENTITYNUM_NONE;
+					edge.mEntityNum = ENTITYNUM_NONE;
 					edge.mOwnerNum = ENTITYNUM_NONE;
 				}
 			}

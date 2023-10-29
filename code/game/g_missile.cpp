@@ -1913,12 +1913,12 @@ void G_MissileImpacted(gentity_t* ent, gentity_t* other, vec3_t impact_pos, vec3
 	if (other && other->client && other->takedamage)
 	{
 		G_AddEvent(ent, EV_MISSILE_HIT, DirToByte(normal));
-		ent->s.otherentity_num = other->s.number;
+		ent->s.otherEntityNum = other->s.number;
 	}
 	else
 	{
 		G_AddEvent(ent, EV_MISSILE_MISS, DirToByte(normal));
-		ent->s.otherentity_num = other->s.number;
+		ent->s.otherEntityNum = other->s.number;
 	}
 
 	VectorCopy(normal, ent->pos1);
@@ -2249,7 +2249,7 @@ void G_MissileImpact_MD(gentity_t* ent, trace_t* trace, const int hit_loc = HL_N
 		if (other->client || other->s.eType == ET_MOVER)
 		{
 			G_PlayEffect("stunBaton/flesh_impact", ent->currentOrigin);
-			nent->s.otherentity_num2 = other->s.number;
+			nent->s.otherEntityNum2 = other->s.number;
 			ent->enemy = other;
 
 			if (other->takedamage && other->client)
@@ -2327,7 +2327,7 @@ void G_MissileImpact_MD(gentity_t* ent, trace_t* trace, const int hit_loc = HL_N
 		if (other->client || other->s.eType == ET_MOVER)
 		{
 			G_PlayEffect("blaster/flesh_impact", ent->currentOrigin);
-			nent->s.otherentity_num2 = other->s.number;
+			nent->s.otherEntityNum2 = other->s.number;
 			ent->enemy = other;
 
 			if (other->takedamage && other->client)
@@ -2336,7 +2336,7 @@ void G_MissileImpact_MD(gentity_t* ent, trace_t* trace, const int hit_loc = HL_N
 
 				GEntity_PainFunc(other, ent, ent, other->currentOrigin, 0, MOD_IMPACT);
 			}
-			nent->s.otherentity_num2 = other->s.number;
+			nent->s.otherEntityNum2 = other->s.number;
 
 			ent->enemy = other;
 			v[0] = other->currentOrigin[0] + (other->mins[0] + other->maxs[0]) * 0.5f;
@@ -3015,7 +3015,7 @@ constexpr auto BUMPCLIP = 1.5f;
 
 void G_RollMissile(gentity_t* ent)
 {
-	int num_planes;
+	int numplanes;
 	vec3_t planes[MAX_CLIP_PLANES]{};
 	vec3_t primal_velocity;
 	int i;
@@ -3051,12 +3051,12 @@ void G_RollMissile(gentity_t* ent)
 	// never turn against the ground plane
 	if (objPML.groundPlane)
 	{
-		num_planes = 1;
+		numplanes = 1;
 		VectorCopy(objPML.groundTrace.plane.normal, planes[0]);
 	}
 	else
 	{
-		num_planes = 0;
+		numplanes = 0;
 	}
 
 	for (int bumpcount = 0; bumpcount < numbumps; bumpcount++)
@@ -3114,7 +3114,7 @@ void G_RollMissile(gentity_t* ent)
 
 		time_left -= time_left * trace.fraction;
 
-		if (num_planes >= MAX_CLIP_PLANES)
+		if (numplanes >= MAX_CLIP_PLANES)
 		{
 			// this shouldn't really happen
 			VectorClear(ent->s.pos.trDelta);
@@ -3126,7 +3126,7 @@ void G_RollMissile(gentity_t* ent)
 		// out along it, which fixes some epsilon issues with
 		// non-axial planes
 		//
-		for (i = 0; i < num_planes; i++)
+		for (i = 0; i < numplanes; i++)
 		{
 			if (DotProduct(trace.plane.normal, planes[i]) > 0.99)
 			{
@@ -3134,12 +3134,12 @@ void G_RollMissile(gentity_t* ent)
 				break;
 			}
 		}
-		if (i < num_planes)
+		if (i < numplanes)
 		{
 			continue;
 		}
-		VectorCopy(trace.plane.normal, planes[num_planes]);
-		num_planes++;
+		VectorCopy(trace.plane.normal, planes[numplanes]);
+		numplanes++;
 
 		//
 		// modify velocity so it parallels all of the clip planes
@@ -3155,7 +3155,7 @@ void G_RollMissile(gentity_t* ent)
 		}
 
 		// find a plane that it enters
-		for (i = 0; i < num_planes; i++)
+		for (i = 0; i < numplanes; i++)
 		{
 			vec3_t end_clip_velocity;
 			vec3_t clip_velocity;
@@ -3178,7 +3178,7 @@ void G_RollMissile(gentity_t* ent)
 			G_ClipVelocity(end_velocity, planes[i], end_clip_velocity, bounceAmt);
 
 			// see if there is a second plane that the new move enters
-			for (int j = 0; j < num_planes; j++)
+			for (int j = 0; j < numplanes; j++)
 			{
 				vec3_t dir;
 				if (j == i)
@@ -3212,7 +3212,7 @@ void G_RollMissile(gentity_t* ent)
 				VectorScale(dir, d, end_clip_velocity);
 
 				// see if there is a third plane the the new move enters
-				for (int k = 0; k < num_planes; k++)
+				for (int k = 0; k < numplanes; k++)
 				{
 					if (k == i || k == j)
 					{
@@ -3363,13 +3363,13 @@ void G_RunMissile(gentity_t* ent)
 		// did we hit or go near a Ghoul2 model?
 		for (auto& i : tr.G2CollisionMap)
 		{
-			if (i.mentity_num == -1)
+			if (i.mEntityNum == -1)
 			{
 				break;
 			}
 
 			CCollisionRecord& coll = i;
-			const gentity_t* hit_ent = &g_entities[coll.mentity_num];
+			const gentity_t* hit_ent = &g_entities[coll.mEntityNum];
 
 			// process collision records here...
 			// make sure we only do this once, not for all the entrance wounds we might generate
@@ -3377,9 +3377,9 @@ void G_RunMissile(gentity_t* ent)
 			{
 				if (tr_hit_loc == HL_NONE)
 				{
-					G_GetHitLocFromSurfName(&g_entities[coll.mentity_num],
+					G_GetHitLocFromSurfName(&g_entities[coll.mEntityNum],
 						gi.G2API_GetSurfaceName(
-							&g_entities[coll.mentity_num].ghoul2[coll.mModelIndex],
+							&g_entities[coll.mEntityNum].ghoul2[coll.mModelIndex],
 							coll.mSurfaceIndex), &tr_hit_loc, coll.mCollisionPosition, nullptr,
 						nullptr, ent->methodOfDeath);
 				}
@@ -4506,7 +4506,7 @@ gentity_t* fire_stun(gentity_t* self, vec3_t start, vec3_t dir)
 	stun->target_ent = nullptr;
 	stun->s.pos.trType = TR_LINEAR;
 	stun->s.pos.trTime = level.time - MISSILE_PRESTEP_TIME;
-	stun->s.otherentity_num = self->s.number;
+	stun->s.otherEntityNum = self->s.number;
 	VectorCopy(start, stun->s.pos.trBase);
 	VectorScale(dir, 2000, stun->s.pos.trDelta);
 	SnapVector(stun->s.pos.trDelta);
@@ -4540,7 +4540,7 @@ gentity_t* fire_grapple(gentity_t* self, vec3_t start, vec3_t dir)
 	hook->target_ent = nullptr;
 	hook->s.pos.trType = TR_LINEAR;
 	hook->s.pos.trTime = level.time - HOOK_PRESTEP_TIME;
-	hook->s.otherentity_num = self->s.number;
+	hook->s.otherEntityNum = self->s.number;
 	VectorCopy(start, hook->s.pos.trBase);
 	VectorScale(dir, 1200, hook->s.pos.trDelta);
 	SnapVector(hook->s.pos.trDelta);

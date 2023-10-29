@@ -46,7 +46,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 extern cvar_t* r_Ghoul2BlendMultiplier;
 
-void G2_Bone_Not_Found(const char* bone_name, const char* modName);
+void G2_Bone_Not_Found(const char* bone_name);
 
 //=====================================================================================================================
 // Bone List handling routines - so entities can override bone info on a bone by bone level, and also interrogate this info
@@ -78,7 +78,7 @@ int G2_Find_Bone(const CGhoul2Info* ghl_info, const boneInfo_v& blist, const cha
 		}
 	}
 #if _DEBUG
-	G2_Bone_Not_Found(bone_name, ghl_info->mFileName);
+	G2_Bone_Not_Found(bone_name);
 #endif
 	// didn't find it
 	return -1;
@@ -114,7 +114,7 @@ int G2_Add_Bone(const model_t* mod, boneInfo_v& blist, const char* bone_name)
 	if (x == mod->mdxa->numBones)
 	{
 #if _DEBUG
-		G2_Bone_Not_Found(bone_name, mod->name);
+		G2_Bone_Not_Found(bone_name);
 #endif
 		return -1;
 	}
@@ -525,9 +525,11 @@ qboolean G2_Set_Bone_Angles_Matrix_Index(boneInfo_v& blist, const int index,
 }
 
 // Given a model handle, and a bone name, we want to set angles specifically for overriding - using a matrix directly
-qboolean G2_Set_Bone_Angles_Matrix(const CGhoul2Info* ghl_info, boneInfo_v& blist, const char* bone_name, const mdxaBone_t& matrix, const int flags, const int blend_time, const int current_time)
+qboolean G2_Set_Bone_Angles_Matrix(const CGhoul2Info* ghl_info, boneInfo_v& blist, const char* bone_name,
+	const mdxaBone_t& matrix,
+	const int flags)
 {
-	int	index = G2_Find_Bone(ghl_info, blist, bone_name);
+	int index = G2_Find_Bone(ghl_info, blist, bone_name);
 	if (index == -1)
 	{
 		index = G2_Add_Bone(ghl_info->animModel, blist, bone_name);
@@ -1468,7 +1470,7 @@ void G2_ResetRagDoll(CGhoul2Info_v& ghoul2_v)
 
 	for (model = 0; model < ghoul2_v.size(); model++)
 	{
-		if (ghoul2_v[model].mmodel_index != -1)
+		if (ghoul2_v[model].mModelindex != -1)
 		{
 			break;
 		}
@@ -1555,7 +1557,7 @@ void G2_SetRagDoll(CGhoul2Info_v& ghoul2V, CRagDollParams* parms)
 	int model;
 	for (model = 0; model < ghoul2V.size(); model++)
 	{
-		if (ghoul2V[model].mmodel_index != -1)
+		if (ghoul2V[model].mModelindex != -1)
 		{
 			break;
 		}

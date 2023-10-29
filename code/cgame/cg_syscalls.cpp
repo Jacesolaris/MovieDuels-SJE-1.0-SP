@@ -158,49 +158,49 @@ int cgi_CM_NumInlineModels()
 	return Q_syscall(CG_CM_NUMINLINEMODELS);
 }
 
-clip_handle_t cgi_CM_InlineModel(const int index)
+clipHandle_t cgi_CM_InlineModel(const int index)
 {
 	return Q_syscall(CG_CM_INLINEMODEL, index);
 }
 
-clip_handle_t cgi_CM_TempBoxModel(const vec3_t mins, const vec3_t maxs)
+clipHandle_t cgi_CM_TempBoxModel(const vec3_t mins, const vec3_t maxs)
 {
 	//, const int contents ) {
 	return Q_syscall(CG_CM_TEMPBOXMODEL, mins, maxs); //, contents );
 }
 
-int cgi_CM_PointContents(const vec3_t p, const clip_handle_t model)
+int cgi_CM_PointContents(const vec3_t p, const clipHandle_t model)
 {
 	return Q_syscall(CG_CM_POINTCONTENTS, p, model);
 }
 
-int cgi_CM_TransformedPointContents(const vec3_t p, const clip_handle_t model, const vec3_t origin, const vec3_t angles)
+int cgi_CM_TransformedPointContents(const vec3_t p, const clipHandle_t model, const vec3_t origin, const vec3_t angles)
 {
 	return Q_syscall(CG_CM_TRANSFORMEDPOINTCONTENTS, p, model, origin, angles);
 }
 
 void cgi_CM_BoxTrace(trace_t* results, const vec3_t start, const vec3_t end,
 	const vec3_t mins, const vec3_t maxs,
-	const clip_handle_t model, const int brushmask)
+	const clipHandle_t model, const int brushmask)
 {
 	Q_syscall(CG_CM_BOXTRACE, results, start, end, mins, maxs, model, brushmask);
 }
 
 void cgi_CM_TransformedBoxTrace(trace_t* results, const vec3_t start, const vec3_t end,
 	const vec3_t mins, const vec3_t maxs,
-	const clip_handle_t model, const int brushmask,
+	const clipHandle_t model, const int brushmask,
 	const vec3_t origin, const vec3_t angles)
 {
 	Q_syscall(CG_CM_TRANSFORMEDBOXTRACE, results, start, end, mins, maxs, model, brushmask, origin, angles);
 }
 
-int cgi_CM_MarkFragments(const int num_points, const vec3_t* points,
+int cgi_CM_MarkFragments(const int numPoints, const vec3_t* points,
 	const vec3_t projection,
-	const int max_points, vec3_t point_buffer,
-	const int max_fragments, markFragment_t* fragment_buffer)
+	const int maxPoints, vec3_t pointBuffer,
+	const int maxFragments, markFragment_t* fragmentBuffer)
 {
-	return Q_syscall(CG_CM_MARKFRAGMENTS, num_points, points, projection, max_points, point_buffer, max_fragments,
-		fragment_buffer);
+	return Q_syscall(CG_CM_MARKFRAGMENTS, numPoints, points, projection, maxPoints, pointBuffer, maxFragments,
+		fragmentBuffer);
 }
 
 void cgi_CM_SnapPVS(vec3_t origin, byte* buffer)
@@ -533,7 +533,7 @@ void cgi_R_GetBModelVerts(const int bmodelIndex, vec3_t* verts, vec3_t normal)
 	Q_syscall(CG_R_GET_BMODEL_VERTS, bmodelIndex, verts, normal);
 }
 
-void cgi_R_WorldEffectCommand(const char* command)
+void cgi_RE_WorldEffectCommand(const char* command)
 {
 	Q_syscall(CG_R_WORLD_EFFECT_COMMAND, command);
 }

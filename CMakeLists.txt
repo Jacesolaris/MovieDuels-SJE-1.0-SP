@@ -33,13 +33,24 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 
 # Customizable options
+option(BuildPortableVersion "Build portable version (does not read or write files from your user/home directory" OFF)
 
-option(BuildSPRend2 "Whether to create projects for the EXPERIMENTAL SP rend2 renderer (MovieDuels-rdsp-rend2_x86.dll)" ON)
+option(BuildMPEngine "Whether to create projects for the MP client (MD_MP.exe)" OFF)
+option(BuildMPRdVanilla "Whether to create projects for the MP default renderer (rdmp_md_x86.dll)" OFF)
+option(BuildMPDed "Whether to create projects for the MP dedicated server (MDDed.exe)" OFF)
+option(BuildMPGame "Whether to create projects for the MP server-side gamecode (jampgamex86.dll)" OFF)
+option(BuildMPCGame "Whether to create projects for the MP clientside gamecode (cgamex86.dll)" OFF)
+option(BuildMPUI "Whether to create projects for the MP UI code (uix86.dll)" OFF)
 
 option(BuildSPEngine "Whether to create projects for the SP engine (MovieDuels-SP.exe)" ON)
 option(BuildSPGame "Whether to create projects for the SP gamecode (MovieDuels-gamex86.dll)" ON)
 option(BuildSPRdVanilla "Whether to create projects for the SP default renderer (MovieDuels-rdsp_x86.dll)" ON)
 
+option(BuildJK2SPEngine "Whether to create projects for the jk2 SP engine (openjo_sp.exe)" OFF)
+option(BuildJK2SPGame "Whether to create projects for the jk2 sp gamecode mod (jk2gamex86.dll)" OFF)
+option(BuildJK2SPRdVanilla "Whether to create projects for the jk2 sp renderer (rdjosp-vanilla_x86.dll)" OFF)
+
+option(BuildTests "Whether to build automatic unit tests (requires Boost)" OFF)
 
 Include(CMakeDependentOption)
 CMAKE_DEPENDENT_OPTION(BuildSymbolServer "Build WIP Windows Symbol Server (experimental and unused)" OFF "NOT WIN32 OR NOT MSVC" OFF)
@@ -143,7 +154,6 @@ message(STATUS "Git revision is ${GIT_SHA1}")
 set(SPEngine "MovieDuels-SP.${Architecture}")
 set(SPGame "MovieDuels-game${Architecture}")
 set(SPRDVanillaRenderer "MovieDuels-rdsp_${Architecture}")
-set(SPRend2 "MovieDuels-rdsp-rend2_${Architecture}")
 
 set(MPEngine "MD_MP.${Architecture}")
 set(MPVanillaRenderer "rdmp_md_${Architecture}")

@@ -141,7 +141,7 @@ sets mins and maxs for inline bmodels
 */
 void SV_SetBrushModel(gentity_t* ent, const char* name)
 {
-	clip_handle_t h;
+	clipHandle_t h;
 	vec3_t mins, maxs;
 
 	if (!name)
@@ -335,7 +335,7 @@ qboolean SV_EntityContact(const vec3_t mins, const vec3_t maxs, const gentity_t*
 	const float* origin = g_ent->currentOrigin;
 	const float* angles = g_ent->currentAngles;
 
-	const clip_handle_t ch = SV_ClipHandleForEntity(g_ent);
+	const clipHandle_t ch = SV_ClipHandleForEntity(g_ent);
 	CM_TransformedBoxTrace(&trace, vec3_origin, vec3_origin, mins, maxs,
 		ch, -1, origin, angles);
 
@@ -435,14 +435,14 @@ static void SV_G2API_AnimateG2Models(CGhoul2Info_v& ghoul2, const int acurrent_t
 	re.G2API_AnimateG2Models(ghoul2, acurrent_time, params);
 }
 
-static qboolean SV_G2API_AttachEnt(int* bolt_info, CGhoul2Info* ghl_info_to, const int to_bolt_index, const int ent_num, const int to_model_num)
+static qboolean SV_G2API_AttachEnt(int* bolt_info, CGhoul2Info* ghlInfoTo, const int to_bolt_index, const int ent_num, const int to_model_num)
 {
-	return re.G2API_AttachEnt(bolt_info, ghl_info_to, to_bolt_index, ent_num, to_model_num);
+	return re.G2API_AttachEnt(bolt_info, ghlInfoTo, to_bolt_index, ent_num, to_model_num);
 }
 
-static qboolean SV_G2API_AttachG2Model(CGhoul2Info* ghl_info, CGhoul2Info* ghl_info_to, const int to_bolt_index, const int to_model)
+static qboolean SV_G2API_AttachG2Model(CGhoul2Info* ghl_info, CGhoul2Info* ghlInfoTo, const int to_bolt_index, const int to_model)
 {
-	return re.G2API_AttachG2Model(ghl_info, ghl_info_to, to_bolt_index, to_model);
+	return re.G2API_AttachG2Model(ghl_info, ghlInfoTo, to_bolt_index, to_model);
 }
 
 static void SV_G2API_CleanGhoul2Models(CGhoul2Info_v& ghoul2)

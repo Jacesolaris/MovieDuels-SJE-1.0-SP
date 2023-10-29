@@ -728,7 +728,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 
 	case EV_LIGHTNING_STRIKE:
 		DEBUGNAME("EV_LIGHTNING_STRIKE");
-		CG_StrikeBolt(cent, cg_entities[cent->currentState.otherentity_num].gent->client->renderInfo.handLPoint);
+		CG_StrikeBolt(cent, cg_entities[cent->currentState.otherEntityNum].gent->client->renderInfo.handLPoint);
 		break;
 
 	case EV_JEDISPAWN:
@@ -765,13 +765,13 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		DEBUGNAME("EV_KOTHOS_BEAM");
 		if (Q_irand(0, 1))
 		{
-			FX_KothosBeam(cg_entities[cent->currentState.otherentity_num].gent->client->renderInfo.handRPoint,
-				cg_entities[cent->currentState.otherentity_num2].lerpOrigin);
+			FX_KothosBeam(cg_entities[cent->currentState.otherEntityNum].gent->client->renderInfo.handRPoint,
+				cg_entities[cent->currentState.otherEntityNum2].lerpOrigin);
 		}
 		else
 		{
-			FX_KothosBeam(cg_entities[cent->currentState.otherentity_num].gent->client->renderInfo.handLPoint,
-				cg_entities[cent->currentState.otherentity_num2].lerpOrigin);
+			FX_KothosBeam(cg_entities[cent->currentState.otherEntityNum].gent->client->renderInfo.handLPoint,
+				cg_entities[cent->currentState.otherEntityNum2].lerpOrigin);
 		}
 		break;
 		//=================================================================
@@ -948,7 +948,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 	case EV_SHIELD_HIT:
 		DEBUGNAME("EV_SHIELD_HIT");
 		ByteToDir(es->eventParm, dir);
-		CG_PlayerShieldHit(es->otherentity_num, dir, es->time2);
+		CG_PlayerShieldHit(es->otherEntityNum, dir, es->time2);
 		break;
 
 	case EV_PAIN:
@@ -1029,9 +1029,9 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 				CrossProduct(axis[0], axis[1], axis[2]);
 
 				// the ent_num the effect may be attached to
-				if (es->otherentity_num)
+				if (es->otherEntityNum)
 				{
-					theFxScheduler.PlayEffect(s, cent->lerpOrigin, axis, -1, es->otherentity_num, portal_ent);
+					theFxScheduler.PlayEffect(s, cent->lerpOrigin, axis, -1, es->otherEntityNum, portal_ent);
 				}
 				else
 				{
@@ -1047,7 +1047,7 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 		DEBUGNAME("EV_PLAY_MUZZLE_EFFECT");
 		s = CG_ConfigString(CS_EFFECTS + es->eventParm);
 
-		theFxScheduler.PlayEffect(s, es->otherentity_num);
+		theFxScheduler.PlayEffect(s, es->otherEntityNum);
 		break;
 
 	case EV_STOP_EFFECT:

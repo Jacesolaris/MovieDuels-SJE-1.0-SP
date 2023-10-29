@@ -904,7 +904,7 @@ void G_EjectDroidUnit(Vehicle_t* p_veh, qboolean kill)
 #else
 	p_veh->m_pDroidUnit->owner = nullptr;
 #endif
-	//	p_veh->m_pDroidUnit->s.otherentity_num2 = ENTITYNUM_NONE;
+	//	p_veh->m_pDroidUnit->s.otherEntityNum2 = ENTITYNUM_NONE;
 #ifdef QAGAME
 	{
 		gentity_t* droidEnt = (gentity_t*)p_veh->m_pDroidUnit;

@@ -121,8 +121,6 @@ using refEntityType_t = enum
 	RT_PORTALSURFACE,
 	// doesn't draw anything, just info for portals
 	RT_CLOUDS,
-	RT_LIGHTNING,
-	RT_ENT_CHAIN,
 
 	RT_MAX_REF_ENTITY_TYPE
 };
@@ -152,7 +150,7 @@ using refEntity_t = struct
 	int skinNum; // inline skin index
 
 	qhandle_t customSkin; // NULL for default skin
-	qhandle_t custom_shader; // use one image for the entire thing
+	qhandle_t customShader; // use one image for the entire thing
 
 	// misc
 	byte shaderRGBA[4]; // colors used by colorSrc=vertex shaders
@@ -224,8 +222,7 @@ using textureCompression_t = enum
 {
 	TC_NONE,
 	TC_S3TC,
-	TC_S3TC_DXT,
-	TC_S3TC_ARB
+	TC_S3TC_DXT
 };
 
 using glconfig_t = struct glconfig_s

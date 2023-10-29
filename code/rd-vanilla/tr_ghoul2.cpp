@@ -896,22 +896,27 @@ void Multiply_3x4Matrix(mdxaBone_t* out, const  mdxaBone_t* in2, const mdxaBone_
 	out->matrix[2][3] = in2->matrix[2][0] * in->matrix[0][3] + in2->matrix[2][1] * in->matrix[1][3] + in2->matrix[2][2] * in->matrix[2][3] + in2->matrix[2][3];
 }
 
-static int G2_GetBonePoolIndex(const mdxaHeader_t* p_mdxa_header, const int i_frame, const int i_bone)
+static int G2_GetBonePoolIndex(const mdxaHeader_t* pMDXAHeader, const int iFrame, const int iBone)
 {
-	assert(i_frame >= 0 && i_frame < p_mdxa_header->num_frames);
-	assert(i_bone >= 0 && i_bone < p_mdxa_header->numBones);
+	assert(iFrame >= 0 && iFrame < pMDXAHeader->num_frames);
+	assert(iBone >= 0 && iBone < pMDXAHeader->numBones);
+	const int iOffsetToIndex = iFrame * pMDXAHeader->numBones * 3 + iBone * 3;
 
-	const int iOffsetToIndex = i_frame * p_mdxa_header->numBones * 3 + i_bone * 3;
-	const mdxaIndex_t* pIndex = reinterpret_cast<mdxaIndex_t*>((byte*)p_mdxa_header + p_mdxa_header->ofsFrames + iOffsetToIndex);
+	mdxaIndex_t* pIndex = reinterpret_cast<mdxaIndex_t*>((byte*)pMDXAHeader + pMDXAHeader->ofsFrames + iOffsetToIndex);
 
-	return (pIndex->iIndex[2] << 16) + (pIndex->iIndex[1] << 8) + pIndex->iIndex[0];
+#ifdef Q3_BIG_ENDIAN
+	int tmp = pIndex->iIndex & 0xFFFFFF00;
+	LL(tmp);
+	return tmp;
+#else
+	return pIndex->iIndex & 0x00FFFFFF;
+#endif
 }
 
-/*static inline*/
-void UnCompressBone(float mat[3][4], const int i_bone_index, const mdxaHeader_t* p_mdxa_header, const int i_frame)
+/*static inline*/ void UnCompressBone(float mat[3][4], const int i_bone_index, const mdxaHeader_t* pMDXAHeader, const int iFrame)
 {
-	const mdxaCompQuatBone_t* pCompBonePool = reinterpret_cast<mdxaCompQuatBone_t*>((byte*)p_mdxa_header + p_mdxa_header->ofsCompBonePool);
-	MC_UnCompressQuat(mat, pCompBonePool[G2_GetBonePoolIndex(p_mdxa_header, i_frame, i_bone_index)].Comp);
+	const mdxaCompQuatBone_t* pCompBonePool = reinterpret_cast<mdxaCompQuatBone_t*>((byte*)pMDXAHeader + pMDXAHeader->ofsCompBonePool);
+	MC_UnCompressQuat(mat, pCompBonePool[G2_GetBonePoolIndex(pMDXAHeader, iFrame, i_bone_index)].Comp);
 }
 
 #define DEBUG_G2_TIMING (0)
@@ -1908,16 +1913,16 @@ void G2_ProcessSurfaceBolt2(CBoneCache& bone_cache, const mdxmSurface_t* surface
 	if (surfInfo && surfInfo->off_flags == G2SURFACEFLAG_GENERATED)
 	{
 		const int surf_number = surfInfo->genPolySurfaceIndex & 0x0ffff;
-		const int	poly_number = surfInfo->genPolySurfaceIndex >> 16 & 0x0ffff;
+		const int	polyNumber = surfInfo->genPolySurfaceIndex >> 16 & 0x0ffff;
 
 		// find original surface our original poly was in.
 		mdxmSurface_t* originalSurf = static_cast<mdxmSurface_t*>(G2_FindSurface(mod, surf_number, surfInfo->genLod));
 		const mdxmTriangle_t* originalTriangleIndexes = reinterpret_cast<mdxmTriangle_t*>(reinterpret_cast<byte*>(originalSurf) + originalSurf->ofsTriangles);
 
 		// get the original polys indexes
-		const int index0 = originalTriangleIndexes[poly_number].indexes[0];
-		const int index1 = originalTriangleIndexes[poly_number].indexes[1];
-		const int index2 = originalTriangleIndexes[poly_number].indexes[2];
+		const int index0 = originalTriangleIndexes[polyNumber].indexes[0];
+		const int index1 = originalTriangleIndexes[polyNumber].indexes[1];
+		const int index2 = originalTriangleIndexes[polyNumber].indexes[2];
 
 		// decide where the original verts are
 		mdxmVertex_t* vert0 = reinterpret_cast<mdxmVertex_t*>(reinterpret_cast<byte*>(originalSurf) + originalSurf->ofsVerts);
@@ -2390,7 +2395,7 @@ static void G2_Sort_Models(CGhoul2Info_v& ghoul2, int* const model_list, int* co
 	for (i = 0; i < ghoul2.size(); i++)
 	{
 		// have a ghoul model here?
-		if (ghoul2[i].mmodel_index == -1 || !ghoul2[i].mValid)
+		if (ghoul2[i].mModelindex == -1 || !ghoul2[i].mValid)
 		{
 			continue;
 		}
@@ -2411,7 +2416,7 @@ static void G2_Sort_Models(CGhoul2Info_v& ghoul2, int* const model_list, int* co
 		for (i = 0; i < ghoul2.size(); i++)
 		{
 			// have a ghoul model here?
-			if (ghoul2[i].mmodel_index == -1 || !ghoul2[i].mValid)
+			if (ghoul2[i].mModelindex == -1 || !ghoul2[i].mValid)
 			{
 				continue;
 			}
@@ -2443,7 +2448,7 @@ static void RootMatrix(CGhoul2Info_v& ghoul2, const int time, const vec3_t scale
 {
 	for (int i = 0; i < ghoul2.size(); i++)
 	{
-		if (ghoul2[i].mmodel_index != -1 && ghoul2[i].mValid)
+		if (ghoul2[i].mModelindex != -1 && ghoul2[i].mValid)
 		{
 			if (ghoul2[i].mFlags & GHOUL2_NEWORIGIN)
 			{
@@ -2563,9 +2568,9 @@ void R_AddGhoulSurfaces(trRefEntity_t* ent)
 			// figure out whether we should be using a custom shader for this model
 			//
 			skin = nullptr;
-			if (ent->e.custom_shader)
+			if (ent->e.customShader)
 			{
-				cust_shader = R_GetShaderByHandle(ent->e.custom_shader);
+				cust_shader = R_GetShaderByHandle(ent->e.customShader);
 			}
 			else
 			{
@@ -2737,7 +2742,7 @@ void RB_SurfaceGhoul(CRenderableSurface* surf)
 		data += num_verts;
 
 		baseIndex = tess.num_indexes;
-		baseVertex = tess.num_vertexes;
+		baseVertex = tess.numVertexes;
 
 		memcpy(&tess.xyz[baseVertex][0], data, sizeof(float) * 4 * num_verts);
 		data += 4 * num_verts;
@@ -2819,7 +2824,7 @@ void RB_SurfaceGhoul(CRenderableSurface* surf)
 			*indexPtr++ = baseVertex + *triangles++;
 		}
 		tess.num_indexes += indexes;
-		tess.num_vertexes += num_verts;
+		tess.numVertexes += num_verts;
 		return;
 	}
 #endif
@@ -2837,7 +2842,7 @@ void RB_SurfaceGhoul(CRenderableSurface* surf)
 	//
 
 	// first up, sanity check our numbers
-	baseVertex = tess.num_vertexes;
+	baseVertex = tess.numVertexes;
 	triangles = reinterpret_cast<int*>(reinterpret_cast<byte*>(surface) + surface->ofsTriangles);
 	baseIndex = tess.num_indexes;
 #if 0
@@ -2860,7 +2865,7 @@ void RB_SurfaceGhoul(CRenderableSurface* surf)
 	num_verts = surface->num_verts;
 
 	piBoneReferences = reinterpret_cast<int*>(reinterpret_cast<byte*>(surface) + surface->ofsBoneReferences);
-	baseVertex = tess.num_vertexes;
+	baseVertex = tess.numVertexes;
 	v = reinterpret_cast<mdxmVertex_t*>(reinterpret_cast<byte*>(surface) + surface->ofsVerts);
 	pTexCoords = reinterpret_cast<mdxmVertexTexCoord_t*>(&v[num_verts]);
 
@@ -3032,13 +3037,13 @@ void RB_SurfaceGhoul(CRenderableSurface* surf)
 			for (j = 0; j < gnumVerts; j++)
 			{
 				assert(data[j] >= 0 && data[j] < num_verts);
-				memcpy(fdata, &tess.xyz[tess.num_vertexes + data[j]][0], sizeof(float) * 3);
+				memcpy(fdata, &tess.xyz[tess.numVertexes + data[j]][0], sizeof(float) * 3);
 				fdata += 4;
 			}
 			for (j = 0; j < gnumVerts; j++)
 			{
 				assert(data[j] >= 0 && data[j] < num_verts);
-				memcpy(fdata, &tess.normal[tess.num_vertexes + data[j]][0], sizeof(float) * 3);
+				memcpy(fdata, &tess.normal[tess.numVertexes + data[j]][0], sizeof(float) * 3);
 				fdata += 4;
 			}
 		}
@@ -3052,7 +3057,7 @@ void RB_SurfaceGhoul(CRenderableSurface* surf)
 	// it's not THAT bad), so we only delete it when doing the glow pass. Warning though, this assumes that
 	// the glow is rendered _second_!!! If that changes, change this!
 #endif
-	tess.num_vertexes += surface->num_verts;
+	tess.numVertexes += surface->num_verts;
 
 #ifdef G2_PERFORMANCE_ANALYSIS
 	G2Time_RB_SurfaceGhoul += G2PerformanceTimer_RB_SurfaceGhoul.End();

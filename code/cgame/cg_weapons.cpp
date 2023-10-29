@@ -53,7 +53,6 @@ const char* CG_DisplayBoxedText(int iBoxX, int iBoxY, int iBoxWidth, int iBoxHei
 	const vec4_t v4Color);
 extern int fire_deley_time();
 extern qboolean is_holding_reloadable_gun(const gentity_t* ent);
-extern vmCvar_t cg_com_rend2;
 
 /*
 ==========================
@@ -73,46 +72,11 @@ void CG_GrappleTrail(centity_t* ent)
 	ent->trailTime = cg.time;
 
 	//FIXME adjust for muzzle position
-	VectorCopy(cg_entities[ent->currentState.otherentity_num].lerpOrigin, from);
+	VectorCopy(cg_entities[ent->currentState.otherEntityNum].lerpOrigin, from);
 	from[2] += 26;
-	AngleVectors(cg_entities[ent->currentState.otherentity_num].lerpAngles, forward, nullptr, up);
+	AngleVectors(cg_entities[ent->currentState.otherEntityNum].lerpAngles, forward, nullptr, up);
 	VectorMA(from, -6, up, from);
 	FX_AddLine(from, to, 0.5f, 0.5f, 0.0f, BLUER, BLUER, 15, cgi_R_RegisterShader("gfx/misc/bolt1"), FX_SIZE_LINEAR);
-}
-
-void CG_StunTrail(centity_t* ent, const weaponInfo_t* wi)
-{
-	vec3_t origin;
-	vec3_t forward, up;
-	refEntity_t beam;
-
-	const entityState_t* es = &ent->currentState;
-
-	EvaluateTrajectory(&es->pos, cg.time, origin);
-	ent->trailTime = cg.time;
-
-	memset(&beam, 0, sizeof beam);
-
-	//FIXME adjust for muzzle position
-	VectorCopy(cg_entities[ent->currentState.otherentity_num].lerpOrigin, beam.origin);
-	beam.origin[2] += 26;
-
-	AngleVectors(cg_entities[ent->currentState.otherentity_num].lerpAngles, forward, nullptr, up);
-	VectorMA(beam.origin, -6, up, beam.origin);
-	VectorCopy(origin, beam.oldorigin);
-
-	if (Distance(beam.origin, beam.oldorigin) < 64)
-		return; // Don't draw if close
-
-	beam.reType = RT_LIGHTNING;
-	beam.custom_shader = cgs.media.electricBodyShader;
-
-	AxisClear(beam.axis);
-	beam.shaderRGBA[0] = 0xff;
-	beam.shaderRGBA[1] = 0xff;
-	beam.shaderRGBA[2] = 0xff;
-	beam.shaderRGBA[3] = 0xff;
-	cgi_R_AddRefEntityToScene(&beam);
 }
 
 /*
@@ -130,7 +94,7 @@ void CG_RegisterWeapon(const int weapon_num)
 	int i;
 	const gentity_t* cent = &g_entities[g_entities[0].client->ps.client_num];
 
-	weaponInfo_t* weaponInfo = &cg_weapons[weapon_num];
+	weaponInfo_t* weapon_info = &cg_weapons[weapon_num];
 
 	// error checking
 	if (weapon_num == 0)
@@ -138,21 +102,21 @@ void CG_RegisterWeapon(const int weapon_num)
 		return;
 	}
 
-	if (weaponInfo->registered)
+	if (weapon_info->registered)
 	{
 		return;
 	}
 
 	// clear out the memory we use
-	memset(weaponInfo, 0, sizeof * weaponInfo);
-	weaponInfo->registered = qtrue;
+	memset(weapon_info, 0, sizeof * weapon_info);
+	weapon_info->registered = qtrue;
 
 	// find the weapon in the item list
 	for (item = bg_itemlist + 1; item->classname; item++)
 	{
 		if (item->giType == IT_WEAPON && item->giTag == weapon_num)
 		{
-			weaponInfo->item = item;
+			weapon_info->item = item;
 			break;
 		}
 	}
@@ -166,17 +130,17 @@ void CG_RegisterWeapon(const int weapon_num)
 	// set up in view weapon model
 	if (cg_com_kotor.integer == 1) //playing kotor
 	{
-		weaponInfo->weaponModel = cgi_R_RegisterModel(weaponData[weapon_num].altweaponMdl);
+		weapon_info->weaponModel = cgi_R_RegisterModel(weaponData[weapon_num].altweaponMdl);
 	}
 	else
 	{
 		if (cent->friendlyfaction == FACTION_KOTOR)
 		{
-			weaponInfo->weaponModel = cgi_R_RegisterModel(weaponData[weapon_num].altweaponMdl);
+			weapon_info->weaponModel = cgi_R_RegisterModel(weaponData[weapon_num].altweaponMdl);
 		}
 		else
 		{
-			weaponInfo->weaponModel = cgi_R_RegisterModel(weaponData[weapon_num].weaponMdl);
+			weapon_info->weaponModel = cgi_R_RegisterModel(weaponData[weapon_num].weaponMdl);
 		}
 	}
 
@@ -214,7 +178,7 @@ void CG_RegisterWeapon(const int weapon_num)
 		gi.G2API_PrecacheGhoul2Model(weapon_model); // correct way is item->world_model
 	}
 
-	if (weaponInfo->weaponModel == 0)
+	if (weapon_info->weaponModel == 0)
 	{
 		if (cg_com_kotor.integer == 1) //playing kotor
 		{
@@ -234,23 +198,23 @@ void CG_RegisterWeapon(const int weapon_num)
 	}
 
 	// calc midpoint for rotation
-	cgi_R_ModelBounds(weaponInfo->weaponModel, mins, maxs);
+	cgi_R_ModelBounds(weapon_info->weaponModel, mins, maxs);
 	for (i = 0; i < 3; i++)
 	{
-		weaponInfo->weaponMidpoint[i] = mins[i] + 0.5 * (maxs[i] - mins[i]);
+		weapon_info->weaponMidpoint[i] = mins[i] + 0.5 * (maxs[i] - mins[i]);
 	}
 
 	// setup the shader we will use for the icon
 	if (weaponData[weapon_num].weapon_Icon_file[0])
 	{
-		weaponInfo->weapon_Icon = cgi_R_RegisterShaderNoMip(weaponData[weapon_num].weapon_Icon_file);
-		weaponInfo->weaponIconNoAmmo = cgi_R_RegisterShaderNoMip(va("%s_na", weaponData[weapon_num].weapon_Icon_file));
+		weapon_info->weapon_Icon = cgi_R_RegisterShaderNoMip(weaponData[weapon_num].weapon_Icon_file);
+		weapon_info->weaponIconNoAmmo = cgi_R_RegisterShaderNoMip(va("%s_na", weaponData[weapon_num].weapon_Icon_file));
 	}
 
 	if (weaponData[weapon_num].alt_weapon_Icon_file[0])
 	{
-		weaponInfo->alt_weapon_Icon = cgi_R_RegisterShaderNoMip(weaponData[weapon_num].alt_weapon_Icon_file);
-		weaponInfo->alt_weaponIconNoAmmo = cgi_R_RegisterShaderNoMip(va("%s_na", weaponData[weapon_num].alt_weapon_Icon_file));
+		weapon_info->alt_weapon_Icon = cgi_R_RegisterShaderNoMip(weaponData[weapon_num].alt_weapon_Icon_file);
+		weapon_info->alt_weaponIconNoAmmo = cgi_R_RegisterShaderNoMip(va("%s_na", weaponData[weapon_num].alt_weapon_Icon_file));
 	}
 
 	for (ammo = bg_itemlist + 1; ammo->classname; ammo++)
@@ -263,7 +227,7 @@ void CG_RegisterWeapon(const int weapon_num)
 
 	if (ammo->classname && ammo->world_model)
 	{
-		weaponInfo->ammoModel = cgi_R_RegisterModel(ammo->world_model);
+		weapon_info->ammoModel = cgi_R_RegisterModel(ammo->world_model);
 	}
 
 	for (i = 0; i < weaponData[weapon_num].numBarrels; i++)
@@ -291,14 +255,14 @@ void CG_RegisterWeapon(const int weapon_num)
 		}
 		else
 			Q_strcat(path, sizeof path, "_barrel.md3");
-		weaponInfo->barrelModel[i] = cgi_R_RegisterModel(path);
+		weapon_info->barrelModel[i] = cgi_R_RegisterModel(path);
 	}
 
 	// set up the world model for the weapon
-	weaponInfo->weaponWorldModel = cgi_R_RegisterModel(item->world_model);
-	if (!weaponInfo->weaponWorldModel)
+	weapon_info->weaponWorldModel = cgi_R_RegisterModel(item->world_model);
+	if (!weapon_info->weaponWorldModel)
 	{
-		weaponInfo->weaponWorldModel = weaponInfo->weaponModel;
+		weapon_info->weaponWorldModel = weapon_info->weaponModel;
 	}
 
 	// set up the hand that holds the in view weapon - assuming we have one
@@ -321,63 +285,63 @@ void CG_RegisterWeapon(const int weapon_num)
 
 	COM_StripExtension(path, path, sizeof path);
 	Q_strcat(path, sizeof path, "_hand.md3");
-	weaponInfo->handsModel = cgi_R_RegisterModel(path);
+	weapon_info->handsModel = cgi_R_RegisterModel(path);
 
-	if (!weaponInfo->handsModel)
+	if (!weapon_info->handsModel)
 	{
-		weaponInfo->handsModel = cgi_R_RegisterModel("models/weapons2/briar_pistol/briar_pistol_hand.md3");
+		weapon_info->handsModel = cgi_R_RegisterModel("models/weapons2/briar_pistol/briar_pistol_hand.md3");
 	}
 
 	// register the sounds for the weapon
 	if (weaponData[weapon_num].firingSnd[0])
 	{
-		weaponInfo->firingSound = cgi_S_RegisterSound(weaponData[weapon_num].firingSnd);
+		weapon_info->firingSound = cgi_S_RegisterSound(weaponData[weapon_num].firingSnd);
 	}
 	if (weaponData[weapon_num].altFiringSnd[0])
 	{
-		weaponInfo->altFiringSound = cgi_S_RegisterSound(weaponData[weapon_num].altFiringSnd);
+		weapon_info->altFiringSound = cgi_S_RegisterSound(weaponData[weapon_num].altFiringSnd);
 	}
 	if (weaponData[weapon_num].stopSnd[0])
 	{
-		weaponInfo->stopSound = cgi_S_RegisterSound(weaponData[weapon_num].stopSnd);
+		weapon_info->stopSound = cgi_S_RegisterSound(weaponData[weapon_num].stopSnd);
 	}
 	if (weaponData[weapon_num].chargeSnd[0])
 	{
-		weaponInfo->chargeSound = cgi_S_RegisterSound(weaponData[weapon_num].chargeSnd);
+		weapon_info->chargeSound = cgi_S_RegisterSound(weaponData[weapon_num].chargeSnd);
 	}
 	if (weaponData[weapon_num].altChargeSnd[0])
 	{
-		weaponInfo->altChargeSound = cgi_S_RegisterSound(weaponData[weapon_num].altChargeSnd);
+		weapon_info->altChargeSound = cgi_S_RegisterSound(weaponData[weapon_num].altChargeSnd);
 	}
 	if (weaponData[weapon_num].selectSnd[0])
 	{
-		weaponInfo->selectSound = cgi_S_RegisterSound(weaponData[weapon_num].selectSnd);
+		weapon_info->selectSound = cgi_S_RegisterSound(weaponData[weapon_num].selectSnd);
 	}
 
 	// give us missile models if we should
 	if (weaponData[weapon_num].missileMdl[0])
 	{
-		weaponInfo->missileModel = cgi_R_RegisterModel(weaponData[weapon_num].missileMdl);
+		weapon_info->missileModel = cgi_R_RegisterModel(weaponData[weapon_num].missileMdl);
 	}
 	if (weaponData[weapon_num].alt_missileMdl[0])
 	{
-		weaponInfo->alt_missileModel = cgi_R_RegisterModel(weaponData[weapon_num].alt_missileMdl);
+		weapon_info->alt_missileModel = cgi_R_RegisterModel(weaponData[weapon_num].alt_missileMdl);
 	}
 	if (weaponData[weapon_num].missileSound[0])
 	{
-		weaponInfo->missileSound = cgi_S_RegisterSound(weaponData[weapon_num].missileSound);
+		weapon_info->missileSound = cgi_S_RegisterSound(weaponData[weapon_num].missileSound);
 	}
 	if (weaponData[weapon_num].alt_missileSound[0])
 	{
-		weaponInfo->alt_missileSound = cgi_S_RegisterSound(weaponData[weapon_num].alt_missileSound);
+		weapon_info->alt_missileSound = cgi_S_RegisterSound(weaponData[weapon_num].alt_missileSound);
 	}
 	if (weaponData[weapon_num].missileHitSound[0])
 	{
-		weaponInfo->missileHitSound = cgi_S_RegisterSound(weaponData[weapon_num].missileHitSound);
+		weapon_info->missileHitSound = cgi_S_RegisterSound(weaponData[weapon_num].missileHitSound);
 	}
 	if (weaponData[weapon_num].altmissileHitSound[0])
 	{
-		weaponInfo->altmissileHitSound = cgi_S_RegisterSound(weaponData[weapon_num].altmissileHitSound);
+		weapon_info->altmissileHitSound = cgi_S_RegisterSound(weaponData[weapon_num].altmissileHitSound);
 	}
 	if (weaponData[weapon_num].mMuzzleEffect[0])
 	{
@@ -402,12 +366,12 @@ void CG_RegisterWeapon(const int weapon_num)
 	// give ourselves the functions if we can
 	if (weaponData[weapon_num].func)
 	{
-		weaponInfo->missileTrailFunc = static_cast<void(*)(centity_s*, const weaponInfo_s*)>(weaponData[weapon_num].
+		weapon_info->missileTrailFunc = static_cast<void(*)(centity_s*, const weaponInfo_s*)>(weaponData[weapon_num].
 			func);
 	}
 	if (weaponData[weapon_num].altfunc)
 	{
-		weaponInfo->alt_missileTrailFunc = static_cast<void(*)(centity_s*, const weaponInfo_s*)>(weaponData[weapon_num].
+		weapon_info->alt_missileTrailFunc = static_cast<void(*)(centity_s*, const weaponInfo_s*)>(weaponData[weapon_num].
 			altfunc);
 	}
 
@@ -931,7 +895,7 @@ void CG_RegisterWeapon(const int weapon_num)
 		theFxScheduler.RegisterEffect("demp2/altDetonate");
 		cgi_R_RegisterModel("models/items/sphere.md3");
 		cgi_R_RegisterShader("gfx/effects/demp2shell");
-		weaponInfo->alt_missileModel = cgi_R_RegisterModel("models/weapons2/golan_arms/projectileMain.md3");
+		weapon_info->alt_missileModel = cgi_R_RegisterModel("models/weapons2/golan_arms/projectileMain.md3");
 		break;
 
 	case WP_ATST_MAIN:
@@ -1048,14 +1012,14 @@ void CG_RegisterWeapon(const int weapon_num)
 		if (weapon_num == WP_MELEE)
 		{
 			//grapplehook
-			MAKERGB(weaponInfo->flashDlightColor, 0.6f, 0.6f, 1.0f);
-			MAKERGB(weaponInfo->missileDlightColor, 1, 0.75f, 0.6f);
-			weaponInfo->missileModel = cgi_R_RegisterModel("models/items/hook.md3");
-			weaponInfo->missileSound = cgi_S_RegisterSound("sound/weapons/grapple/hookfire.wav");
+			MAKERGB(weapon_info->flashDlightColor, 0.6f, 0.6f, 1.0f);
+			MAKERGB(weapon_info->missileDlightColor, 1, 0.75f, 0.6f);
+			weapon_info->missileModel = cgi_R_RegisterModel("models/items/hook.md3");
+			weapon_info->missileSound = cgi_S_RegisterSound("sound/weapons/grapple/hookfire.wav");
 			//weaponInfo->missileTrailFunc = CG_GrappleTrail;
-			weaponInfo->missileDlight = 200;
-			weaponInfo->wiTrailTime = 2000;
-			weaponInfo->trailRadius = 64;
+			weapon_info->missileDlight = 200;
+			weapon_info->wiTrailTime = 2000;
+			weapon_info->trailRadius = 64;
 		}
 		break;
 	case WP_TUSKEN_STAFF:
@@ -1076,14 +1040,10 @@ void CG_RegisterWeapon(const int weapon_num)
 		cgi_S_RegisterSound("sound/weapons/baton/idle.wav");
 		cgi_S_RegisterSound("sound/weapons/concussion/idle_lp.wav");
 		cgi_S_RegisterSound("sound/weapons/noghri/fire.mp3");
-		MAKERGB(weaponInfo->flashDlightColor, 0.6f, 0.6f, 1.0f);
-		MAKERGB(weaponInfo->missileDlightColor, 1, 0.75f, 0.6f);
-		weaponInfo->missileModel = cgi_R_RegisterModel("models/weapons2/golan_arms/projectileMain.md3");
-		weaponInfo->alt_missileModel = cgi_R_RegisterModel("models/weapons2/golan_arms/projectileMain.md3");
-		if (cg_com_rend2.integer == 0) //rend2 is off
-		{
-			weaponInfo->missileTrailFunc = CG_StunTrail;
-		}
+		MAKERGB(weapon_info->flashDlightColor, 0.6f, 0.6f, 1.0f);
+		MAKERGB(weapon_info->missileDlightColor, 1, 0.75f, 0.6f);
+		weapon_info->missileModel = cgi_R_RegisterModel("models/weapons2/golan_arms/projectileMain.md3");
+		weapon_info->alt_missileModel = cgi_R_RegisterModel("models/weapons2/golan_arms/projectileMain.md3");
 		break;
 
 	case WP_TURRET:
@@ -2802,15 +2762,15 @@ void CG_DrawDataPadWeaponSelect()
 		if (weaponData[weapon_select_i].weapon_Icon_file[0])
 		{
 			CG_RegisterWeapon(weapon_select_i);
-			const weaponInfo_t* weaponInfo = &cg_weapons[weapon_select_i];
+			const weaponInfo_t* weapon_info = &cg_weapons[weapon_select_i];
 
 			if (!CG_WeaponCheck(weapon_select_i))
 			{
-				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weaponInfo->weaponIconNoAmmo);
+				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weapon_info->weaponIconNoAmmo);
 			}
 			else
 			{
-				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weaponInfo->weapon_Icon);
+				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weapon_info->weapon_Icon);
 			}
 
 			hold_x -= small_icon_size + pad;
@@ -2829,18 +2789,18 @@ void CG_DrawDataPadWeaponSelect()
 	if (weaponData[cg.DataPadWeaponSelect].weapon_Icon_file[0])
 	{
 		CG_RegisterWeapon(cg.DataPadWeaponSelect);
-		const weaponInfo_t* weaponInfo = &cg_weapons[cg.DataPadWeaponSelect];
+		const weaponInfo_t* weapon_info = &cg_weapons[cg.DataPadWeaponSelect];
 
 		// Draw graphic to show weapon has ammo or no ammo
 		if (!CG_WeaponCheck(cg.DataPadWeaponSelect))
 		{
 			CG_DrawPic(center_x_pos - big_icon_size / 2, graphic_y_pos - (big_icon_size - small_icon_size) / 2 + 10,
-				big_icon_size, big_icon_size, weaponInfo->weaponIconNoAmmo);
+				big_icon_size, big_icon_size, weapon_info->weaponIconNoAmmo);
 		}
 		else
 		{
 			CG_DrawPic(center_x_pos - big_icon_size / 2, graphic_y_pos - (big_icon_size - small_icon_size) / 2 + 10,
-				big_icon_size, big_icon_size, weaponInfo->weapon_Icon);
+				big_icon_size, big_icon_size, weapon_info->weapon_Icon);
 		}
 	}
 
@@ -2892,16 +2852,16 @@ void CG_DrawDataPadWeaponSelect()
 		if (weaponData[weapon_select_i].weapon_Icon_file[0])
 		{
 			CG_RegisterWeapon(weapon_select_i);
-			const weaponInfo_t* weaponInfo = &cg_weapons[weapon_select_i];
+			const weaponInfo_t* weapon_info = &cg_weapons[weapon_select_i];
 
 			// Draw graphic to show weapon has ammo or no ammo
 			if (!CG_WeaponCheck(i))
 			{
-				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weaponInfo->weaponIconNoAmmo);
+				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weapon_info->weaponIconNoAmmo);
 			}
 			else
 			{
-				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weaponInfo->weapon_Icon);
+				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weapon_info->weapon_Icon);
 			}
 
 			hold_x += small_icon_size + pad;
@@ -3055,15 +3015,15 @@ void CG_DrawDataPadWeaponSelect_kotor()
 		if (weaponData[weapon_select_i].alt_weapon_Icon_file[0])
 		{
 			CG_RegisterWeapon(weapon_select_i);
-			const weaponInfo_t* weaponInfo = &cg_weapons[weapon_select_i];
+			const weaponInfo_t* weapon_info = &cg_weapons[weapon_select_i];
 
 			if (!CG_WeaponCheck(weapon_select_i))
 			{
-				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weaponInfo->alt_weaponIconNoAmmo);
+				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weapon_info->alt_weaponIconNoAmmo);
 			}
 			else
 			{
-				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weaponInfo->alt_weapon_Icon);
+				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weapon_info->alt_weapon_Icon);
 			}
 
 			hold_x -= small_icon_size + pad;
@@ -3082,18 +3042,18 @@ void CG_DrawDataPadWeaponSelect_kotor()
 	if (weaponData[cg.DataPadWeaponSelect].alt_weapon_Icon_file[0])
 	{
 		CG_RegisterWeapon(cg.DataPadWeaponSelect);
-		const weaponInfo_t* weaponInfo = &cg_weapons[cg.DataPadWeaponSelect];
+		const weaponInfo_t* weapon_info = &cg_weapons[cg.DataPadWeaponSelect];
 
 		// Draw graphic to show weapon has ammo or no ammo
 		if (!CG_WeaponCheck(cg.DataPadWeaponSelect))
 		{
 			CG_DrawPic(center_x_pos - big_icon_size / 2, graphic_y_pos - (big_icon_size - small_icon_size) / 2 + 10,
-				big_icon_size, big_icon_size, weaponInfo->alt_weaponIconNoAmmo);
+				big_icon_size, big_icon_size, weapon_info->alt_weaponIconNoAmmo);
 		}
 		else
 		{
 			CG_DrawPic(center_x_pos - big_icon_size / 2, graphic_y_pos - (big_icon_size - small_icon_size) / 2 + 10,
-				big_icon_size, big_icon_size, weaponInfo->alt_weapon_Icon);
+				big_icon_size, big_icon_size, weapon_info->alt_weapon_Icon);
 		}
 	}
 
@@ -3145,16 +3105,16 @@ void CG_DrawDataPadWeaponSelect_kotor()
 		if (weaponData[weapon_select_i].alt_weapon_Icon_file[0])
 		{
 			CG_RegisterWeapon(weapon_select_i);
-			const weaponInfo_t* weaponInfo = &cg_weapons[weapon_select_i];
+			const weaponInfo_t* weapon_info = &cg_weapons[weapon_select_i];
 
 			// Draw graphic to show weapon has ammo or no ammo
 			if (!CG_WeaponCheck(i))
 			{
-				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weaponInfo->alt_weaponIconNoAmmo);
+				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weapon_info->alt_weaponIconNoAmmo);
 			}
 			else
 			{
-				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weaponInfo->alt_weapon_Icon);
+				CG_DrawPic(hold_x, graphic_y_pos, small_icon_size, small_icon_size, weapon_info->alt_weapon_Icon);
 			}
 
 			hold_x += small_icon_size + pad;
@@ -3493,17 +3453,17 @@ void CG_DrawWeaponSelect()
 		if (weaponData[i].weapon_Icon_file[0])
 		{
 			CG_RegisterWeapon(i);
-			const weaponInfo_t* weaponInfo = &cg_weapons[i];
+			const weaponInfo_t* weapon_info = &cg_weapons[i];
 
 			if (is_on_veh) //PM_WeaponOkOnVehicle
 			{
 				if (!CG_WeaponCheck(i))
 				{
-					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weaponInfo->weaponIconNoAmmo);
+					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weapon_info->weaponIconNoAmmo);
 				}
 				else
 				{
-					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weaponInfo->weapon_Icon);
+					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weapon_info->weapon_Icon);
 				}
 			}
 			else
@@ -3511,11 +3471,11 @@ void CG_DrawWeaponSelect()
 				if (!CG_WeaponCheck(i))
 				{
 					CG_DrawPic(hold_x, y + 10 + y_offset, small_icon_size, small_icon_size,
-						weaponInfo->weaponIconNoAmmo);
+						weapon_info->weaponIconNoAmmo);
 				}
 				else
 				{
-					CG_DrawPic(hold_x, y + 10 + y_offset, small_icon_size, small_icon_size, weaponInfo->weapon_Icon);
+					CG_DrawPic(hold_x, y + 10 + y_offset, small_icon_size, small_icon_size, weapon_info->weapon_Icon);
 				}
 			}
 
@@ -3533,19 +3493,19 @@ void CG_DrawWeaponSelect()
 	if (weaponData[cg.weaponSelect].weapon_Icon_file[0])
 	{
 		CG_RegisterWeapon(cg.weaponSelect);
-		const weaponInfo_t* weaponInfo = &cg_weapons[cg.weaponSelect];
+		const weaponInfo_t* weapon_info = &cg_weapons[cg.weaponSelect];
 
 		if (is_on_veh) //PM_WeaponOkOnVehicle
 		{
 			if (!CG_WeaponCheck(cg.weaponSelect))
 			{
 				CG_DrawPic(x - big_icon_size / static_cast<float>(2), y - (static_cast<float>(big_icon_size) - small_icon_size) / 2 + y_offset, big_icon_size,
-					big_icon_size, weaponInfo->weaponIconNoAmmo);
+					big_icon_size, weapon_info->weaponIconNoAmmo);
 			}
 			else
 			{
 				CG_DrawPic(x - big_icon_size / static_cast<float>(2), y - (static_cast<float>(big_icon_size) - small_icon_size) / 2 + y_offset, big_icon_size,
-					big_icon_size, weaponInfo->weapon_Icon);
+					big_icon_size, weapon_info->weapon_Icon);
 			}
 		}
 		else
@@ -3554,13 +3514,13 @@ void CG_DrawWeaponSelect()
 			{
 				CG_DrawPic(x - big_icon_size / static_cast<float>(2), y - (static_cast<float>(big_icon_size) - small_icon_size) / 2 + 10 + y_offset,
 					big_icon_size,
-					big_icon_size, weaponInfo->weaponIconNoAmmo);
+					big_icon_size, weapon_info->weaponIconNoAmmo);
 			}
 			else
 			{
 				CG_DrawPic(x - big_icon_size / static_cast<float>(2), y - (static_cast<float>(big_icon_size) - small_icon_size) / 2 + 10 + y_offset,
 					big_icon_size,
-					big_icon_size, weaponInfo->weapon_Icon);
+					big_icon_size, weapon_info->weapon_Icon);
 			}
 		}
 	}
@@ -3648,18 +3608,18 @@ void CG_DrawWeaponSelect()
 		if (weaponData[i].weapon_Icon_file[0])
 		{
 			CG_RegisterWeapon(i);
-			const weaponInfo_t* weaponInfo = &cg_weapons[i];
+			const weaponInfo_t* weapon_info = &cg_weapons[i];
 			// No ammo for this weapon?
 
 			if (is_on_veh) //PM_WeaponOkOnVehicle
 			{
 				if (!CG_WeaponCheck(i))
 				{
-					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weaponInfo->weaponIconNoAmmo);
+					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weapon_info->weaponIconNoAmmo);
 				}
 				else
 				{
-					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weaponInfo->weapon_Icon);
+					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weapon_info->weapon_Icon);
 				}
 			}
 			else
@@ -3667,11 +3627,11 @@ void CG_DrawWeaponSelect()
 				if (!CG_WeaponCheck(i))
 				{
 					CG_DrawPic(hold_x, y + 10 + y_offset, small_icon_size, small_icon_size,
-						weaponInfo->weaponIconNoAmmo);
+						weapon_info->weaponIconNoAmmo);
 				}
 				else
 				{
-					CG_DrawPic(hold_x, y + 10 + y_offset, small_icon_size, small_icon_size, weaponInfo->weapon_Icon);
+					CG_DrawPic(hold_x, y + 10 + y_offset, small_icon_size, small_icon_size, weapon_info->weapon_Icon);
 				}
 			}
 
@@ -3933,17 +3893,17 @@ void CG_DrawWeaponSelect_kotor()
 		if (weaponData[i].alt_weapon_Icon_file[0])
 		{
 			CG_RegisterWeapon(i);
-			const weaponInfo_t* weaponInfo = &cg_weapons[i];
+			const weaponInfo_t* weapon_info = &cg_weapons[i];
 
 			if (is_on_veh) //PM_WeaponOkOnVehicle
 			{
 				if (!CG_WeaponCheck(i))
 				{
-					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weaponInfo->alt_weaponIconNoAmmo);
+					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weapon_info->alt_weaponIconNoAmmo);
 				}
 				else
 				{
-					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weaponInfo->alt_weapon_Icon);
+					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weapon_info->alt_weapon_Icon);
 				}
 			}
 			else
@@ -3951,11 +3911,11 @@ void CG_DrawWeaponSelect_kotor()
 				if (!CG_WeaponCheck(i))
 				{
 					CG_DrawPic(hold_x, y + 10 + y_offset, small_icon_size, small_icon_size,
-						weaponInfo->alt_weaponIconNoAmmo);
+						weapon_info->alt_weaponIconNoAmmo);
 				}
 				else
 				{
-					CG_DrawPic(hold_x, y + 10 + y_offset, small_icon_size, small_icon_size, weaponInfo->alt_weapon_Icon);
+					CG_DrawPic(hold_x, y + 10 + y_offset, small_icon_size, small_icon_size, weapon_info->alt_weapon_Icon);
 				}
 			}
 
@@ -3973,19 +3933,19 @@ void CG_DrawWeaponSelect_kotor()
 	if (weaponData[cg.weaponSelect].alt_weapon_Icon_file[0])
 	{
 		CG_RegisterWeapon(cg.weaponSelect);
-		const weaponInfo_t* weaponInfo = &cg_weapons[cg.weaponSelect];
+		const weaponInfo_t* weapon_info = &cg_weapons[cg.weaponSelect];
 
 		if (is_on_veh) //PM_WeaponOkOnVehicle
 		{
 			if (!CG_WeaponCheck(cg.weaponSelect))
 			{
 				CG_DrawPic(x - big_icon_size / static_cast<float>(2), y - (static_cast<float>(big_icon_size) - small_icon_size) / 2 + y_offset, big_icon_size,
-					big_icon_size, weaponInfo->alt_weaponIconNoAmmo);
+					big_icon_size, weapon_info->alt_weaponIconNoAmmo);
 			}
 			else
 			{
 				CG_DrawPic(x - big_icon_size / static_cast<float>(2), y - (static_cast<float>(big_icon_size) - small_icon_size) / 2 + y_offset, big_icon_size,
-					big_icon_size, weaponInfo->alt_weapon_Icon);
+					big_icon_size, weapon_info->alt_weapon_Icon);
 			}
 		}
 		else
@@ -3994,13 +3954,13 @@ void CG_DrawWeaponSelect_kotor()
 			{
 				CG_DrawPic(x - big_icon_size / static_cast<float>(2), y - (static_cast<float>(big_icon_size) - small_icon_size) / 2 + 10 + y_offset,
 					big_icon_size,
-					big_icon_size, weaponInfo->alt_weaponIconNoAmmo);
+					big_icon_size, weapon_info->alt_weaponIconNoAmmo);
 			}
 			else
 			{
 				CG_DrawPic(x - big_icon_size / static_cast<float>(2), y - (static_cast<float>(big_icon_size) - small_icon_size) / 2 + 10 + y_offset,
 					big_icon_size,
-					big_icon_size, weaponInfo->alt_weapon_Icon);
+					big_icon_size, weapon_info->alt_weapon_Icon);
 			}
 		}
 	}
@@ -4088,18 +4048,18 @@ void CG_DrawWeaponSelect_kotor()
 		if (weaponData[i].alt_weapon_Icon_file[0])
 		{
 			CG_RegisterWeapon(i);
-			const weaponInfo_t* weaponInfo = &cg_weapons[i];
+			const weaponInfo_t* weapon_info = &cg_weapons[i];
 			// No ammo for this weapon?
 
 			if (is_on_veh) //PM_WeaponOkOnVehicle
 			{
 				if (!CG_WeaponCheck(i))
 				{
-					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weaponInfo->alt_weaponIconNoAmmo);
+					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weapon_info->alt_weaponIconNoAmmo);
 				}
 				else
 				{
-					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weaponInfo->alt_weapon_Icon);
+					CG_DrawPic(hold_x, y + y_offset, small_icon_size, small_icon_size, weapon_info->alt_weapon_Icon);
 				}
 			}
 			else
@@ -4107,11 +4067,11 @@ void CG_DrawWeaponSelect_kotor()
 				if (!CG_WeaponCheck(i))
 				{
 					CG_DrawPic(hold_x, y + 10 + y_offset, small_icon_size, small_icon_size,
-						weaponInfo->weaponIconNoAmmo);
+						weapon_info->weaponIconNoAmmo);
 				}
 				else
 				{
-					CG_DrawPic(hold_x, y + 10 + y_offset, small_icon_size, small_icon_size, weaponInfo->alt_weapon_Icon);
+					CG_DrawPic(hold_x, y + 10 + y_offset, small_icon_size, small_icon_size, weapon_info->alt_weapon_Icon);
 				}
 			}
 
@@ -5464,11 +5424,11 @@ void CG_MissileStick(const centity_t* cent, const int weapon)
 qboolean CG_VehicleWeaponImpact(centity_t* cent)
 {
 	//see if this is a missile entity that's owned by a vehicle and should do a special, overridden impact effect
-	if (cent->currentState.otherentity_num2
-		&& g_vehWeaponInfo[cent->currentState.otherentity_num2].iImpactFX)
+	if (cent->currentState.otherEntityNum2
+		&& g_vehWeaponInfo[cent->currentState.otherEntityNum2].iImpactFX)
 	{
 		//missile is from a special vehWeapon
-		CG_PlayEffectID(g_vehWeaponInfo[cent->currentState.otherentity_num2].iImpactFX, cent->lerpOrigin,
+		CG_PlayEffectID(g_vehWeaponInfo[cent->currentState.otherEntityNum2].iImpactFX, cent->lerpOrigin,
 			cent->gent->pos1);
 		return qtrue;
 	}
@@ -5724,7 +5684,7 @@ void CG_MissileHitPlayer(const centity_t* cent, const int weapon, vec3_t origin,
 
 	if (cent->gent)
 	{
-		other = &g_entities[cent->gent->s.otherentity_num];
+		other = &g_entities[cent->gent->s.otherEntityNum];
 		if (other->client)
 		{
 			const class_t npc_class = other->client->NPC_class;

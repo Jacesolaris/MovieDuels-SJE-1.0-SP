@@ -60,8 +60,7 @@ R_DlightBmodel
 Determine which dynamic lights may effect this bmodel
 =============
 */
-void R_DlightBmodel(const bmodel_t* bmodel, const qboolean NoLight)
-{
+void R_DlightBmodel(const bmodel_t* bmodel, const qboolean NoLight) {
 	int			i;
 
 	// transform all the lights
@@ -290,7 +289,7 @@ static void R_SetupEntityLightingGrid(trRefEntity_t* ent) {
 
 			ref_ent.renderfx = RF_DEPTHHACK;
 			ref_ent.reType = RT_SPRITE;
-			ref_ent.custom_shader = RE_RegisterShader("gfx/misc/debugAmbient");
+			ref_ent.customShader = RE_RegisterShader("gfx/misc/debugAmbient");
 			ref_ent.shaderRGBA[0] = data->ambientLight[0][0];
 			ref_ent.shaderRGBA[1] = data->ambientLight[0][1];
 			ref_ent.shaderRGBA[2] = data->ambientLight[0][2];
@@ -300,7 +299,7 @@ static void R_SetupEntityLightingGrid(trRefEntity_t* ent) {
 			RE_AddRefEntityToScene(&ref_ent);
 
 			ref_ent.reType = RT_LINE;
-			ref_ent.custom_shader = RE_RegisterShader("gfx/misc/debugArrow");
+			ref_ent.customShader = RE_RegisterShader("gfx/misc/debugArrow");
 			ref_ent.shaderRGBA[0] = data->directLight[0][0];
 			ref_ent.shaderRGBA[1] = data->directLight[0][1];
 			ref_ent.shaderRGBA[2] = data->directLight[0][2];
@@ -466,8 +465,7 @@ void R_SetupEntityLighting(const trRefdef_t* refdef, trRefEntity_t* ent) {
 }
 
 //pass in origin
-qboolean RE_GetLighting(const vec3_t origin, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir)
-{
+qboolean RE_GetLighting(const vec3_t origin, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir) {
 	trRefEntity_t tr_ent;
 
 	if (!tr.world || !tr.world->lightGridData) {

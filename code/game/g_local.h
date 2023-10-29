@@ -540,7 +540,7 @@ void WP_LoadWeaponParms();
 
 void IT_LoadItemParms();
 
-void IT_LoadWeatherParms();
+void R_LoadWeatherParms();
 
 //
 // g_client.c

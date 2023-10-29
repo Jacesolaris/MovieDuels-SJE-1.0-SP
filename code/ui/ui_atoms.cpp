@@ -39,8 +39,6 @@ uiStatic_t uis;
 //externs
 static void UI_LoadMenu_f();
 static void UI_SaveMenu_f();
-extern vmCvar_t ui_com_outcast;
-extern vmCvar_t ui_com_rend2;
 
 //locals
 

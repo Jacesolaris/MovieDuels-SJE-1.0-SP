@@ -375,7 +375,7 @@ static void ParseFace(const dsurface_t* ds, mapVert_t* verts, msurface_t* surf, 
 	p_face_data_buffer += sface_size;	// :-)
 
 	cv->surfaceType = SF_FACE;
-	cv->num_points = num_points;
+	cv->numPoints = num_points;
 	cv->numIndices = num_indexes;
 	cv->ofsIndices = ofs_indexes;
 
@@ -893,7 +893,7 @@ static	void R_LoadPlanes(const lump_t* l, world_t& world_data)
 	cplane_t* out = static_cast<cplane_s*>(R_Hunk_Alloc(count * 2 * sizeof * out, qtrue));
 
 	world_data.planes = out;
-	world_data.num_planes = count;
+	world_data.numplanes = count;
 
 	for (int i = 0; i < count; i++, in++, out++) {
 		int bits = 0;

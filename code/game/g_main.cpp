@@ -320,10 +320,6 @@ cvar_t* g_ffamode;
 cvar_t* g_SaberBounceOnWalls;
 cvar_t* g_SaberMustReturn;
 
-cvar_t* com_rend2;
-
-cvar_t* g_overpoweredsaberthrow;
-
 extern char* G_GetLocationForEnt(const gentity_t* ent);
 extern void CP_FindCombatPointWaypoints();
 extern qboolean InFront(vec3_t spot, vec3_t from, vec3_t fromAngles, float threshHold = 0.0f);
@@ -958,10 +954,6 @@ void G_InitCvars()
 	g_SaberBounceOnWalls = gi.cvar("g_saberbounceonwalls", "0", CVAR_ARCHIVE);
 
 	g_SaberMustReturn = gi.cvar("g_sabermustreturn", "0", CVAR_ARCHIVE);
-
-	com_rend2 = gi.cvar("com_rend2", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
-
-	g_overpoweredsaberthrow = gi.cvar("g_overpoweredsaberthrow", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
 }
 
 /*
@@ -977,6 +969,7 @@ InitGame
 int giMapChecksum;
 SavedGameJustLoaded_e g_eSavedGameJustLoaded;
 qboolean g_qbLoadTransition = qfalse;
+extern void R_LoadWeatherParms();
 
 void InitGame(const char* mapname, const char* spawntarget, const int checkSum, const char* entities,
 	const int levelTime,
@@ -1046,8 +1039,6 @@ void InitGame(const char* mapname, const char* spawntarget, const int checkSum, 
 	Pilot_Reset();
 
 	IT_LoadItemParms();
-
-	IT_LoadWeatherParms();
 
 	ClearRegisteredItems();
 
