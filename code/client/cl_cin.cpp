@@ -1794,7 +1794,7 @@ static void CIN_AddTextCrawl()
 
 	// render it out
 	re.ClearScene();
-	re.AddPolyToScene(cinTable[CL_handle].hCRAWLTEXT, 4, verts);
+	re.AddPolyToScene(cinTable[CL_handle].hCRAWLTEXT, 4, verts, 1);
 	re.RenderScene(&refdef);
 
 	//time's up
