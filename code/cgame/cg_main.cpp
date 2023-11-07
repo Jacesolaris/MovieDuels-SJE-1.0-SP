@@ -3199,8 +3199,6 @@ void CG_PreInit()
 
 	CG_InitMarkPolys();
 }
-
-extern void R_LoadWeatherParms();
 /*
 =================
 CG_Init
@@ -3284,6 +3282,8 @@ void CG_Init(const int serverCommandSequence)
 	CG_InitConsoleCommands();
 
 	CG_TrueViewInit();
+
+	IT_LoadWeatherParms();
 
 	cg.weaponPickupTextTime = 0;
 

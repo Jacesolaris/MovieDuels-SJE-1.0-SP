@@ -786,67 +786,19 @@ void IT_LoadItemParms()
 	gi.FS_FreeFile(buffer); //let go of the buffer
 }
 
-//extern void	cgi_Cvar_Register(vmCvar_t* vmCvar, const char* varName, const char* defaultValue, int flags);
-//
-extern cvar_t* g_Weather;
+extern void cgi_Cvar_Register(vmCvar_t* vmCvar, const char* varName, const char* defaultValue, int flags);
+extern cvar_t* g_AllowWeather;
 
-void R_LoadWeatherParms()
+void IT_LoadWeatherParms()
 {
-	if (g_Weather->integer == 0) //clear
+	vmCvar_t mapname;
+
+	if (g_AllowWeather->integer != 1)
 	{
-		gi.SendConsoleCommand(va("exec Weather/clear.cfg"));
+		return;
 	}
 
-	// Create A Snow Storm
-	//---------------------
-	else if (g_Weather->integer == 1)
-	{
-		gi.SendConsoleCommand(va("exec Weather/snow.cfg"));
-	}
+	cgi_Cvar_Register(&mapname, "mapname", "", CVAR_SERVERINFO | CVAR_ROM);
 
-	// Create A Rain Storm
-	//---------------------
-	else if (g_Weather->integer == 2)
-	{
-		gi.SendConsoleCommand(va("exec Weather/rain.cfg"));
-	}
-
-	// Create A lava Storm
-	//---------------------
-	else if (g_Weather->integer == 3)
-	{
-		gi.SendConsoleCommand(va("exec Weather/lava.cfg"));
-	}
-
-	// Create A Sand Storm
-	//---------------------
-	else if (g_Weather->integer == 4)
-	{
-		gi.SendConsoleCommand(va("exec Weather/sandstorm.cfg"));
-	}
-
-	// Create Heavy Rain Particle Cloud
-	//---------------------
-	else if (g_Weather->integer == 5)
-	{
-		gi.SendConsoleCommand(va("exec Weather/heavyrainfog.cfg"));
-	}
-
-	// Create Blowing Clouds Of Fog
-	//------------------------------
-	else if (g_Weather->integer == 6)
-	{
-		gi.SendConsoleCommand(va("exec Weather/fog.cfg"));
-	}
-
-	// Create A Rain Storm
-	//---------------------
-	else if (g_Weather->integer == 7)
-	{
-		gi.SendConsoleCommand(va("exec Weather/acidrain.cfg"));
-	}
-	else
-	{
-		gi.SendConsoleCommand(va("exec Weather/clear.cfg"));
-	}
+	gi.SendConsoleCommand(va("exec Weather/%s", mapname.string, mapname.string, mapname.string));
 }
