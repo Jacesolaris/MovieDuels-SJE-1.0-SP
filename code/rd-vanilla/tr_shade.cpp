@@ -412,7 +412,7 @@ because a surface may be forced to perform a RB_End due
 to overflow.
 ==============
 */
-void RB_BeginSurface(shader_t* shader, const int fog_num)
+void RB_BeginSurface(shader_t* shader, const int fogNum)
 {
 	//	shader_t *state = (shader->remappedShader) ? shader->remappedShader : shader;
 	shader_t* state = shader;
@@ -420,7 +420,7 @@ void RB_BeginSurface(shader_t* shader, const int fog_num)
 	tess.num_indexes = 0;
 	tess.numVertexes = 0;
 	tess.shader = state;//shader;
-	tess.fogNum = fog_num;
+	tess.fogNum = fogNum;
 	tess.dlightBits = 0;		// will be OR'd in by surface functions
 
 	tess.SSInitializedWind = qfalse;	//is this right?

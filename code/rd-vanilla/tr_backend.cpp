@@ -630,7 +630,7 @@ static int g_numPostRenders = 0;
 void RB_RenderDrawSurfList(drawSurf_t* draw_surfs, const int num_draw_surfs)
 {
 	shader_t* shader;
-	int				fog_num;
+	int				fogNum;
 	int				entity_num;
 	int				dlighted;
 	int				i;
@@ -667,14 +667,14 @@ void RB_RenderDrawSurfList(drawSurf_t* draw_surfs, const int num_draw_surfs)
 			rb_surfaceTable[*draw_surf->surface](draw_surf->surface);
 			continue;
 		}
-		R_DecomposeSort(draw_surf->sort, &entity_num, &shader, &fog_num, &dlighted);
+		R_DecomposeSort(draw_surf->sort, &entity_num, &shader, &fogNum, &dlighted);
 
 		// If we're rendering glowing objects, but this shader has no stages with glow, skip it!
 		if (g_bRenderGlowingObjects && !shader->hasGlow)
 		{
 			shader = old_shader;
 			entity_num = old_entity_num;
-			fog_num = old_fog_num;
+			fogNum = old_fog_num;
 			dlighted = old_dlighted;
 			continue;
 		}
@@ -718,13 +718,13 @@ void RB_RenderDrawSurfList(drawSurf_t* draw_surfs, const int num_draw_surfs)
 				//remember the other values necessary for rendering this surf
 				p_render->draw_surf = draw_surf;
 				p_render->dlighted = dlighted;
-				p_render->fogNum = fog_num;
+				p_render->fogNum = fogNum;
 				p_render->shader = shader;
 
 				//assure the info is back to the last set state
 				shader = old_shader;
 				entity_num = old_entity_num;
-				fog_num = old_fog_num;
+				fogNum = old_fog_num;
 				dlighted = old_dlighted;
 
 				old_sort = static_cast<unsigned>(-1); //invalidate this thing, cause we may want to postrender more surfs of the same sort
@@ -734,7 +734,7 @@ void RB_RenderDrawSurfList(drawSurf_t* draw_surfs, const int num_draw_surfs)
 			}
 		}
 
-		if (shader != old_shader || fog_num != old_fog_num || dlighted != old_dlighted
+		if (shader != old_shader || fogNum != old_fog_num || dlighted != old_dlighted
 			|| entity_num != old_entity_num && !shader->entityMergable)
 		{
 			if (old_shader != nullptr) {
@@ -746,9 +746,9 @@ void RB_RenderDrawSurfList(drawSurf_t* draw_surfs, const int num_draw_surfs)
 					did_shadow_pass = true;
 				}
 			}
-			RB_BeginSurface(shader, fog_num);
+			RB_BeginSurface(shader, fogNum);
 			old_shader = shader;
-			old_fog_num = fog_num;
+			old_fog_num = fogNum;
 			old_dlighted = dlighted;
 		}
 
@@ -1017,52 +1017,52 @@ const void* RB_StretchPic(const void* data)
 	}
 
 	RB_CHECKOVERFLOW(4, 6);
-	const int num_verts = tess.numVertexes;
+	const int numVerts = tess.numVertexes;
 	const int num_indexes = tess.num_indexes;
 
 	tess.numVertexes += 4;
 	tess.num_indexes += 6;
 
-	tess.indexes[num_indexes] = num_verts + 3;
-	tess.indexes[num_indexes + 1] = num_verts + 0;
-	tess.indexes[num_indexes + 2] = num_verts + 2;
-	tess.indexes[num_indexes + 3] = num_verts + 2;
-	tess.indexes[num_indexes + 4] = num_verts + 0;
-	tess.indexes[num_indexes + 5] = num_verts + 1;
+	tess.indexes[num_indexes] = numVerts + 3;
+	tess.indexes[num_indexes + 1] = numVerts + 0;
+	tess.indexes[num_indexes + 2] = numVerts + 2;
+	tess.indexes[num_indexes + 3] = numVerts + 2;
+	tess.indexes[num_indexes + 4] = numVerts + 0;
+	tess.indexes[num_indexes + 5] = numVerts + 1;
 
 	const byteAlias_t* ba_source = reinterpret_cast<byteAlias_t*>(&backEnd.color2D);
-	auto ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[num_verts + 0]); ba_dest->ui = ba_source->ui;
-	ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[num_verts + 1]); ba_dest->ui = ba_source->ui;
-	ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[num_verts + 2]); ba_dest->ui = ba_source->ui;
-	ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[num_verts + 3]); ba_dest->ui = ba_source->ui;
+	auto ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[numVerts + 0]); ba_dest->ui = ba_source->ui;
+	ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[numVerts + 1]); ba_dest->ui = ba_source->ui;
+	ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[numVerts + 2]); ba_dest->ui = ba_source->ui;
+	ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[numVerts + 3]); ba_dest->ui = ba_source->ui;
 
-	tess.xyz[num_verts][0] = cmd->x;
-	tess.xyz[num_verts][1] = cmd->y;
-	tess.xyz[num_verts][2] = 0;
+	tess.xyz[numVerts][0] = cmd->x;
+	tess.xyz[numVerts][1] = cmd->y;
+	tess.xyz[numVerts][2] = 0;
 
-	tess.texCoords[num_verts][0][0] = cmd->s1;
-	tess.texCoords[num_verts][0][1] = cmd->t1;
+	tess.texCoords[numVerts][0][0] = cmd->s1;
+	tess.texCoords[numVerts][0][1] = cmd->t1;
 
-	tess.xyz[num_verts + 1][0] = cmd->x + cmd->w;
-	tess.xyz[num_verts + 1][1] = cmd->y;
-	tess.xyz[num_verts + 1][2] = 0;
+	tess.xyz[numVerts + 1][0] = cmd->x + cmd->w;
+	tess.xyz[numVerts + 1][1] = cmd->y;
+	tess.xyz[numVerts + 1][2] = 0;
 
-	tess.texCoords[num_verts + 1][0][0] = cmd->s2;
-	tess.texCoords[num_verts + 1][0][1] = cmd->t1;
+	tess.texCoords[numVerts + 1][0][0] = cmd->s2;
+	tess.texCoords[numVerts + 1][0][1] = cmd->t1;
 
-	tess.xyz[num_verts + 2][0] = cmd->x + cmd->w;
-	tess.xyz[num_verts + 2][1] = cmd->y + cmd->h;
-	tess.xyz[num_verts + 2][2] = 0;
+	tess.xyz[numVerts + 2][0] = cmd->x + cmd->w;
+	tess.xyz[numVerts + 2][1] = cmd->y + cmd->h;
+	tess.xyz[numVerts + 2][2] = 0;
 
-	tess.texCoords[num_verts + 2][0][0] = cmd->s2;
-	tess.texCoords[num_verts + 2][0][1] = cmd->t2;
+	tess.texCoords[numVerts + 2][0][0] = cmd->s2;
+	tess.texCoords[numVerts + 2][0][1] = cmd->t2;
 
-	tess.xyz[num_verts + 3][0] = cmd->x;
-	tess.xyz[num_verts + 3][1] = cmd->y + cmd->h;
-	tess.xyz[num_verts + 3][2] = 0;
+	tess.xyz[numVerts + 3][0] = cmd->x;
+	tess.xyz[numVerts + 3][1] = cmd->y + cmd->h;
+	tess.xyz[numVerts + 3][2] = 0;
 
-	tess.texCoords[num_verts + 3][0][0] = cmd->s1;
-	tess.texCoords[num_verts + 3][0][1] = cmd->t2;
+	tess.texCoords[numVerts + 3][0][0] = cmd->s1;
+	tess.texCoords[numVerts + 3][0][1] = cmd->t2;
 
 	return cmd + 1;
 }
@@ -1090,7 +1090,7 @@ const void* RB_RotatePic(const void* data)
 	}
 
 	RB_CHECKOVERFLOW(4, 6);
-	const int num_verts = tess.numVertexes;
+	const int numVerts = tess.numVertexes;
 	const int num_indexes = tess.num_indexes;
 
 	const float angle = DEG2RAD(cmd->a);
@@ -1106,46 +1106,46 @@ const void* RB_RotatePic(const void* data)
 	tess.numVertexes += 4;
 	tess.num_indexes += 6;
 
-	tess.indexes[num_indexes] = num_verts + 3;
-	tess.indexes[num_indexes + 1] = num_verts + 0;
-	tess.indexes[num_indexes + 2] = num_verts + 2;
-	tess.indexes[num_indexes + 3] = num_verts + 2;
-	tess.indexes[num_indexes + 4] = num_verts + 0;
-	tess.indexes[num_indexes + 5] = num_verts + 1;
+	tess.indexes[num_indexes] = numVerts + 3;
+	tess.indexes[num_indexes + 1] = numVerts + 0;
+	tess.indexes[num_indexes + 2] = numVerts + 2;
+	tess.indexes[num_indexes + 3] = numVerts + 2;
+	tess.indexes[num_indexes + 4] = numVerts + 0;
+	tess.indexes[num_indexes + 5] = numVerts + 1;
 
 	const byteAlias_t* ba_source = reinterpret_cast<byteAlias_t*>(&backEnd.color2D);
-	auto ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[num_verts + 0]); ba_dest->ui = ba_source->ui;
-	ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[num_verts + 1]); ba_dest->ui = ba_source->ui;
-	ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[num_verts + 2]); ba_dest->ui = ba_source->ui;
-	ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[num_verts + 3]); ba_dest->ui = ba_source->ui;
+	auto ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[numVerts + 0]); ba_dest->ui = ba_source->ui;
+	ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[numVerts + 1]); ba_dest->ui = ba_source->ui;
+	ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[numVerts + 2]); ba_dest->ui = ba_source->ui;
+	ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[numVerts + 3]); ba_dest->ui = ba_source->ui;
 
-	tess.xyz[num_verts][0] = m[0][0] * -cmd->w + m[2][0];
-	tess.xyz[num_verts][1] = m[0][1] * -cmd->w + m[2][1];
-	tess.xyz[num_verts][2] = 0;
+	tess.xyz[numVerts][0] = m[0][0] * -cmd->w + m[2][0];
+	tess.xyz[numVerts][1] = m[0][1] * -cmd->w + m[2][1];
+	tess.xyz[numVerts][2] = 0;
 
-	tess.texCoords[num_verts][0][0] = cmd->s1;
-	tess.texCoords[num_verts][0][1] = cmd->t1;
+	tess.texCoords[numVerts][0][0] = cmd->s1;
+	tess.texCoords[numVerts][0][1] = cmd->t1;
 
-	tess.xyz[num_verts + 1][0] = m[2][0];
-	tess.xyz[num_verts + 1][1] = m[2][1];
-	tess.xyz[num_verts + 1][2] = 0;
+	tess.xyz[numVerts + 1][0] = m[2][0];
+	tess.xyz[numVerts + 1][1] = m[2][1];
+	tess.xyz[numVerts + 1][2] = 0;
 
-	tess.texCoords[num_verts + 1][0][0] = cmd->s2;
-	tess.texCoords[num_verts + 1][0][1] = cmd->t1;
+	tess.texCoords[numVerts + 1][0][0] = cmd->s2;
+	tess.texCoords[numVerts + 1][0][1] = cmd->t1;
 
-	tess.xyz[num_verts + 2][0] = m[1][0] * cmd->h + m[2][0];
-	tess.xyz[num_verts + 2][1] = m[1][1] * cmd->h + m[2][1];
-	tess.xyz[num_verts + 2][2] = 0;
+	tess.xyz[numVerts + 2][0] = m[1][0] * cmd->h + m[2][0];
+	tess.xyz[numVerts + 2][1] = m[1][1] * cmd->h + m[2][1];
+	tess.xyz[numVerts + 2][2] = 0;
 
-	tess.texCoords[num_verts + 2][0][0] = cmd->s2;
-	tess.texCoords[num_verts + 2][0][1] = cmd->t2;
+	tess.texCoords[numVerts + 2][0][0] = cmd->s2;
+	tess.texCoords[numVerts + 2][0][1] = cmd->t2;
 
-	tess.xyz[num_verts + 3][0] = m[0][0] * -cmd->w + m[1][0] * cmd->h + m[2][0];
-	tess.xyz[num_verts + 3][1] = m[0][1] * -cmd->w + m[1][1] * cmd->h + m[2][1];
-	tess.xyz[num_verts + 3][2] = 0;
+	tess.xyz[numVerts + 3][0] = m[0][0] * -cmd->w + m[1][0] * cmd->h + m[2][0];
+	tess.xyz[numVerts + 3][1] = m[0][1] * -cmd->w + m[1][1] * cmd->h + m[2][1];
+	tess.xyz[numVerts + 3][2] = 0;
 
-	tess.texCoords[num_verts + 3][0][0] = cmd->s1;
-	tess.texCoords[num_verts + 3][0][1] = cmd->t2;
+	tess.texCoords[numVerts + 3][0][0] = cmd->s1;
+	tess.texCoords[numVerts + 3][0][1] = cmd->t2;
 
 	return cmd + 1;
 }
@@ -1178,7 +1178,7 @@ const void* RB_RotatePic2(const void* data)
 		}
 
 		RB_CHECKOVERFLOW(4, 6);
-		const int num_verts = tess.numVertexes;
+		const int numVerts = tess.numVertexes;
 		const int num_indexes = tess.num_indexes;
 
 		const float angle = DEG2RAD(cmd->a);
@@ -1194,46 +1194,46 @@ const void* RB_RotatePic2(const void* data)
 		tess.numVertexes += 4;
 		tess.num_indexes += 6;
 
-		tess.indexes[num_indexes] = num_verts + 3;
-		tess.indexes[num_indexes + 1] = num_verts + 0;
-		tess.indexes[num_indexes + 2] = num_verts + 2;
-		tess.indexes[num_indexes + 3] = num_verts + 2;
-		tess.indexes[num_indexes + 4] = num_verts + 0;
-		tess.indexes[num_indexes + 5] = num_verts + 1;
+		tess.indexes[num_indexes] = numVerts + 3;
+		tess.indexes[num_indexes + 1] = numVerts + 0;
+		tess.indexes[num_indexes + 2] = numVerts + 2;
+		tess.indexes[num_indexes + 3] = numVerts + 2;
+		tess.indexes[num_indexes + 4] = numVerts + 0;
+		tess.indexes[num_indexes + 5] = numVerts + 1;
 
 		const byteAlias_t* ba_source = reinterpret_cast<byteAlias_t*>(&backEnd.color2D);
-		auto ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[num_verts + 0]); ba_dest->ui = ba_source->ui;
-		ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[num_verts + 1]); ba_dest->ui = ba_source->ui;
-		ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[num_verts + 2]); ba_dest->ui = ba_source->ui;
-		ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[num_verts + 3]); ba_dest->ui = ba_source->ui;
+		auto ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[numVerts + 0]); ba_dest->ui = ba_source->ui;
+		ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[numVerts + 1]); ba_dest->ui = ba_source->ui;
+		ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[numVerts + 2]); ba_dest->ui = ba_source->ui;
+		ba_dest = reinterpret_cast<byteAlias_t*>(&tess.vertexColors[numVerts + 3]); ba_dest->ui = ba_source->ui;
 
-		tess.xyz[num_verts][0] = m[0][0] * (-cmd->w * 0.5f) + m[1][0] * (-cmd->h * 0.5f) + m[2][0];
-		tess.xyz[num_verts][1] = m[0][1] * (-cmd->w * 0.5f) + m[1][1] * (-cmd->h * 0.5f) + m[2][1];
-		tess.xyz[num_verts][2] = 0;
+		tess.xyz[numVerts][0] = m[0][0] * (-cmd->w * 0.5f) + m[1][0] * (-cmd->h * 0.5f) + m[2][0];
+		tess.xyz[numVerts][1] = m[0][1] * (-cmd->w * 0.5f) + m[1][1] * (-cmd->h * 0.5f) + m[2][1];
+		tess.xyz[numVerts][2] = 0;
 
-		tess.texCoords[num_verts][0][0] = cmd->s1;
-		tess.texCoords[num_verts][0][1] = cmd->t1;
+		tess.texCoords[numVerts][0][0] = cmd->s1;
+		tess.texCoords[numVerts][0][1] = cmd->t1;
 
-		tess.xyz[num_verts + 1][0] = m[0][0] * (cmd->w * 0.5f) + m[1][0] * (-cmd->h * 0.5f) + m[2][0];
-		tess.xyz[num_verts + 1][1] = m[0][1] * (cmd->w * 0.5f) + m[1][1] * (-cmd->h * 0.5f) + m[2][1];
-		tess.xyz[num_verts + 1][2] = 0;
+		tess.xyz[numVerts + 1][0] = m[0][0] * (cmd->w * 0.5f) + m[1][0] * (-cmd->h * 0.5f) + m[2][0];
+		tess.xyz[numVerts + 1][1] = m[0][1] * (cmd->w * 0.5f) + m[1][1] * (-cmd->h * 0.5f) + m[2][1];
+		tess.xyz[numVerts + 1][2] = 0;
 
-		tess.texCoords[num_verts + 1][0][0] = cmd->s2;
-		tess.texCoords[num_verts + 1][0][1] = cmd->t1;
+		tess.texCoords[numVerts + 1][0][0] = cmd->s2;
+		tess.texCoords[numVerts + 1][0][1] = cmd->t1;
 
-		tess.xyz[num_verts + 2][0] = m[0][0] * (cmd->w * 0.5f) + m[1][0] * (cmd->h * 0.5f) + m[2][0];
-		tess.xyz[num_verts + 2][1] = m[0][1] * (cmd->w * 0.5f) + m[1][1] * (cmd->h * 0.5f) + m[2][1];
-		tess.xyz[num_verts + 2][2] = 0;
+		tess.xyz[numVerts + 2][0] = m[0][0] * (cmd->w * 0.5f) + m[1][0] * (cmd->h * 0.5f) + m[2][0];
+		tess.xyz[numVerts + 2][1] = m[0][1] * (cmd->w * 0.5f) + m[1][1] * (cmd->h * 0.5f) + m[2][1];
+		tess.xyz[numVerts + 2][2] = 0;
 
-		tess.texCoords[num_verts + 2][0][0] = cmd->s2;
-		tess.texCoords[num_verts + 2][0][1] = cmd->t2;
+		tess.texCoords[numVerts + 2][0][0] = cmd->s2;
+		tess.texCoords[numVerts + 2][0][1] = cmd->t2;
 
-		tess.xyz[num_verts + 3][0] = m[0][0] * (-cmd->w * 0.5f) + m[1][0] * (cmd->h * 0.5f) + m[2][0];
-		tess.xyz[num_verts + 3][1] = m[0][1] * (-cmd->w * 0.5f) + m[1][1] * (cmd->h * 0.5f) + m[2][1];
-		tess.xyz[num_verts + 3][2] = 0;
+		tess.xyz[numVerts + 3][0] = m[0][0] * (-cmd->w * 0.5f) + m[1][0] * (cmd->h * 0.5f) + m[2][0];
+		tess.xyz[numVerts + 3][1] = m[0][1] * (-cmd->w * 0.5f) + m[1][1] * (cmd->h * 0.5f) + m[2][1];
+		tess.xyz[numVerts + 3][2] = 0;
 
-		tess.texCoords[num_verts + 3][0][0] = cmd->s1;
-		tess.texCoords[num_verts + 3][0][1] = cmd->t2;
+		tess.texCoords[numVerts + 3][0][0] = cmd->s1;
+		tess.texCoords[numVerts + 3][0][1] = cmd->t2;
 	}
 
 	return cmd + 1;

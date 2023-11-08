@@ -12928,7 +12928,7 @@ static void CG_CreateSaberMarks(vec3_t start, vec3_t end, vec3_t normal)
 		mark->time = cg.time;
 		mark->alphaFade = qtrue;
 		mark->markShader = cgs.media.rivetMarkShader;
-		mark->poly.num_verts = mf->numPoints;
+		mark->poly.numVerts = mf->numPoints;
 		mark->color[0] = mark->color[1] = mark->color[2] = mark->color[3] = 255;
 		memcpy(mark->verts, verts, mf->numPoints * sizeof verts[0]);
 
@@ -12938,7 +12938,7 @@ static void CG_CreateSaberMarks(vec3_t start, vec3_t end, vec3_t normal)
 		mark->time = cg.time - 8500;
 		mark->alphaFade = qfalse;
 		mark->markShader = cgs.media.bdecal_saberglow;
-		mark->poly.num_verts = mf->numPoints;
+		mark->poly.numVerts = mf->numPoints;
 		mark->color[0] = 215 + Q_flrand(0.0f, 1.0f) * 40.0f;
 		mark->color[1] = 96 + Q_flrand(0.0f, 1.0f) * 32.0f;
 		mark->color[2] = mark->color[3] = Q_flrand(0.0f, 1.0f) * 15.0f;
@@ -15495,7 +15495,7 @@ void CG_Player(centity_t* cent)
 							//&& cent->gent->client->ps.saberActive)
 						{
 							//holding the saber in-hand
-							//						CGhoul2Info *current_model = &cent->gent->ghoul2[1];
+							//						CGhoul2Info *currentModel = &cent->gent->ghoul2[1];
 							//						CGhoul2Info *nextModel = &cent->gent->ghoul2[1];
 							//FIXME: need a version of this that *doesn't* need the mFileName in the ghoul2
 							//FIXME: use an actual surfaceIndex?

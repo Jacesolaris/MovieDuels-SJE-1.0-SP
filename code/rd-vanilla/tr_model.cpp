@@ -895,15 +895,15 @@ static qboolean R_LoadMD3(model_t* mod, int lod, void* buffer, const char* mod_n
 		LL(surf->numShaders);
 		LL(surf->numTriangles);
 		LL(surf->ofsTriangles);
-		LL(surf->num_verts);
+		LL(surf->numVerts);
 		LL(surf->ofsShaders);
 		LL(surf->ofsSt);
 		LL(surf->ofsXyzNormals);
 		LL(surf->ofsEnd);
 
-		if (surf->num_verts > SHADER_MAX_VERTEXES) {
+		if (surf->numVerts > SHADER_MAX_VERTEXES) {
 			Com_Error(ERR_DROP, "R_LoadMD3: %s has more than %i verts on a surface (%i)",
-				mod_name, SHADER_MAX_VERTEXES, surf->num_verts);
+				mod_name, SHADER_MAX_VERTEXES, surf->numVerts);
 		}
 		if (surf->numTriangles * 3 > SHADER_MAX_INDEXES) {
 			Com_Error(ERR_DROP, "R_LoadMD3: %s has more than %i triangles on a surface (%i)",
@@ -947,14 +947,14 @@ static qboolean R_LoadMD3(model_t* mod, int lod, void* buffer, const char* mod_n
 
 		// swap all the ST
 		st = (md3St_t*)((byte*)surf + surf->ofsSt);
-		for (j = 0; j < surf->num_verts; j++, st++) {
+		for (j = 0; j < surf->numVerts; j++, st++) {
 			LF(st->st[0]);
 			LF(st->st[1]);
 		}
 
 		// swap all the XyzNormals
 		xyz = (md3XyzNormal_t*)((byte*)surf + surf->ofsXyzNormals);
-		for (j = 0; j < surf->num_verts * surf->num_frames; j++, xyz++)
+		for (j = 0; j < surf->numVerts * surf->num_frames; j++, xyz++)
 		{
 			LS(xyz->xyz[0]);
 			LS(xyz->xyz[1]);

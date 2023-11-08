@@ -1102,7 +1102,7 @@ qboolean cgi_R_inPVS(vec3_t p1, vec3_t p2);
 
 // polys are intended for simple wall marks, not really for doing
 // significant construction
-void cgi_R_AddPolyToScene(qhandle_t h_shader, int num_verts, const polyVert_t* verts);
+void cgi_R_AddPolyToScene(qhandle_t h_shader, int numVerts, const polyVert_t* verts);
 void cgi_R_AddLightToScene(const vec3_t org, float intensity, float r, float g, float b);
 void cgi_R_RenderScene(const refdef_t* fd);
 void cgi_R_SetColor(const float* rgba); // NULL = 1,1,1,1

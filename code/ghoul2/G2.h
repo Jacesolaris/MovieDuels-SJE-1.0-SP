@@ -50,7 +50,7 @@ qboolean G2_SetRootSurface(CGhoul2Info_v& ghoul2, int model_index, const char* s
 int G2_AddSurface(CGhoul2Info* ghoul2, int surface_number, int poly_number, float barycentric_i, float barycentric_j,
 	int lod);
 qboolean G2_RemoveSurface(surfaceInfo_v& slist, int index);
-const surfaceInfo_t* G2_FindOverrideSurface(int surface_num, const surfaceInfo_v& surface_list);
+const surfaceInfo_t* G2_FindOverrideSurface(int surfaceNum, const surfaceInfo_v& surface_list);
 int G2_IsSurfaceLegal(const model_s*, const char* surface_name, uint32_t* flags);
 int G2_GetParentSurface(const CGhoul2Info* ghl_info, int index);
 int G2_GetSurfaceIndex(const CGhoul2Info* ghl_info, const char* surface_name);
@@ -131,7 +131,7 @@ int G2_Add_Bolt(const CGhoul2Info* ghl_info, boltInfo_v& bltlist, const char* bo
 qboolean G2_Remove_Bolt(boltInfo_v& bltlist, int index);
 void G2_Init_Bolt_List(boltInfo_v& bltlist);
 int G2_Find_Bolt_Bone_Num(const boltInfo_v& bltlist, int bone_num);
-int G2_Find_Bolt_Surface_Num(const boltInfo_v& bltlist, int surface_num, int flags);
+int G2_Find_Bolt_Surface_Num(const boltInfo_v& bltlist, int surfaceNum, int flags);
 int G2_Add_Bolt_Surf_Num(const CGhoul2Info* ghl_info, boltInfo_v& bltlist, const surfaceInfo_v& slist, int surf_num);
 
 // API calls - G2_API.cpp

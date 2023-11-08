@@ -862,7 +862,7 @@ static qboolean SurfIsOffscreen(const drawSurf_t* draw_surf) {
 	float shortest = 1000000000;
 	int entity_num;
 	shader_t* shader;
-	int		fog_num;
+	int		fogNum;
 	int dlighted;
 	int i;
 	unsigned int point_or = 0;
@@ -870,8 +870,8 @@ static qboolean SurfIsOffscreen(const drawSurf_t* draw_surf) {
 
 	R_RotateForViewer();
 
-	R_DecomposeSort(draw_surf->sort, &entity_num, &shader, &fog_num, &dlighted);
-	RB_BeginSurface(shader, fog_num);
+	R_DecomposeSort(draw_surf->sort, &entity_num, &shader, &fogNum, &dlighted);
+	RB_BeginSurface(shader, fogNum);
 	rb_surfaceTable[*draw_surf->surface](draw_surf->surface);
 
 	assert(tess.numVertexes < 128);
@@ -1151,8 +1151,8 @@ R_DecomposeSort
 =================
 */
 void R_DecomposeSort(const unsigned sort, int* entity_num, shader_t** shader,
-	int* fog_num, int* dlight_map) {
-	*fog_num = sort >> QSORT_FOGNUM_SHIFT & 31;
+	int* fogNum, int* dlight_map) {
+	*fogNum = sort >> QSORT_FOGNUM_SHIFT & 31;
 	*shader = tr.sortedShaders[sort >> QSORT_SHADERNUM_SHIFT & MAX_SHADERS - 1];
 	*entity_num = sort >> QSORT_REFENTITYNUM_SHIFT & REFENTITYNUM_MASK;
 	*dlight_map = sort & 3;
@@ -1165,7 +1165,7 @@ R_SortDrawSurfs
 */
 void R_SortDrawSurfs(drawSurf_t* draw_surfs, int num_draw_surfs) {
 	shader_t* shader;
-	int				fog_num;
+	int				fogNum;
 	int				entity_num;
 	int				dlighted;
 
@@ -1189,7 +1189,7 @@ void R_SortDrawSurfs(drawSurf_t* draw_surfs, int num_draw_surfs) {
 	// check for any pass through drawing, which
 	// may cause another view to be rendered first
 	for (int i = 0; i < num_draw_surfs; i++) {
-		R_DecomposeSort((draw_surfs + i)->sort, &entity_num, &shader, &fog_num, &dlighted);
+		R_DecomposeSort((draw_surfs + i)->sort, &entity_num, &shader, &fogNum, &dlighted);
 
 		if (shader->sort > SS_PORTAL)
 		{
@@ -1280,12 +1280,12 @@ void R_AddEntitySurfaces() {
 			// we must set up parts of tr.or for model culling
 			R_RotateForEntity(ent, &tr.viewParms, &tr.ori);
 
-			tr.current_model = R_GetModelByHandle(ent->e.hModel);
-			if (!tr.current_model) {
+			tr.currentModel = R_GetModelByHandle(ent->e.hModel);
+			if (!tr.currentModel) {
 				R_AddDrawSurf(&entitySurface, tr.defaultShader, 0, 0);
 			}
 			else {
-				switch (tr.current_model->type) {
+				switch (tr.currentModel->type) {
 				case MOD_MESH:
 					R_AddMD3Surfaces(ent);
 					break;
