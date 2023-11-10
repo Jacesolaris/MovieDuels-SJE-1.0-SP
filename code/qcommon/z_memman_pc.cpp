@@ -239,7 +239,7 @@ extern refexport_t re;
 #ifdef DEBUG_ZONE_ALLOCS
 void* _D_Z_Malloc(int iSize, memtag_t eTag, qboolean bZeroit, const char* psFile, int iLine)
 #else
-void* Z_Malloc(const int iSize, const memtag_t eTag, const qboolean bZeroit, int /*unusedAlign*/)
+void* Z_Malloc(const int iSize, const memtag_t eTag, const qboolean bZeroit, const int unusedAlign)
 #endif
 {
 	gbMemFreeupOccured = qfalse;
@@ -553,21 +553,21 @@ void Z_Label(const void* pvAddress, const char* psLabel)
 
 // Frees a block of memory...
 //
-int Z_Free(void* pv_address)
+int Z_Free(void* pvAddress)
 {
 	if (!TheZone.Stats.iCount)
 	{
 		//Com_Error(ERR_FATAL, "Z_Free(): Zone has been cleard already!");
-		Com_Printf("Z_Free(%x): Zone has been cleard already!\n", pv_address);
+		Com_Printf("Z_Free(%x): Zone has been cleard already!\n", pvAddress);
 		return -1;
 	}
 
-	zoneHeader_t* pMemory = static_cast<zoneHeader_t*>(pv_address) - 1;
+	zoneHeader_t* pMemory = static_cast<zoneHeader_t*>(pvAddress) - 1;
 
 #if 1	//debugging double free
 	if (pMemory->iMagic == INT_ID('F', 'R', 'E', 'E'))
 	{
-		Com_Error(ERR_FATAL, "Z_Free(%s): Block already-freed, or not allocated through Z_Malloc!", pv_address);
+		Com_Error(ERR_FATAL, "Z_Free(%s): Block already-freed, or not allocated through Z_Malloc!", pvAddress);
 	}
 #endif
 
@@ -609,10 +609,6 @@ int Z_MemSize(const memtag_t eTag)
 //
 void Z_TagFree(const memtag_t eTag)
 {
-	//#ifdef _DEBUG
-	//	int iZoneBlocks = TheZone.Stats.iCount;
-	//#endif
-
 	zoneHeader_t* pMemory = TheZone.Header.pNext;
 	while (pMemory)
 	{
@@ -623,14 +619,6 @@ void Z_TagFree(const memtag_t eTag)
 		}
 		pMemory = pNext;
 	}
-
-	// these stupid pragmas don't work here???!?!?!
-	//
-	//#ifdef _DEBUG
-	//#pragma warning( disable : 4189)
-	//	int iBlocksFreed = iZoneBlocks - TheZone.Stats.iCount;
-	//#pragma warning( default : 4189)
-	//#endif
 }
 
 #ifdef DEBUG_ZONE_ALLOCS
@@ -969,8 +957,6 @@ void Com_TouchMemory()
 {
 	Z_Validate();
 
-	//start = Sys_Milliseconds();
-
 	int sum = 0;
 	int totalTouched = 0;
 
@@ -986,8 +972,4 @@ void Com_TouchMemory()
 		totalTouched += pMemory->iSize;
 		pMemory = pMemory->pNext;
 	}
-
-	//end = Sys_Milliseconds();
-
-	//Com_Printf( "Com_TouchMemory: %i bytes, %i msec\n", totalTouched, end - start );
 }

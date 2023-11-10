@@ -962,7 +962,7 @@ qboolean G_CallSpawn(gentity_t* ent)
 	}
 	char* str;
 	G_SpawnString("origin", "?", &str);
-	gi.Printf(S_COLOR_RED"ERROR: %s is not a spawn function @(%s)\n", ent->classname, str);
+	//gi.Printf(S_COLOR_RED"ERROR: %s is not a spawn function @(%s)\n", ent->classname, str);
 	delayedShutDown = level.time + 100;
 	return qfalse;
 }

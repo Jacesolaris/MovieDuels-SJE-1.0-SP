@@ -409,9 +409,9 @@ void SV_ShutdownGameProgs()
 
 // this is a compile-helper function since Z_Malloc can now become a macro with __LINE__ etc
 //
-static void* G_ZMalloc_Helper(const int i_size, const memtag_t e_tag, const qboolean b_zeroit)
+static void* G_ZMalloc_Helper(const int iSize, const memtag_t eTag, const qboolean bZeroit)
 {
-	return Z_Malloc(i_size, e_tag, b_zeroit);
+	return Z_Malloc(iSize, eTag, bZeroit);
 }
 
 static int SV_G2API_AddBolt(CGhoul2Info* ghl_info, const char* bone_name)

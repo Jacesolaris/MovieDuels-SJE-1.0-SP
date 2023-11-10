@@ -1280,6 +1280,7 @@ static svcmd_t svcmds[] = {
 	{"setForceBlast", Svcmd_ForceSetLevel_f<FP_BLAST>, CMD_CHEAT},
 	{"setForceAll", Svcmd_SetForceAll_f, CMD_CHEAT},
 	{"setSaberAll", Svcmd_SetSaberAll_f, CMD_CHEAT},
+	{"giveForceAll", Svcmd_SetForceAll_f, CMD_CHEAT},
 
 	{"saberAttackCycle", Svcmd_SaberAttackCycle_f, CMD_NONE},
 

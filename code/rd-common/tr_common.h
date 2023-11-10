@@ -87,8 +87,8 @@ void RE_SaveJPG(const char* filename, int quality, int image_width, int image_he
 // Save raw image data as PNG image file.
 int RE_SavePNG(const char* filename, const byte* buf, size_t width, size_t height, int byteDepth);
 
-void* R_Malloc(int i_size, memtag_t e_tag, qboolean b_zeroit = qfalse);
-void R_Free(void* ptr);
-int R_MemSize(memtag_t e_tag);
-void R_MorphMallocTag(void* pv_buffer, memtag_t e_desired_tag);
-void* R_Hunk_Alloc(int i_size, qboolean b_zeroit = qtrue);
+void* R_Malloc(const int iSize, const memtag_t eTag, const qboolean bZeroit = qfalse);
+void R_Free(void* pvAddress);
+int R_MemSize(const memtag_t eTag);
+void R_MorphMallocTag(void* pvBuffer, const memtag_t eDesiredTag);
+void* R_Hunk_Alloc(const int iSize, const qboolean bZeroit = qtrue);

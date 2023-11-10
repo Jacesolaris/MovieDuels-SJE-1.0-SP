@@ -1138,11 +1138,6 @@ int get_com_frameTime()
 	return com_frameTime;
 }
 
-void* CL_Malloc(const int iSize, const memtag_t eTag, const qboolean bZeroit, int iAlign)
-{
-	return Z_Malloc(iSize, eTag, bZeroit);
-}
-
 /*
 ============
 CL_InitRef
@@ -1238,7 +1233,7 @@ void CL_InitRef()
 	RIT(SV_Trace);
 	RIT(S_RestartMusic);
 	RIT(Z_Free);
-	rit.Malloc = CL_Malloc;
+	RIT(Z_Malloc);
 	RIT(Z_MemSize);
 	RIT(Z_MorphMallocTag);
 

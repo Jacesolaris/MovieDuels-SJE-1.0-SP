@@ -30,7 +30,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "../ghoul2/G2.h"
 #include "../ghoul2/ghoul2_gore.h"
 
-#define	REF_API_VERSION		18
+constexpr auto REF_API_VERSION = 20;
 
 using refimport_t = struct
 {
@@ -41,10 +41,10 @@ using refimport_t = struct
 	int (*Milliseconds)();
 
 	void (*Hunk_ClearToMark)();
-	void* (*Malloc)(int iSize, memtag_t eTag, qboolean zeroIt, int iAlign);
-	int (*Z_Free)(void* memory);
-	int (*Z_MemSize)(memtag_t eTag);
-	void (*Z_MorphMallocTag)(void* pvBuffer, memtag_t eDesiredTag);
+	void* (*Z_Malloc)(const int iSize, const memtag_t eTag, const qboolean bZeroit, const int iUnusedAlign);
+	int (*Z_Free)(void* pvAddress);
+	int (*Z_MemSize)(const memtag_t eTag);
+	void (*Z_MorphMallocTag)(void* pvAddress, const memtag_t eDesiredTag);
 
 	void (*Cmd_ExecuteString)(const char* text);
 	int (*Cmd_Argc)();
