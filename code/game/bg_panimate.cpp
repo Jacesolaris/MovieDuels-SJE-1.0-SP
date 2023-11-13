@@ -2661,9 +2661,9 @@ qboolean PM_CheckEnemyInBack(const float back_check_dist)
 
 	pm->trace(&trace, pm->ps->origin, vec3_origin, vec3_origin, end, pm->ps->client_num, CONTENTS_SOLID | CONTENTS_BODY,
 		static_cast<EG2_Collision>(0), 0);
-	if (trace.fraction < 1.0f && trace.entity_num < ENTITYNUM_WORLD)
+	if (trace.fraction < 1.0f && trace.entityNum < ENTITYNUM_WORLD)
 	{
-		gentity_t* trace_ent = &g_entities[trace.entity_num];
+		gentity_t* trace_ent = &g_entities[trace.entityNum];
 		if (trace_ent
 			&& trace_ent->health > 0
 			&& trace_ent->client
@@ -3535,7 +3535,7 @@ qboolean PM_Can_Do_Kill_Lunge(void)
 
 	pm->trace(&tr, pm->ps->origin, trmins, trmaxs, back, pm->ps->client_num, MASK_PLAYERSOLID, static_cast<EG2_Collision>(0), 0);
 
-	if (tr.fraction != 1.0 && tr.entity_num >= 0 && tr.entity_num < MAX_CLIENTS)
+	if (tr.fraction != 1.0 && tr.entityNum >= 0 && tr.entityNum < MAX_CLIENTS)
 	{
 		//We don't have real entity access here so we can't do an in depth check. But if it's a client, I guess that's reason enough to attack
 		return qtrue;
@@ -3563,7 +3563,7 @@ qboolean PM_Can_Do_Kill_Lunge_back(void)
 
 	pm->trace(&tr, pm->ps->origin, trmins, trmaxs, back, pm->ps->client_num, MASK_PLAYERSOLID, static_cast<EG2_Collision>(0), 0);
 
-	if (tr.fraction != 1.0 && tr.entity_num >= 0 && (tr.entity_num < MAX_CLIENTS))
+	if (tr.fraction != 1.0 && tr.entityNum >= 0 && (tr.entityNum < MAX_CLIENTS))
 	{ //We don't have real entity access here so we can't do an indepth check. But if it's a client and it's behind us, I guess that's reason enough to stab backward
 		return qtrue;
 	}
@@ -5234,7 +5234,7 @@ int PM_LegsAnimForFrame(gentity_t* ent, const int legs_frame)
 			continue;
 		}
 
-		if (animations[animation].firstFrame + animations[animation].num_frames < legs_frame)
+		if (animations[animation].firstFrame + animations[animation].numFrames < legs_frame)
 		{
 			//This anim ends before this frame
 			continue;
@@ -5248,7 +5248,7 @@ int PM_LegsAnimForFrame(gentity_t* ent, const int legs_frame)
 	return -1;
 }
 
-int PM_ValidateAnimRange(const int start_frame, const int end_frame, const float anim_speed)
+int PM_ValidateAnimRange(const int startFrame, const int endFrame, const float anim_speed)
 {
 	//given a startframe and endframe, see if that lines up with any known animation
 	const animation_t* animations = level.knownAnimFileSets[0].animations;
@@ -5258,9 +5258,9 @@ int PM_ValidateAnimRange(const int start_frame, const int end_frame, const float
 		if (anim_speed < 0)
 		{
 			//playing backwards
-			if (animations[anim].firstFrame == end_frame)
+			if (animations[anim].firstFrame == endFrame)
 			{
-				if (animations[anim].num_frames + animations[anim].firstFrame == start_frame)
+				if (animations[anim].numFrames + animations[anim].firstFrame == startFrame)
 				{
 					//Com_Printf( "valid reverse anim: %s\n", anim_table[anim].name );
 					return anim;
@@ -5270,10 +5270,10 @@ int PM_ValidateAnimRange(const int start_frame, const int end_frame, const float
 		else
 		{
 			//playing forwards
-			if (animations[anim].firstFrame == start_frame)
+			if (animations[anim].firstFrame == startFrame)
 			{
 				//This anim starts on this frame
-				if (animations[anim].firstFrame + animations[anim].num_frames == end_frame)
+				if (animations[anim].firstFrame + animations[anim].numFrames == endFrame)
 				{
 					//This anim ends on this frame
 					//Com_Printf( "valid forward anim: %s\n", anim_table[anim].name );
@@ -5285,7 +5285,7 @@ int PM_ValidateAnimRange(const int start_frame, const int end_frame, const float
 	}
 
 	//Not in ANY anim?  SHOULD NEVER HAPPEN
-	Com_Printf("invalid anim range %d to %d, speed %4.2f\n", start_frame, end_frame, anim_speed);
+	Com_Printf("invalid anim range %d to %d, speed %4.2f\n", startFrame, endFrame, anim_speed);
 	return -1;
 }
 
@@ -5321,7 +5321,7 @@ int PM_TorsoAnimForFrame(gentity_t* ent, const int torso_frame)
 			continue;
 		}
 
-		if (animations[animation].firstFrame + animations[animation].num_frames < torso_frame)
+		if (animations[animation].firstFrame + animations[animation].numFrames < torso_frame)
 		{
 			//This anim ends before this frame
 			continue;
@@ -5349,7 +5349,7 @@ qboolean PM_FinishedCurrentLegsAnim(gentity_t* self)
 	const int legs_anim = self->client->ps.legsAnim;
 	const animation_t* animations = level.knownAnimFileSets[self->client->clientInfo.animFileIndex].animations;
 
-	if (cur_frame >= animations[legs_anim].firstFrame + (animations[legs_anim].num_frames - 2))
+	if (cur_frame >= animations[legs_anim].firstFrame + (animations[legs_anim].numFrames - 2))
 	{
 		return qtrue;
 	}
@@ -5381,7 +5381,7 @@ qboolean PM_HasAnimation(const gentity_t* ent, const int animation)
 	const animation_t* animations = level.knownAnimFileSets[ent->client->clientInfo.animFileIndex].animations;
 
 	//No frames, no anim
-	if (animations[animation].num_frames == 0)
+	if (animations[animation].numFrames == 0)
 		return qfalse;
 
 	//Has the sequence
@@ -5420,7 +5420,7 @@ int PM_AnimLength(const int index, const animNumber_t anim)
 		return 0;
 	}
 
-	return level.knownAnimFileSets[index].animations[anim].num_frames * abs(
+	return level.knownAnimFileSets[index].animations[anim].numFrames * abs(
 		level.knownAnimFileSets[index].animations[anim].frameLerp);
 }
 
@@ -5872,7 +5872,7 @@ void PM_SetAnimFinal(int* torso_anim, int* legs_anim,
 
 	// Make Sure This Character Has Such An Anim And A Model
 	//-------------------------------------------------------
-	if (animations[anim].num_frames == 0)
+	if (animations[anim].numFrames == 0)
 	{
 #ifndef FINAL_BUILD
 		static int	LastAnimWarningNum = 0;
@@ -5924,13 +5924,13 @@ void PM_SetAnimFinal(int* torso_anim, int* legs_anim,
 	float anim_speed = 50.0f / cur_anim.frameLerp * time_scale_mod;
 	// anim_speed is 1.0 if the frameLerp (ms/frame) is 50 (20 fps).
 	const float anim_fps = fabsf(cur_anim.frameLerp);
-	const auto anim_dur_m_sec = static_cast<int>((cur_anim.num_frames - 1) * anim_fps / time_scale_mod);
+	const auto anim_dur_m_sec = static_cast<int>((cur_anim.numFrames - 1) * anim_fps / time_scale_mod);
 	const int anim_hold_m_sec = anim_holdless && time_scale_mod == 1.0f
 		? (anim_dur_m_sec > 1 ? anim_dur_m_sec - 1 : anim_fps)
 		: anim_dur_m_sec;
 	int anim_flags = cur_anim.loopFrames != -1 ? BONE_ANIM_OVERRIDE_LOOP : BONE_ANIM_OVERRIDE_FREEZE;
 	int anim_start = cur_anim.firstFrame;
-	int anim_end = cur_anim.firstFrame + animations[anim].num_frames;
+	int anim_end = cur_anim.firstFrame + animations[anim].numFrames;
 
 	// If We Have A Blend Timer, Add The Blend Flag
 	//----------------------------------------------

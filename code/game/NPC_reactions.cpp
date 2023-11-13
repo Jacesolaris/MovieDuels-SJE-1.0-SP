@@ -31,14 +31,14 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern qboolean G_CheckForStrongAttackMomentum(const gentity_t* self);
 extern void G_AddVoiceEvent(const gentity_t* self, int event, int speak_debounce_time);
 extern int PM_AnimLength(int index, animNumber_t anim);
-extern void cgi_S_StartSound(const vec3_t origin, int entity_num, int entchannel, sfxHandle_t sfx);
+extern void cgi_S_StartSound(const vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx);
 extern qboolean Q3_TaskIDPending(const gentity_t* ent, taskID_t taskType);
 extern int PM_PickAnim(const gentity_t* self, int min_anim, int max_anim);
 extern qboolean NPC_CheckLookTarget(const gentity_t* self);
 extern void NPC_SetLookTarget(const gentity_t* self, int ent_num, int clearTime);
 extern qboolean jedi_waiting_ambush(const gentity_t* self);
 extern void jedi_ambush(gentity_t* self);
-extern qboolean G_EntIsBreakable(int entity_num, const gentity_t* breaker);
+extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
 extern qboolean InFront(vec3_t spot, vec3_t from, vec3_t fromAngles, float threshHold = 0.0f);
 extern void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length = qfalse);
 extern qboolean PM_SaberInAttack(int move);

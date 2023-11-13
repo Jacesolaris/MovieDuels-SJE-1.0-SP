@@ -401,7 +401,7 @@ int G2_DecideTraceLod(const CGhoul2Info& ghoul2, const int use_lod)
 	return return_lod;
 }
 
-void R_TransformEachSurface(const mdxmSurface_t* surface, vec3_t scale, CMiniHeap* g2_vert_space, intptr_t* transformed_verts_array, CBoneCache* boneCache)
+void R_TransformEachSurface(const mdxmSurface_t* surface, vec3_t scale, CMiniHeap* G2VertSpace, intptr_t* transformed_verts_array, CBoneCache* boneCache)
 {
 	int				 j, k;
 
@@ -411,7 +411,7 @@ void R_TransformEachSurface(const mdxmSurface_t* surface, vec3_t scale, CMiniHea
 	const int* pi_bone_references = reinterpret_cast<int*>((byte*)surface + surface->ofsBoneReferences);
 
 	// alloc some space for the transformed verts to get put in
-	auto transformed_verts = reinterpret_cast<float*>(g2_vert_space->MiniHeapAlloc(surface->numVerts * 5 * 4));
+	auto transformed_verts = reinterpret_cast<float*>(G2VertSpace->MiniHeapAlloc(surface->numVerts * 5 * 4));
 	transformed_verts_array[surface->thisSurfaceIndex] = reinterpret_cast<intptr_t>(transformed_verts);
 	if (!transformed_verts)
 	{
@@ -511,8 +511,7 @@ void R_TransformEachSurface(const mdxmSurface_t* surface, vec3_t scale, CMiniHea
 	}
 }
 
-void G2_TransformSurfaces(const int surfaceNum, surfaceInfo_v& root_s_list,
-	CBoneCache* boneCache, const model_t* currentModel, const int lod, vec3_t scale, CMiniHeap* g2_vert_space, intptr_t* transformed_vert_array, const bool second_time_around)
+void G2_TransformSurfaces(const int surfaceNum, surfaceInfo_v& rootSList, CBoneCache* boneCache, const model_t* currentModel, const int lod, vec3_t scale, CMiniHeap* G2VertSpace, intptr_t* TransformedVertArray, const bool secondTimeAround)
 {
 	assert(currentModel);
 	assert(currentModel->mdxm);
@@ -522,23 +521,23 @@ void G2_TransformSurfaces(const int surfaceNum, surfaceInfo_v& root_s_list,
 	const mdxmSurfHierarchy_t* surf_info = reinterpret_cast<mdxmSurfHierarchy_t*>((byte*)surf_indexes + surf_indexes->offsets[surface->thisSurfaceIndex]);
 
 	// see if we have an override surface in the surface list
-	const surfaceInfo_t* surf_override = G2_FindOverrideSurface(surfaceNum, root_s_list);
+	const surfaceInfo_t* surf_override = G2_FindOverrideSurface(surfaceNum, rootSList);
 
 	// really, we should use the default flags for this surface unless it's been overriden
-	int off_flags = surf_info->flags;
+	int offFlags = surf_info->flags;
 
 	if (surf_override)
 	{
-		off_flags = surf_override->off_flags;
+		offFlags = surf_override->offFlags;
 	}
 	// if this surface is not off, add it to the shader render list
-	if (!off_flags)
+	if (!offFlags)
 	{
-		R_TransformEachSurface(surface, scale, g2_vert_space, transformed_vert_array, boneCache);
+		R_TransformEachSurface(surface, scale, G2VertSpace, TransformedVertArray, boneCache);
 	}
 
 	// if we are turning off all descendants, then stop this recursion now
-	if (off_flags & G2SURFACEFLAG_NODESCENDANTS)
+	if (offFlags & G2SURFACEFLAG_NODESCENDANTS)
 	{
 		return;
 	}
@@ -546,15 +545,15 @@ void G2_TransformSurfaces(const int surfaceNum, surfaceInfo_v& root_s_list,
 	// now recursively call for the children
 	for (int i = 0; i < surf_info->numChildren; i++)
 	{
-		G2_TransformSurfaces(surf_info->childIndexes[i], root_s_list, boneCache, currentModel, lod, scale, g2_vert_space, transformed_vert_array, second_time_around);
+		G2_TransformSurfaces(surf_info->childIndexes[i], rootSList, boneCache, currentModel, lod, scale, G2VertSpace, TransformedVertArray, secondTimeAround);
 	}
 }
 
 // main calling point for the model transform for collision detection. At this point all of the skeleton has been transformed.
 #ifdef _G2_GORE
-void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frame_num, vec3_t scale, CMiniHeap* g2_vert_space, int use_lod, const bool apply_gore, const SSkinGoreData* gore)
+void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frame_num, vec3_t scale, CMiniHeap* G2VertSpace, int use_lod, const bool apply_gore, const SSkinGoreData* gore)
 #else
-void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frame_num, vec3_t scale, CMiniHeap* g2_vert_space, int use_lod)
+void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frame_num, vec3_t scale, CMiniHeap* G2VertSpace, int use_lod)
 #endif
 {
 	int lod;
@@ -639,7 +638,7 @@ void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frame_num, vec3_t scale,
 		}
 
 		// give us space for the transformed vertex array to be put in
-		g.mTransformedVertsArray = reinterpret_cast<intptr_t*>(g2_vert_space->MiniHeapAlloc(g.currentModel->mdxm->numSurfaces * sizeof(intptr_t)));
+		g.mTransformedVertsArray = reinterpret_cast<intptr_t*>(G2VertSpace->MiniHeapAlloc(g.currentModel->mdxm->numSurfaces * sizeof(intptr_t)));
 		if (!g.mTransformedVertsArray)
 		{
 			Com_Error(ERR_DROP, "Ran out of transform space for Ghoul2 Models. Adjust G2_MINIHEAP_SIZE in sv_init.cpp.\n");
@@ -649,7 +648,7 @@ void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frame_num, vec3_t scale,
 
 		G2_FindOverrideSurface(-1, g.mSlist); //reset the quick surface override lookup;
 		// recursively call the model surface transform
-		G2_TransformSurfaces(g.mSurfaceRoot, g.mSlist, g.mBoneCache, g.currentModel, lod, correct_scale, g2_vert_space, g.mTransformedVertsArray, false);
+		G2_TransformSurfaces(g.mSurfaceRoot, g.mSlist, g.mBoneCache, g.currentModel, lod, correct_scale, G2VertSpace, g.mTransformedVertsArray, false);
 
 #ifdef _G2_GORE
 
@@ -1458,16 +1457,16 @@ static void G2_TraceSurfaces(CTraceSurface& TS)
 	}
 
 	// really, we should use the default flags for this surface unless it's been overriden
-	int off_flags = surf_info->flags;
+	int offFlags = surf_info->flags;
 
 	// set the off flags if we have some
 	if (surf_override)
 	{
-		off_flags = surf_override->off_flags;
+		offFlags = surf_override->offFlags;
 	}
 
 	// if this surface is not off, try to hit it
-	if (!off_flags)
+	if (!offFlags)
 	{
 #ifdef _G2_GORE
 		if (TS.collRecMap)
@@ -1510,7 +1509,7 @@ static void G2_TraceSurfaces(CTraceSurface& TS)
 	}
 
 	// if we are turning off all descendants, then stop this recursion now
-	if (off_flags & G2SURFACEFLAG_NODESCENDANTS)
+	if (offFlags & G2SURFACEFLAG_NODESCENDANTS)
 	{
 		return;
 	}

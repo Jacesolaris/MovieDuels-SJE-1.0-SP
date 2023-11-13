@@ -146,7 +146,7 @@ gentity_t* G_TestEntityPosition(const gentity_t* ent)
 	}
 
 	if (tr.startsolid)
-		return &g_entities[tr.entity_num];
+		return &g_entities[tr.entityNum];
 
 	return nullptr;
 }
@@ -1327,14 +1327,14 @@ void Think_MatchTeam(gentity_t* ent)
 	MatchTeam(ent, ent->moverState, level.time);
 }
 
-qboolean G_EntIsDoor(const int entity_num)
+qboolean G_EntIsDoor(const int entityNum)
 {
-	if (entity_num < 0 || entity_num >= ENTITYNUM_WORLD)
+	if (entityNum < 0 || entityNum >= ENTITYNUM_WORLD)
 	{
 		return qfalse;
 	}
 
-	const gentity_t* ent = &g_entities[entity_num];
+	const gentity_t* ent = &g_entities[entityNum];
 	if (ent && !Q_stricmp("func_door", ent->classname))
 	{
 		//blocked by a door
@@ -1390,16 +1390,16 @@ gentity_t* G_FindDoorTrigger(const gentity_t* ent)
 
 qboolean G_TriggerActive(const gentity_t* self);
 
-qboolean G_EntIsUnlockedDoor(const int entity_num)
+qboolean G_EntIsUnlockedDoor(const int entityNum)
 {
-	if (entity_num < 0 || entity_num >= ENTITYNUM_WORLD)
+	if (entityNum < 0 || entityNum >= ENTITYNUM_WORLD)
 	{
 		return qfalse;
 	}
 
-	if (G_EntIsDoor(entity_num))
+	if (G_EntIsDoor(entityNum))
 	{
-		const gentity_t* ent = &g_entities[entity_num];
+		const gentity_t* ent = &g_entities[entityNum];
 		gentity_t* owner;
 		if (ent->flags & FL_TEAMSLAVE)
 		{
@@ -2180,8 +2180,8 @@ void SP_func_train(gentity_t* self)
 
 	char* noise;
 
-	G_SpawnInt("startframe", "0", &self->start_frame);
-	G_SpawnInt("endframe", "0", &self->end_frame);
+	G_SpawnInt("startframe", "0", &self->startFrame);
+	G_SpawnInt("endframe", "0", &self->endFrame);
 
 	if (G_SpawnString("noise", "", &noise))
 	{
@@ -2226,9 +2226,9 @@ void SP_func_train(gentity_t* self)
 	{
 		self->spawnflags &= ~32; // once only
 
-		gi.G2API_SetBoneAnim(&self->ghoul2[self->playerModel], "model_root", self->start_frame, self->end_frame,
+		gi.G2API_SetBoneAnim(&self->ghoul2[self->playerModel], "model_root", self->startFrame, self->endFrame,
 			BONE_ANIM_OVERRIDE_LOOP, 1.0f + Q_flrand(-1.0f, 1.0f) * 0.1f, 0, -1, -1);
-		self->end_frame = 0; // don't allow it to do anything with the animation function in G_main
+		self->endFrame = 0; // don't allow it to do anything with the animation function in G_main
 	}
 }
 

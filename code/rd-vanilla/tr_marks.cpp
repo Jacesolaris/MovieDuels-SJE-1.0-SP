@@ -414,7 +414,7 @@ int R_MarkFragments(int num_points, const vec3_t* points, const vec3_t projectio
 		{
 			const srfTriangles_t* const surf = reinterpret_cast<srfTriangles_t*>(surfaces[i]);
 
-			for (k = 0; k < surf->num_indexes; k += 3)
+			for (k = 0; k < surf->numIndexes; k += 3)
 			{
 				const int i1 = surf->indexes[k];
 				const int i2 = surf->indexes[k + 1];

@@ -2477,13 +2477,13 @@ qboolean UI_ParseAnimationFile(const char* af_filename)
 	// parse the text
 	text_p = text;
 
-	//FIXME: have some way of playing anims backwards... negative num_frames?
+	//FIXME: have some way of playing anims backwards... negative numFrames?
 
 	//initialize anim array so that from 0 to MAX_ANIMATIONS, set default values of 0 1 0 100
 	for (int i = 0; i < MAX_ANIMATIONS; i++)
 	{
 		animations[i].firstFrame = 0;
-		animations[i].num_frames = 0;
+		animations[i].numFrames = 0;
 		animations[i].loopFrames = -1;
 		animations[i].frameLerp = 100;
 		//		animations[i].initialLerp = 100;
@@ -2529,7 +2529,7 @@ qboolean UI_ParseAnimationFile(const char* af_filename)
 		{
 			break;
 		}
-		animations[animNum].num_frames = atoi(token);
+		animations[animNum].numFrames = atoi(token);
 
 		token = COM_Parse(&text_p);
 		if (!token)
@@ -2619,11 +2619,11 @@ qboolean UI_ParseAnimFileSet(const char* animCFG, int* animFileIndex)
 	return qtrue;
 }
 
-int UI_G2SetAnim(CGhoul2Info* ghl_info, const char* bone_name, const int animNum, const qboolean freeze)
+int UI_G2SetAnim(CGhoul2Info* ghlInfo, const char* bone_name, const int animNum, const qboolean freeze)
 {
 	int animIndex;
 
-	const char* GLAName = re.G2API_GetGLAName(ghl_info);
+	const char* GLAName = re.G2API_GetGLAName(ghlInfo);
 
 	if (!GLAName || !GLAName[0])
 	{
@@ -2635,12 +2635,12 @@ int UI_G2SetAnim(CGhoul2Info* ghl_info, const char* bone_name, const int animNum
 	if (animIndex != -1)
 	{
 		const animation_t* anim = &ui_knownAnimFileSets[animIndex].animations[animNum];
-		if (anim->num_frames <= 0)
+		if (anim->numFrames <= 0)
 		{
 			return 0;
 		}
 		const int sFrame = anim->firstFrame;
-		const int eFrame = anim->firstFrame + anim->num_frames;
+		const int eFrame = anim->firstFrame + anim->numFrames;
 		int flags = BONE_ANIM_OVERRIDE;
 		const int time = uiInfo.uiDC.realTime;
 		const float anim_speed = 50.0f / anim->frameLerp;
@@ -2664,9 +2664,9 @@ int UI_G2SetAnim(CGhoul2Info* ghl_info, const char* bone_name, const int animNum
 		flags |= BONE_ANIM_BLEND;
 		constexpr int blend_time = 150;
 
-		re.G2API_SetBoneAnim(ghl_info, bone_name, sFrame, eFrame, flags, anim_speed, time, -1, blend_time);
+		re.G2API_SetBoneAnim(ghlInfo, bone_name, sFrame, eFrame, flags, anim_speed, time, -1, blend_time);
 
-		return anim->frameLerp * (anim->num_frames - 2);
+		return anim->frameLerp * (anim->numFrames - 2);
 	}
 
 	return 0;
@@ -3320,7 +3320,7 @@ void UI_LoadMenus(const char* menuFile, const qboolean reset)
 	Com_Printf("---------------- MovieDuels-SJE-1.0-SP---------------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------Update 9---------------------------------\n");
-	Com_Printf("------------------Build Date 10/11/2023--------------------------\n");
+	Com_Printf("------------------Build Date 13/11/2023--------------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------LightSaber-------------------------------\n");
 	Com_Printf("-----------An elegant weapon for a more civilized age------------\n");
@@ -7317,7 +7317,7 @@ void ReadSaveDirectory()
 #endif
 
 	// Get everything in saves directory
-	fileCnt = ui.FS_GetFileList("Saved-Missions-MovieDuels/", ".sav", s_savegame.listBuf, LISTBUFSIZE);
+	fileCnt = ui.FS_GetFileList("Account/Saved-Missions-MovieDuels/", ".sav", s_savegame.listBuf, LISTBUFSIZE);
 
 	Cvar_Set("ui_ResumeOK", "0");
 	holdChar = s_savegame.listBuf;

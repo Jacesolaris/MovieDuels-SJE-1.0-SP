@@ -43,7 +43,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 extern qboolean pm_saber_innonblockable_attack(int anim);
 extern void sab_beh_saber_should_be_disarmed_attacker(gentity_t* attacker, int saber_num);
-extern void wp_saber_clear_damage_for_ent_num(gentity_t* attacker, int entity_num, int saber_num, int blade_num);
+extern void wp_saber_clear_damage_for_ent_num(gentity_t* attacker, int entityNum, int saber_num, int blade_num);
 extern cvar_t* g_SerenityJediEngineMode;
 extern void PM_AddBlockFatigue(playerState_t* ps, int fatigue);
 extern void PM_AddFatigue(playerState_t* ps, int fatigue);

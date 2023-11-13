@@ -1013,7 +1013,7 @@ void G_StartMatrixEffect(const gentity_t* ent, const int me_flags = 0, const int
 		matrix->svFlags |= SVF_BROADCAST; // Broadcast to all clients
 		matrix->s.time = level.time;
 		matrix->s.eventParm = length;
-		matrix->s.bolt_info = me_flags;
+		matrix->s.boltInfo = me_flags;
 		matrix->s.time2 = spin_time;
 		matrix->s.angles2[0] = time_scale;
 	}
@@ -1040,7 +1040,7 @@ void G_StartStasisEffect_FORCE_LEVEL_1(const gentity_t* ent, const int me_flags 
 		stasis->svFlags |= SVF_BROADCAST; // Broadcast to all clients
 		stasis->s.time = level.time;
 		stasis->s.eventParm = length;
-		stasis->s.bolt_info = me_flags;
+		stasis->s.boltInfo = me_flags;
 		stasis->s.time2 = spin_time;
 		stasis->s.angles2[0] = time_scale;
 	}
@@ -1067,7 +1067,7 @@ void G_StartStasisEffect_FORCE_LEVEL_2(const gentity_t* ent, const int me_flags 
 		stasis->svFlags |= SVF_BROADCAST; // Broadcast to all clients
 		stasis->s.time = level.time;
 		stasis->s.eventParm = length;
-		stasis->s.bolt_info = me_flags;
+		stasis->s.boltInfo = me_flags;
 		stasis->s.time2 = spin_time;
 		stasis->s.angles2[0] = time_scale;
 	}
@@ -1109,7 +1109,7 @@ void G_StartNextItemEffect(gentity_t* ent, const int me_flags = 0, const int len
 		stasis->svFlags |= SVF_BROADCAST; // Broadcast to all clients
 		stasis->s.time = level.time;
 		stasis->s.eventParm = length;
-		stasis->s.bolt_info = me_flags;
+		stasis->s.boltInfo = me_flags;
 		stasis->s.time2 = spin_time;
 		stasis->s.angles2[0] = time_scale;
 		G_AddEvent(ent, EV_GENERAL_SOUND, ItemActivateSound);
@@ -2330,7 +2330,7 @@ static qboolean G_Dismember(gentity_t* ent, vec3_t point,
 		const animation_t* animations = level.knownAnimFileSets[ent->client->clientInfo.animFileIndex].animations;
 		//play the proper dismember anim on the limb
 		gi.G2API_SetBoneAnim(&limb->ghoul2[limb->playerModel], nullptr, animations[limb_anim].firstFrame,
-			animations[limb_anim].num_frames + animations[limb_anim].firstFrame,
+			animations[limb_anim].numFrames + animations[limb_anim].firstFrame,
 			BONE_ANIM_OVERRIDE_FREEZE, 1, cg.time, -1, -1);
 	}
 	if (rotate_bone)
@@ -4652,7 +4652,7 @@ void player_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, cons
 
 			if (self->owner)
 			{
-				self->owner->s.frame = self->owner->start_frame = self->owner->end_frame = 0;
+				self->owner->s.frame = self->owner->startFrame = self->owner->endFrame = 0;
 				self->owner->svFlags &= ~SVF_ANIMATING;
 			}
 
@@ -8526,7 +8526,7 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, const 
 
 					if (!test_trace.startsolid &&
 						!test_trace.allsolid &&
-						test_trace.entity_num == targ->s.number &&
+						test_trace.entityNum == targ->s.number &&
 						test_trace.G2CollisionMap[0].mEntityNum != -1)
 					{
 						G_PlayEffect("world/acid_fizz", test_trace.G2CollisionMap[0].mCollisionPosition);
@@ -8670,7 +8670,7 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, const 
 					//play the proper dismember anim on the limb
 					gi.G2API_SetBoneAnim(&limb->ghoul2[limb->playerModel], nullptr,
 						animations[BOTH_A1_BL_TR].firstFrame,
-						animations[BOTH_A1_BL_TR].num_frames + animations[BOTH_A1_BL_TR].firstFrame,
+						animations[BOTH_A1_BL_TR].numFrames + animations[BOTH_A1_BL_TR].firstFrame,
 						BONE_ANIM_OVERRIDE_FREEZE, 1, level.time, -1, -1);
 
 					// Check For Start In Solid
@@ -9399,7 +9399,7 @@ qboolean CanDamage(const gentity_t* targ, const vec3_t origin)
 	G_DebugLine(blah, dest, 5000, 0x0000ff, qtrue );
 	*/
 	gi.trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID, static_cast<EG2_Collision>(0), 0);
-	if (tr.fraction == 1.0 && cant_hit_ent || tr.entity_num == targ->s.number)
+	if (tr.fraction == 1.0 && cant_hit_ent || tr.entityNum == targ->s.number)
 		// if we also test the entitynum's we can bust up bbrushes better!
 		return qtrue;
 
@@ -9409,28 +9409,28 @@ qboolean CanDamage(const gentity_t* targ, const vec3_t origin)
 	dest[0] += 15.0;
 	dest[1] += 15.0;
 	gi.trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID, static_cast<EG2_Collision>(0), 0);
-	if (tr.fraction == 1.0 && cant_hit_ent || tr.entity_num == targ->s.number)
+	if (tr.fraction == 1.0 && cant_hit_ent || tr.entityNum == targ->s.number)
 		return qtrue;
 
 	VectorCopy(midpoint, dest);
 	dest[0] += 15.0;
 	dest[1] -= 15.0;
 	gi.trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID, static_cast<EG2_Collision>(0), 0);
-	if (tr.fraction == 1.0 && cant_hit_ent || tr.entity_num == targ->s.number)
+	if (tr.fraction == 1.0 && cant_hit_ent || tr.entityNum == targ->s.number)
 		return qtrue;
 
 	VectorCopy(midpoint, dest);
 	dest[0] -= 15.0;
 	dest[1] += 15.0;
 	gi.trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID, static_cast<EG2_Collision>(0), 0);
-	if (tr.fraction == 1.0 && cant_hit_ent || tr.entity_num == targ->s.number)
+	if (tr.fraction == 1.0 && cant_hit_ent || tr.entityNum == targ->s.number)
 		return qtrue;
 
 	VectorCopy(midpoint, dest);
 	dest[0] -= 15.0;
 	dest[1] -= 15.0;
 	gi.trace(&tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID, static_cast<EG2_Collision>(0), 0);
-	if (tr.fraction == 1.0 && cant_hit_ent || tr.entity_num == targ->s.number)
+	if (tr.fraction == 1.0 && cant_hit_ent || tr.entityNum == targ->s.number)
 		return qtrue;
 
 	return qfalse;

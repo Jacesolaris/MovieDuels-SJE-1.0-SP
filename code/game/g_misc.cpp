@@ -698,7 +698,7 @@ void G_PortalifyEntities(gentity_t* ent)
 			gi.trace(&tr, ent->s.origin, vec3_origin, vec3_origin, scan->currentOrigin, ent->s.number, CONTENTS_SOLID,
 				G2_NOCOLLIDE, 0);
 
-			if (tr.fraction == 1.0 || tr.entity_num == scan->s.number && tr.entity_num != ENTITYNUM_NONE && tr.entity_num
+			if (tr.fraction == 1.0 || tr.entityNum == scan->s.number && tr.entityNum != ENTITYNUM_NONE && tr.entityNum
 				!= ENTITYNUM_WORLD)
 			{
 				scan->s.isPortalEnt = qtrue; //he's flagged now
@@ -1977,8 +1977,8 @@ void maglock_link(gentity_t* self)
 		*/
 		return;
 	}
-	gentity_t* trace_ent = &g_entities[trace.entity_num];
-	if (trace.entity_num >= ENTITYNUM_WORLD || !trace_ent || Q_stricmp("func_door", trace_ent->classname))
+	gentity_t* trace_ent = &g_entities[trace.entityNum];
+	if (trace.entityNum >= ENTITYNUM_WORLD || !trace_ent || Q_stricmp("func_door", trace_ent->classname))
 	{
 		self->e_ThinkFunc = thinkF_maglock_link;
 		self->nextthink = level.time + 100;
@@ -2228,7 +2228,7 @@ void SP_misc_model_bomb_planted(gentity_t* ent)
 	ent->noise_index = G_SoundIndex("sound/interface/ammocon_run");
 	ent->s.loopSound = ent->noise_index;
 	//ent->s.eFlags |= EF_SHADER_ANIM;
-	//ent->s.frame = ent->start_frame = 0;
+	//ent->s.frame = ent->startFrame = 0;
 	ent->count = 1;
 
 	// If we have a targetname, we're are invisible until we are spawned in by being used.
@@ -2256,8 +2256,8 @@ void beacon_deploy(gentity_t* ent)
 	ent->nextthink = level.time + FRAMETIME * 0.5f;
 
 	ent->s.frame = 0;
-	ent->start_frame = 0;
-	ent->end_frame = 30;
+	ent->startFrame = 0;
+	ent->endFrame = 30;
 	ent->loopAnim = qfalse;
 }
 
@@ -2271,8 +2271,8 @@ void beacon_think(gentity_t* ent)
 		ent->e_ThinkFunc = thinkF_NULL;
 		ent->nextthink = -1;
 
-		ent->start_frame = 31;
-		ent->end_frame = 60;
+		ent->startFrame = 31;
+		ent->endFrame = 60;
 		ent->loopAnim = qtrue;
 
 		ent->s.loopSound = ent->noise_index;
@@ -2995,7 +2995,7 @@ void misc_atst_setanim(gentity_t* self, const int bone, const int anim)
 		if (!Q_stricmp("atst", level.knownAnimFileSets[i].filename))
 		{
 			firstFrame = level.knownAnimFileSets[i].animations[anim].firstFrame;
-			lastFrame = firstFrame + level.knownAnimFileSets[i].animations[anim].num_frames;
+			lastFrame = firstFrame + level.knownAnimFileSets[i].animations[anim].numFrames;
 			anim_speed = 50.0f / level.knownAnimFileSets[i].animations[anim].frameLerp;
 			break;
 		}

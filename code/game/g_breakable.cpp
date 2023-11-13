@@ -507,7 +507,7 @@ void misc_model_breakable_die(gentity_t* self, const gentity_t* inflictor, genti
 	}
 	//NOTE: Stop any scripts that are currently running (FLUSH)... ?
 	//Turn off animation
-	self->s.frame = self->start_frame = self->end_frame = 0;
+	self->s.frame = self->startFrame = self->endFrame = 0;
 	self->svFlags &= ~SVF_ANIMATING;
 
 	self->health = 0;
@@ -1533,15 +1533,15 @@ void SP_func_glass(gentity_t* self)
 	gi.linkentity(self);
 }
 
-qboolean G_EntIsBreakable(const int entity_num, const gentity_t* breaker)
+qboolean G_EntIsBreakable(const int entityNum, const gentity_t* breaker)
 {
 	//breakable brush/model that can actually be broken
-	if (entity_num < 0 || entity_num >= ENTITYNUM_WORLD)
+	if (entityNum < 0 || entityNum >= ENTITYNUM_WORLD)
 	{
 		return qfalse;
 	}
 
-	const gentity_t* ent = &g_entities[entity_num];
+	const gentity_t* ent = &g_entities[entityNum];
 	if (!ent->takedamage)
 	{
 		return qfalse;

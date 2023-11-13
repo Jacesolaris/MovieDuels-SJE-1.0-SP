@@ -36,7 +36,7 @@ CG_MakeExplosion
 */
 /*
 localEntity_t *CG_MakeExplosion( vec3_t origin, vec3_t dir,
-								qhandle_t hModel, int num_frames, qhandle_t shader,
+								qhandle_t hModel, int numFrames, qhandle_t shader,
 								int msec, qboolean isSprite, float scale, int flags )
 {
 	float			ang = 0;
@@ -84,7 +84,7 @@ localEntity_t *CG_MakeExplosion( vec3_t origin, vec3_t dir,
 
 	ex->refEntity.hModel = hModel;
 	ex->refEntity.customShader = shader;
-	ex->lifeRate = (float)num_frames / msec;
+	ex->lifeRate = (float)numFrames / msec;
 	ex->leFlags = flags;
 
 	//Scale the explosion
@@ -106,9 +106,9 @@ localEntity_t *CG_MakeExplosion( vec3_t origin, vec3_t dir,
 */
 // When calling this version, just pass in a zero for the flags
 //localEntity_t *CG_MakeExplosion( vec3_t origin, vec3_t dir,
-//								qhandle_t hModel, int num_frames, qhandle_t shader,
+//								qhandle_t hModel, int numFrames, qhandle_t shader,
 //								int msec, qboolean isSprite, float scale ) {
-//	return CG_MakeExplosion( origin, dir, hModel, num_frames, shader, msec, isSprite, scale, 0 );
+//	return CG_MakeExplosion( origin, dir, hModel, numFrames, shader, msec, isSprite, scale, 0 );
 //}
 
 /*
@@ -982,10 +982,10 @@ void CG_PlayEffectBolted(const char* fx_name, const int model_index, const int b
 {
 	vec3_t axis[3];
 	//FIXME: shouldn't this be initialized to something?  It isn't in the EV_PLAY_EFFECT call... irrelevant?
-	int bolt_info;
+	int boltInfo;
 
-	//pack the data into bolt_info as if we were going to send it over the network
-	gi.G2API_AttachEnt(&bolt_info,
+	//pack the data into boltInfo as if we were going to send it over the network
+	gi.G2API_AttachEnt(&boltInfo,
 		&g_entities[ent_num].ghoul2[model_index],
 		bolt_index,
 		ent_num,
@@ -994,7 +994,7 @@ void CG_PlayEffectBolted(const char* fx_name, const int model_index, const int b
 	theFxScheduler.PlayEffect(fx_name,
 		origin,
 		axis,
-		bolt_info,
+		boltInfo,
 		-1,
 		false,
 		i_loop_time,

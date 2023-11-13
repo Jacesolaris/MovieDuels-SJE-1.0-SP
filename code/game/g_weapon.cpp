@@ -815,9 +815,9 @@ void WP_RocketLock(const gentity_t* ent, const float lock_dist)
 	gi.trace(&tr, muzzle_point, nullptr, nullptr, ang, ent->client->ps.client_num, MASK_PLAYERSOLID,
 		static_cast<EG2_Collision>(0), 0);
 
-	if (tr.fraction != 1 && tr.entity_num < ENTITYNUM_NONE && tr.entity_num != ent->client->ps.client_num)
+	if (tr.fraction != 1 && tr.entityNum < ENTITYNUM_NONE && tr.entityNum != ent->client->ps.client_num)
 	{
-		const gentity_t* bg_ent = &g_entities[tr.entity_num];
+		const gentity_t* bg_ent = &g_entities[tr.entityNum];
 		if (bg_ent && bg_ent->s.powerups & PW_CLOAKED)
 		{
 			ent->client->rocketLockIndex = ENTITYNUM_NONE;
@@ -827,15 +827,15 @@ void WP_RocketLock(const gentity_t* ent, const float lock_dist)
 		{
 			if (ent->client->rocketLockIndex == ENTITYNUM_NONE)
 			{
-				ent->client->rocketLockIndex = tr.entity_num;
+				ent->client->rocketLockIndex = tr.entityNum;
 				ent->client->rocketLockTime = level.time;
 			}
-			else if (ent->client->rocketLockIndex != tr.entity_num && ent->client->rocketTargetTime < level.time)
+			else if (ent->client->rocketLockIndex != tr.entityNum && ent->client->rocketTargetTime < level.time)
 			{
-				ent->client->rocketLockIndex = tr.entity_num;
+				ent->client->rocketLockIndex = tr.entityNum;
 				ent->client->rocketLockTime = level.time;
 			}
-			else if (ent->client->rocketLockIndex == tr.entity_num)
+			else if (ent->client->rocketLockIndex == tr.entityNum)
 			{
 				if (ent->client->rocketLockTime == -1)
 				{
@@ -843,7 +843,7 @@ void WP_RocketLock(const gentity_t* ent, const float lock_dist)
 				}
 			}
 
-			if (ent->client->rocketLockIndex == tr.entity_num)
+			if (ent->client->rocketLockIndex == tr.entityNum)
 			{
 				ent->client->rocketTargetTime = level.time + 500;
 			}
@@ -1288,7 +1288,7 @@ void FireVehicleWeapon(gentity_t* ent, const qboolean alt_fire)
 						{
 							vec3_t new_end;
 							VectorCopy(trace.endpos, new_end);
-							WP_VehLeadCrosshairVeh(&g_entities[trace.entity_num], new_end, fixedDir, start, dir);
+							WP_VehLeadCrosshairVeh(&g_entities[trace.entityNum], new_end, fixedDir, start, dir);
 						}
 					}
 
@@ -1391,7 +1391,7 @@ void WP_FireScepter(gentity_t* ent)
 	VectorMA(start, shot_range, forward_vec, end);
 
 	gi.trace(&tr, start, nullptr, nullptr, end, ent->s.number, MASK_SHOT, G2_RETURNONHIT, 10);
-	gentity_t* trace_ent = &g_entities[tr.entity_num];
+	gentity_t* trace_ent = &g_entities[tr.entityNum];
 
 	if (tr.surfaceFlags & SURF_NOIMPACT)
 	{
@@ -1405,7 +1405,7 @@ void WP_FireScepter(gentity_t* ent)
 
 	if (render_impact)
 	{
-		if (tr.entity_num < ENTITYNUM_WORLD && trace_ent->takedamage)
+		if (tr.entityNum < ENTITYNUM_WORLD && trace_ent->takedamage)
 		{
 			constexpr int damage = 1;
 			// Create a simple impact type mark that doesn't last long in the world

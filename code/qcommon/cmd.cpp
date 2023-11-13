@@ -850,7 +850,7 @@ void Cmd_CompleteCfgName(char* args, const int arg_num)
 Cmd_Init
 ============
 */
-void Cmd_Init()
+void Cmd_Init(void)
 {
 	Cmd_AddCommand("cmdlist", Cmd_List_f);
 	Cmd_AddCommand("exec", Cmd_Exec_f);

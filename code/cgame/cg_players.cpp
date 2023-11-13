@@ -428,7 +428,7 @@ CG_CustomSound
 
 ================
 */
-static sfxHandle_t CG_CustomSound(const int entity_num, const char* sound_name, const int custom_sound_set)
+static sfxHandle_t CG_CustomSound(const int entityNum, const char* sound_name, const int custom_sound_set)
 {
 	int i;
 
@@ -437,7 +437,7 @@ static sfxHandle_t CG_CustomSound(const int entity_num, const char* sound_name, 
 		return cgi_S_RegisterSound(sound_name);
 	}
 
-	if (!g_entities[entity_num].client)
+	if (!g_entities[entityNum].client)
 	{
 		// No client, this should never happen, so just don't
 #ifndef FINAL_BUILD
@@ -445,7 +445,7 @@ static sfxHandle_t CG_CustomSound(const int entity_num, const char* sound_name, 
 #endif
 		return 0;
 	}
-	const clientInfo_t* ci = &g_entities[entity_num].client->clientInfo;
+	const clientInfo_t* ci = &g_entities[entityNum].client->clientInfo;
 
 	//FIXME: if the sound you want to play could not be found, pick another from the same
 	//general grouping?  ie: if you want ff_2c and there is none, try ff_2b or ff_2a...
@@ -548,16 +548,16 @@ static sfxHandle_t CG_CustomSound(const int entity_num, const char* sound_name, 
 	return 0;
 }
 
-qboolean CG_TryPlayCustomSound(vec3_t origin, const int entity_num, const soundChannel_t channel,
+qboolean CG_TryPlayCustomSound(vec3_t origin, const int entityNum, const soundChannel_t channel,
 	const char* sound_name, const int custom_sound_set)
 {
-	const sfxHandle_t sound_index = CG_CustomSound(entity_num, sound_name, custom_sound_set);
+	const sfxHandle_t sound_index = CG_CustomSound(entityNum, sound_name, custom_sound_set);
 	if (!sound_index)
 	{
 		return qfalse;
 	}
 
-	cgi_S_StartSound(origin, entity_num, channel, sound_index);
+	cgi_S_StartSound(origin, entityNum, channel, sound_index);
 	return qtrue;
 }
 
@@ -803,26 +803,26 @@ static qboolean CG_RunLerpFrame(clientInfo_t* ci, lerpFrame_t* lf, const int new
 		}
 
 		int f = (lf->frameTime - lf->animationTime) / anim_frame_time;
-		if (f >= anim->num_frames)
+		if (f >= anim->numFrames)
 		{
 			//Reached the end of the anim
 			//FIXME: Need to set a flag here to TASK_COMPLETE
-			f -= anim->num_frames;
+			f -= anim->numFrames;
 			if (anim->loopFrames != -1) //Before 0 meant no loop
 			{
-				if (anim->num_frames - anim->loopFrames == 0)
+				if (anim->numFrames - anim->loopFrames == 0)
 				{
-					f %= anim->num_frames;
+					f %= anim->numFrames;
 				}
 				else
 				{
-					f %= anim->num_frames - anim->loopFrames;
+					f %= anim->numFrames - anim->loopFrames;
 				}
 				f += anim->loopFrames;
 			}
 			else
 			{
-				f = anim->num_frames - 1;
+				f = anim->numFrames - 1;
 				if (f < 0)
 				{
 					f = 0;
@@ -835,7 +835,7 @@ static qboolean CG_RunLerpFrame(clientInfo_t* ci, lerpFrame_t* lf, const int new
 
 		if (anim->frameLerp < 0)
 		{
-			lf->frame = anim->firstFrame + anim->num_frames - 1 - f;
+			lf->frame = anim->firstFrame + anim->numFrames - 1 - f;
 		}
 		else
 		{
@@ -884,7 +884,7 @@ static void CG_ClearLerpFrame(clientInfo_t* ci, lerpFrame_t* lf, const int anima
 	if (lf->animation->frameLerp < 0)
 	{
 		//Plays backwards
-		lf->oldFrame = lf->frame = lf->animation->firstFrame + lf->animation->num_frames;
+		lf->oldFrame = lf->frame = lf->animation->firstFrame + lf->animation->numFrames;
 	}
 	else
 	{
@@ -1257,7 +1257,7 @@ static void CG_PlayerAnimEvents(const int anim_file_index, const qboolean torso,
 				//a looping anim!
 				loop_anim = qtrue;
 				first_frame = animation->firstFrame;
-				lastFrame = animation->firstFrame + animation->num_frames;
+				lastFrame = animation->firstFrame + animation->numFrames;
 			}
 		}
 	}
@@ -2923,9 +2923,9 @@ static void CG_G2PlayerAngles(centity_t* cent, vec3_t legs[], vec3_t angles)
 			{
 				//override the hips bone with a turn anim when turning
 				//and clear it when we're not... does blend from and to parent actually work?
-				int start_frame, end_frame;
+				int startFrame, endFrame;
 				const qboolean animating_hips = gi.G2API_GetAnimRangeIndex(
-					&cent->gent->ghoul2[cent->gent->playerModel], cent->gent->hipsBone, &start_frame, &end_frame);
+					&cent->gent->ghoul2[cent->gent->playerModel], cent->gent->hipsBone, &startFrame, &endFrame);
 
 				//FIXME: make legs lag behind when turning in place, only play turn anim when legs have to catch up
 				if (angles[YAW] == cent->pe.legs.yawAngle)
@@ -2941,7 +2941,7 @@ static void CG_G2PlayerAngles(centity_t* cent, vec3_t legs[], vec3_t angles)
 						const animation_t* animations = level.knownAnimFileSets[cent->gent->client->clientInfo.
 							animFileIndex].animations;
 
-						if (!animating_hips || animations[turn_anim].firstFrame != start_frame)
+						if (!animating_hips || animations[turn_anim].firstFrame != startFrame)
 							// only set the anim if we aren't going to do the same animation again
 						{
 							const float anim_speed = 50.0f / animations[turn_anim].frameLerp * pm_get_time_scale_mod(
@@ -2951,7 +2951,7 @@ static void CG_G2PlayerAngles(centity_t* cent, vec3_t legs[], vec3_t angles)
 								cent->gent->hipsBone,
 								animations[turn_anim].firstFrame,
 								animations[turn_anim].firstFrame + animations[turn_anim].
-								num_frames,
+								numFrames,
 								BONE_ANIM_OVERRIDE_LOOP
 								/*|BONE_ANIM_OVERRIDE_FREEZE|BONE_ANIM_BLEND*/, anim_speed,
 								cg.time, -1, 100);
@@ -6456,7 +6456,7 @@ static void CG_G2SetHeadAnim(const centity_t* cent, const int anim)
 	const float time_scale_mod = cg_timescale.value ? 1.0 / cg_timescale.value : 1.0;
 	const float anim_speed = 50.0f / animations[anim].frameLerp * time_scale_mod;
 
-	if (animations[anim].num_frames <= 0)
+	if (animations[anim].numFrames <= 0)
 	{
 		return;
 	}
@@ -6471,19 +6471,19 @@ static void CG_G2SetHeadAnim(const centity_t* cent, const int anim)
 	{
 		//play anim backwards
 		last_frame = animations[anim].firstFrame - 1;
-		first_frame = animations[anim].num_frames - 1 + animations[anim].firstFrame;
+		first_frame = animations[anim].numFrames - 1 + animations[anim].firstFrame;
 	}
 	else
 	{
 		first_frame = animations[anim].firstFrame;
-		last_frame = animations[anim].num_frames + animations[anim].firstFrame;
+		last_frame = animations[anim].numFrames + animations[anim].firstFrame;
 	}
 
 	// first decide if we are doing an animation on the head already
-	//	int start_frame, end_frame;
-	//	const qboolean animatingHead =  gi.G2API_GetAnimRangeIndex(&gent->ghoul2[gent->playerModel], cent->gent->faceBone, &start_frame, &end_frame);
+	//	int startFrame, endFrame;
+	//	const qboolean animatingHead =  gi.G2API_GetAnimRangeIndex(&gent->ghoul2[gent->playerModel], cent->gent->faceBone, &startFrame, &endFrame);
 
-	//	if (!animatingHead || ( animations[anim].firstFrame != start_frame ) )// only set the anim if we aren't going to do the same animation again
+	//	if (!animatingHead || ( animations[anim].firstFrame != startFrame ) )// only set the anim if we aren't going to do the same animation again
 	{
 		constexpr int blend_time = 50;
 		gi.G2API_SetBoneAnimIndex(&gent->ghoul2[gent->playerModel], cent->gent->faceBone,
@@ -13404,7 +13404,7 @@ static void CG_AddSaberBladeGo(centity_t* cent, centity_t* scent, const int rend
 								saber[saber_num].saberFlags2 & SFL2_NO_WALL_MARKS2))
 						{
 							if (!(trace.surfaceFlags & SURF_NOIMPACT) // never spark on sky
-								&& (trace.entity_num == ENTITYNUM_WORLD || cg_entities[trace.entity_num].currentState.
+								&& (trace.entityNum == ENTITYNUM_WORLD || cg_entities[trace.entityNum].currentState.
 									solid == SOLID_BMODEL)
 								&& Q_irand(1, client->ps.saber[saber_num].numBlades) == 1)
 							{
@@ -13416,8 +13416,8 @@ static void CG_AddSaberBladeGo(centity_t* cent, centity_t* scent, const int rend
 						//....come up with something better..
 						if (client->ps.saber[saber_num].blade[blade_num].trail.haveOldPos[i])
 						{
-							if (trace.entity_num == ENTITYNUM_WORLD || cg_entities[trace.entity_num].currentState.eFlags
-								& EF_PERMANENT || cg_entities[trace.entity_num].currentState.eType == ET_TERRAIN)
+							if (trace.entityNum == ENTITYNUM_WORLD || cg_entities[trace.entityNum].currentState.eFlags
+								& EF_PERMANENT || cg_entities[trace.entityNum].currentState.eType == ET_TERRAIN)
 							{
 								//only put marks on architecture
 								if (!WP_SaberBladeUseSecondBladeStyle(&client->ps.saber[saber_num], blade_num) && !(
@@ -13469,7 +13469,7 @@ static void CG_AddSaberBladeGo(centity_t* cent, centity_t* scent, const int rend
 							else if (!i)
 							{
 								//can put marks on G2 clients (but only on base to tip trace)
-								gentity_t* hit_ent = &g_entities[trace.entity_num];
+								gentity_t* hit_ent = &g_entities[trace.entityNum];
 								vec3_t uaxis, splash_back_dir;
 								VectorSubtract(client->ps.saber[saber_num].blade[blade_num].trail.oldPos[i],
 									trace.endpos, uaxis);

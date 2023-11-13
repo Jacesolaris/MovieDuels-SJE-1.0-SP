@@ -219,7 +219,7 @@ void G_PlayEffect(const int fx_id, const int model_index, const int bolt_index, 
 	tent->s.weapon = is_relative;
 
 	tent->svFlags |= SVF_BROADCAST;
-	gi.G2API_AttachEnt(&tent->s.bolt_info, &g_entities[ent_num].ghoul2[model_index], bolt_index, ent_num, model_index);
+	gi.G2API_AttachEnt(&tent->s.boltInfo, &g_entities[ent_num].ghoul2[model_index], bolt_index, ent_num, model_index);
 }
 
 //-----------------------------
@@ -254,7 +254,7 @@ void G_StopEffect(const int fx_id, const int model_index, const int bolt_index, 
 	gentity_t* tent = G_TempEntity(g_entities[ent_num].currentOrigin, EV_STOP_EFFECT);
 	tent->s.eventParm = fx_id;
 	tent->svFlags |= SVF_BROADCAST;
-	gi.G2API_AttachEnt(&tent->s.bolt_info, &g_entities[ent_num].ghoul2[model_index], bolt_index, ent_num, model_index);
+	gi.G2API_AttachEnt(&tent->s.boltInfo, &g_entities[ent_num].ghoul2[model_index], bolt_index, ent_num, model_index);
 }
 
 void G_StopEffect(const char* name, const int model_index, const int bolt_index, const int ent_num)
@@ -264,9 +264,9 @@ void G_StopEffect(const char* name, const int model_index, const int bolt_index,
 
 //===Bypass network for sounds on specific channels====================
 
-extern void cgi_S_StartSound(const vec3_t origin, int entity_num, int entchannel, sfxHandle_t sfx);
+extern void cgi_S_StartSound(const vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx);
 #include "../cgame/cg_media.h"	//access to cgs
-extern qboolean CG_TryPlayCustomSound(vec3_t origin, int entity_num, soundChannel_t channel, const char* sound_name,
+extern qboolean CG_TryPlayCustomSound(vec3_t origin, int entityNum, soundChannel_t channel, const char* sound_name,
 	int custom_sound_set);
 extern cvar_t* g_timescale;
 //NOTE: Do NOT Try to use this before the cgame DLL is valid, it will NOT work!
@@ -1573,7 +1573,7 @@ static void DebugTraceForNPC(const gentity_t* ent)
 
 	if (trace.fraction < 0.99f)
 	{
-		const gentity_t* found = &g_entities[trace.entity_num];
+		const gentity_t* found = &g_entities[trace.entityNum];
 
 		if (found)
 		{
@@ -1799,12 +1799,12 @@ qboolean CanUseInfrontOf(const gentity_t* ent)
 		MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE,
 		G2_NOCOLLIDE, 10);
 
-	if (trace.fraction == 1.0f || trace.entity_num >= ENTITYNUM_WORLD)
+	if (trace.fraction == 1.0f || trace.entityNum >= ENTITYNUM_WORLD)
 	{
 		return CanUseInfrontOfPartOfLevel(ent);
 	}
 
-	const gentity_t* target = &g_entities[trace.entity_num];
+	const gentity_t* target = &g_entities[trace.entityNum];
 
 	if (target && target->client && target->client->NPC_class == CLASS_VEHICLE)
 	{
@@ -1919,16 +1919,16 @@ void TryUse(gentity_t* ent)
 		MASK_OPAQUE | CONTENTS_SOLID | CONTENTS_TERRAIN | CONTENTS_BODY | CONTENTS_ITEM | CONTENTS_CORPSE,
 		G2_NOCOLLIDE, 10);
 
-	if (trace.fraction == 1.0f || trace.entity_num >= ENTITYNUM_WORLD)
+	if (trace.fraction == 1.0f || trace.entityNum >= ENTITYNUM_WORLD)
 	{
 		return;
 	}
-	if (trace.fraction == 1.0f || trace.entity_num < 1)
+	if (trace.fraction == 1.0f || trace.entityNum < 1)
 	{
 		goto tryJetPack;
 	}
 
-	gentity_t* target = &g_entities[trace.entity_num];
+	gentity_t* target = &g_entities[trace.entityNum];
 
 	if (target && target->client && target->client->NPC_class == CLASS_VEHICLE)
 	{
@@ -2143,7 +2143,7 @@ void removeBoltSurface(gentity_t* self)
 		hit_ent->ghoul2[self->damage].mModelindex != -1 &&
 		hit_ent->ghoul2[self->damage].mSlist.size() > static_cast<unsigned>(self->aimDebounceTime) &&
 		hit_ent->ghoul2[self->damage].mSlist[self->aimDebounceTime].surface != -1 &&
-		hit_ent->ghoul2[self->damage].mSlist[self->aimDebounceTime].off_flags == G2SURFACEFLAG_GENERATED)
+		hit_ent->ghoul2[self->damage].mSlist[self->aimDebounceTime].offFlags == G2SURFACEFLAG_GENERATED)
 	{
 		// remove the bolt
 		gi.G2API_RemoveBolt(&hit_ent->ghoul2[self->damage], self->attackDebounceTime);

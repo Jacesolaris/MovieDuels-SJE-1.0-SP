@@ -568,7 +568,7 @@ using trace_t = struct
 	cplane_t plane; // surface normal at impact, transformed to world space
 	int surfaceFlags; // surface hit
 	int contents; // contents on other side of surface hit
-	int entity_num; // entity the contacted surface is a part of
+	int entityNum; // entity the contacted surface is a part of
 	/*
 	Ghoul2 Insert Start
 	*/
@@ -588,7 +588,7 @@ using trace_t = struct
 		saved_game.write<>(plane);
 		saved_game.write<int8_t>(surfaceFlags);
 		saved_game.write<int8_t>(contents);
-		saved_game.write<int8_t>(entity_num);
+		saved_game.write<int8_t>(entityNum);
 		saved_game.write<>(G2CollisionMap);
 	}
 
@@ -602,12 +602,12 @@ using trace_t = struct
 		saved_game.read<>(plane);
 		saved_game.read<int8_t>(surfaceFlags);
 		saved_game.read<int8_t>(contents);
-		saved_game.read<int8_t>(entity_num);
+		saved_game.read<int8_t>(entityNum);
 		saved_game.read<>(G2CollisionMap);
 	}
 };
 
-// trace->entity_num can also be 0 to (MAX_GENTITIES-1)
+// trace->entityNum can also be 0 to (MAX_GENTITIES-1)
 // or ENTITYNUM_NONE, ENTITYNUM_WORLD
 
 // markfragments are returned by CM_MarkFragments()
@@ -2996,7 +2996,7 @@ using entityState_t = struct entityState_s
 	vec3_t modelScale; // used to scale models in any axis
 	int radius;
 	// used for culling all the ghoul models attached to this ent NOTE - this is automatically scaled by Ghoul2 if/when you scale the model. This is a 100% size value
-	int bolt_info;
+	int boltInfo;
 	// info used for bolting entities to Ghoul2 models - NOT used for bolting ghoul2 models to themselves, more for stuff like bolting effects to ghoul2 models
 	/*
 	Ghoul2 Insert End
@@ -3129,7 +3129,7 @@ using entityState_t = struct entityState_s
 
 		saved_game.write<float>(modelScale);
 		saved_game.write<int32_t>(radius);
-		saved_game.write<int32_t>(bolt_info);
+		saved_game.write<int32_t>(boltInfo);
 
 #ifndef JK2_MODE
 		saved_game.write<int32_t>(isPortalEnt);
@@ -3248,7 +3248,7 @@ using entityState_t = struct entityState_s
 
 		saved_game.read<float>(modelScale);
 		saved_game.read<int32_t>(radius);
-		saved_game.read<int32_t>(bolt_info);
+		saved_game.read<int32_t>(boltInfo);
 
 #ifndef JK2_MODE
 		saved_game.read<int32_t>(isPortalEnt);
@@ -3410,8 +3410,8 @@ using sharedSetBoneIKStateParams_t = struct
 	float radius; //bone rad
 	int blend_time; //bone blend time
 	int pcjOverrides; //override ik bone flags
-	int start_frame; //base pose start
-	int end_frame; //base pose end
+	int startFrame; //base pose start
+	int endFrame; //base pose end
 };
 
 enum sharedEIKMoveState

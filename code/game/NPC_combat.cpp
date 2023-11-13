@@ -1902,7 +1902,7 @@ qboolean EntIsGlass(const gentity_t* check)
 
 qboolean ShotThroughGlass(trace_t* tr, const gentity_t* target, vec3_t spot, const int mask)
 {
-	const gentity_t* hit = &g_entities[tr->entity_num];
+	const gentity_t* hit = &g_entities[tr->entityNum];
 	if (hit != target && EntIsGlass(hit))
 	{
 		//ok to shoot through breakable glass
@@ -1938,7 +1938,7 @@ qboolean CanShoot(const gentity_t* ent, const gentity_t* shooter)
 	CalcEntitySpot(ent, SPOT_ORIGIN, spot); //FIXME preferred target locations for some weapons (feet for R/L)
 
 	gi.trace(&tr, muzzle, nullptr, nullptr, spot, shooter->s.number, MASK_SHOT, static_cast<EG2_Collision>(0), 0);
-	const gentity_t* trace_ent = &g_entities[tr.entity_num];
+	const gentity_t* trace_ent = &g_entities[tr.entityNum];
 
 	// point blank, baby!
 	if (!is_breakable && tr.startsolid && shooter->NPC && shooter->NPC->touchedByPlayer)
@@ -1948,7 +1948,7 @@ qboolean CanShoot(const gentity_t* ent, const gentity_t* shooter)
 
 	if (!is_breakable && ShotThroughGlass(&tr, ent, spot, MASK_SHOT))
 	{
-		trace_ent = &g_entities[tr.entity_num];
+		trace_ent = &g_entities[tr.entityNum];
 	}
 
 	if (is_breakable && tr.fraction > 0.8)
@@ -1966,7 +1966,7 @@ qboolean CanShoot(const gentity_t* ent, const gentity_t* shooter)
 	//ok, can't hit them in center, try their head
 	CalcEntitySpot(ent, SPOT_HEAD, spot);
 	gi.trace(&tr, muzzle, nullptr, nullptr, spot, shooter->s.number, MASK_SHOT, static_cast<EG2_Collision>(0), 0);
-	trace_ent = &g_entities[tr.entity_num];
+	trace_ent = &g_entities[tr.entityNum];
 	if (trace_ent == ent)
 	{
 		return qtrue;
@@ -2850,7 +2850,7 @@ qboolean NPC_ClearShot(const gentity_t* ent)
 		return qfalse;
 	}
 
-	if (tr.entity_num == ent->s.number)
+	if (tr.entityNum == ent->s.number)
 		return qtrue;
 
 	return qfalse;
@@ -2919,7 +2919,7 @@ int NPC_ShotEntity(const gentity_t* ent, vec3_t impact_pos)
 			return ENTITYNUM_NONE;
 		}
 	*/
-	return tr.entity_num;
+	return tr.entityNum;
 }
 
 qboolean NPC_EvaluateShot(const int hit)
@@ -3072,7 +3072,7 @@ qboolean NPC_CheckCanAttack(float attack_scale)
 				0);
 			ShotThroughGlass(&tr, NPC->enemy, hitspot, MASK_SHOT);
 
-			trace_ent = &g_entities[tr.entity_num];
+			trace_ent = &g_entities[tr.entityNum];
 
 			VectorCopy(tr.endpos, hitspot);
 

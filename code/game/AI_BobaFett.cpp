@@ -563,9 +563,9 @@ void Boba_FireFlameThrower(gentity_t* self)
 	}
 	gi.trace(&tr, start, self->mins, self->maxs, end, self->s.number, MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 
-	gentity_t* trace_ent = &g_entities[tr.entity_num];
+	gentity_t* trace_ent = &g_entities[tr.entityNum];
 
-	if (tr.entity_num < ENTITYNUM_WORLD && trace_ent->takedamage)
+	if (tr.entityNum < ENTITYNUM_WORLD && trace_ent->takedamage)
 	{
 		if (g_SerenityJediEngineMode->integer)
 		{
@@ -637,9 +637,9 @@ void Mando_FireFlameThrower(gentity_t* self)
 	}
 	gi.trace(&tr, start, self->mins, self->maxs, end, self->s.number, MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 
-	gentity_t* trace_ent = &g_entities[tr.entity_num];
+	gentity_t* trace_ent = &g_entities[tr.entityNum];
 
-	if (tr.entity_num < ENTITYNUM_WORLD && trace_ent->takedamage)
+	if (tr.entityNum < ENTITYNUM_WORLD && trace_ent->takedamage)
 	{
 		if (g_SerenityJediEngineMode->integer)
 		{
@@ -1788,7 +1788,7 @@ void Boba_Update()
 
 			if (!test_trace.startsolid &&
 				!test_trace.allsolid &&
-				test_trace.entity_num == NPC->enemy->s.number)
+				test_trace.entityNum == NPC->enemy->s.number)
 			{
 				NPCInfo->enemyLastSeenTime = level.time;
 				NPCInfo->enemyLastHeardTime = level.time;

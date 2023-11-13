@@ -2918,14 +2918,14 @@ gentity_t* G_KickTrace(gentity_t* ent, vec3_t kick_dir, const float kick_dist, v
 	gi.trace(&trace, traceOrg, kick_mins, kick_maxs, trace_end, ent->s.number, MASK_SHOT, static_cast<EG2_Collision>(0),
 		0);
 
-	if (trace.fraction < 1.0f || trace.startsolid && trace.entity_num < ENTITYNUM_NONE)
+	if (trace.fraction < 1.0f || trace.startsolid && trace.entityNum < ENTITYNUM_NONE)
 	{
-		hit_ent = &g_entities[trace.entity_num];
+		hit_ent = &g_entities[trace.entityNum];
 
-		if (ent->client->ps.lastKickedEntNum != trace.entity_num)
+		if (ent->client->ps.lastKickedEntNum != trace.entityNum)
 		{
 			TIMER_Remove(ent, "kickSoundDebounce");
-			ent->client->ps.lastKickedEntNum = trace.entity_num;
+			ent->client->ps.lastKickedEntNum = trace.entityNum;
 		}
 
 		if (hit_ent)
@@ -6868,7 +6868,7 @@ void DoCallout(gentity_t* caller, gentity_t* our_friend)
 		return;
 	}
 
-	if (tr.entity_num == ENTITYNUM_WORLD)
+	if (tr.entityNum == ENTITYNUM_WORLD)
 	{
 		// Didn't hit an entity
 		return;
@@ -6879,7 +6879,7 @@ void DoCallout(gentity_t* caller, gentity_t* our_friend)
 		return;
 	}
 
-	gentity_t* tracedEnemy = &g_entities[tr.entity_num];
+	gentity_t* tracedEnemy = &g_entities[tr.entityNum];
 
 	if (tracedEnemy->s.eType != ET_PLAYER)
 	{

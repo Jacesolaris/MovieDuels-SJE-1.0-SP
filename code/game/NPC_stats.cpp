@@ -412,7 +412,7 @@ static int MoveTypeNameToEnum(const char* name)
 }
 
 extern void CG_RegisterClientRenderInfo(clientInfo_t* ci, const renderInfo_t* ri);
-extern void CG_RegisterClientModels(int entity_num);
+extern void CG_RegisterClientModels(int entityNum);
 extern void CG_RegisterNPCCustomSounds(clientInfo_t* ci);
 
 //#define CONVENIENT_ANIMATION_FILE_DEBUG_THING
@@ -525,7 +525,7 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 			continue;
 		}
 
-		if (animations[anim_num].num_frames == 0)
+		if (animations[anim_num].numFrames == 0)
 		{
 			//we don't use this anim
 #ifndef FINAL_BUILD
@@ -556,17 +556,17 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 		int key_frame = atoi(token);
 
 		if (b_is_frame_skipped &&
-			animations[anim_num].num_frames > 2)
+			animations[anim_num].numFrames > 2)
 			// important, else frame 1 gets divided down and becomes frame 0. Carcass & Assimilate also work this way
 		{
 			key_frame /= 2;
 			// if we ever use any other value in frame-skipping we'll have to figure out some way of reading it, since it's not stored anywhere
 		}
-		if (key_frame >= animations[anim_num].num_frames)
+		if (key_frame >= animations[anim_num].numFrames)
 		{
 			//Com_Printf(S_COLOR_YELLOW"WARNING: Event out of range on %s in %s\n", GetStringForID(anim_table,animNum), aeb_filename );
-			//assert(keyFrame < animations[animNum].num_frames);
-			key_frame = animations[anim_num].num_frames - 1; //clamp it
+			//assert(keyFrame < animations[animNum].numFrames);
+			key_frame = animations[anim_num].numFrames - 1; //clamp it
 		}
 
 		//set our start frame
@@ -1054,7 +1054,7 @@ qboolean G_ParseAnimationFile(const int gla_index, const char* skeleton_name, co
 			break;
 		}
 		assert(atoi(token) >= 0 && atoi(token) < 65536);
-		animations[anim_num].num_frames = atoi(token);
+		animations[anim_num].numFrames = atoi(token);
 
 		// Loop Frames
 		//-------------
@@ -1216,7 +1216,7 @@ int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullp
 		for (i = 0; i < MAX_ANIMATIONS; i++)
 		{
 			animations[i].firstFrame = 0;
-			animations[i].num_frames = 0;
+			animations[i].numFrames = 0;
 			animations[i].loopFrames = -1;
 			animations[i].frameLerp = 100;
 			//			animations[i].initialLerp	= 100;

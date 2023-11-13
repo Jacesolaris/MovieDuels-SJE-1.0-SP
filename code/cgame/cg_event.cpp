@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "cg_media.h"
 #include "FxScheduler.h"
 
-extern qboolean CG_TryPlayCustomSound(vec3_t origin, int entity_num, soundChannel_t channel, const char* sound_name,
+extern qboolean CG_TryPlayCustomSound(vec3_t origin, int entityNum, soundChannel_t channel, const char* sound_name,
 	int custom_sound_set);
 extern void FX_KothosBeam(vec3_t start, vec3_t end);
 extern void CG_GibPlayerHeadshot(vec3_t player_origin);
@@ -1015,11 +1015,11 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 
 			s = CG_ConfigString(CS_EFFECTS + es->eventParm);
 			// Ghoul2 Insert Start
-			if (es->bolt_info != 0)
+			if (es->boltInfo != 0)
 			{
 				const bool is_relative = !!es->weapon;
 				theFxScheduler.
-					PlayEffect(s, cent->lerpOrigin, axis, es->bolt_info, -1, portal_ent, es->loopSound, is_relative);
+					PlayEffect(s, cent->lerpOrigin, axis, es->boltInfo, -1, portal_ent, es->loopSound, is_relative);
 				//loopSound 0 = not looping, 1 for infinite, else duration
 			}
 			else
@@ -1062,9 +1062,9 @@ void CG_EntityEvent(centity_t* cent, vec3_t position)
 			}
 
 			s = CG_ConfigString(CS_EFFECTS + es->eventParm);
-			if (es->bolt_info != 0)
+			if (es->boltInfo != 0)
 			{
-				theFxScheduler.StopEffect(s, es->bolt_info, portal_ent);
+				theFxScheduler.StopEffect(s, es->boltInfo, portal_ent);
 			}
 		}
 		break;

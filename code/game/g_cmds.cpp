@@ -2685,7 +2685,7 @@ void Cmd_SaberDrop_f(gentity_t* ent, const int saber_num)
 
 void G_RemoveWeather()
 {
-	gi.SendConsoleCommand(va("exec Weather/clear.cfg"));
+	gi.SendConsoleCommand(va("execq Weather/clear.cfg"));
 }
 
 /*
@@ -3129,7 +3129,7 @@ void ClientCommand(const int client_num)
 			num = G_EffectIndex("*clear");
 			gi.SetConfigstring(CS_EFFECTS + num, "");
 		}
-		}
+	}
 	else if (TryWorkshopCommand(ent))
 	{
 		//

@@ -1053,19 +1053,19 @@ int cgi_CM_MarkFragments(int numPoints, const vec3_t* points,
 
 // normal sounds will have their volume dynamically changed as their entity
 // moves and the listener moves
-void cgi_S_StartSound(const vec3_t origin, int entity_num, int entchannel, sfxHandle_t sfx);
+void cgi_S_StartSound(const vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx);
 void cgi_S_StopSounds();
 
 // a local sound is always played full volume
 void cgi_S_StartLocalSound(sfxHandle_t sfx, int channelNum);
 void cgi_S_ClearLoopingSounds();
-void cgi_S_AddLoopingSound(int entity_num, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx,
+void cgi_S_AddLoopingSound(int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx,
 	soundChannel_t chan = CHAN_AUTO);
-void cgi_S_UpdateEntityPosition(int entity_num, const vec3_t origin);
+void cgi_S_UpdateEntityPosition(int entityNum, const vec3_t origin);
 
 // repatialize recalculates the volumes of sound as they should be heard by the
-// given entity_num and position
-void cgi_S_Respatialize(int entity_num, const vec3_t origin, vec3_t axis[3], qboolean inwater);
+// given entityNum and position
+void cgi_S_Respatialize(int entityNum, const vec3_t origin, vec3_t axis[3], qboolean inwater);
 sfxHandle_t cgi_S_RegisterSound(const char* sample); // returns buzz if not found
 void cgi_S_StartBackgroundTrack(const char* intro, const char* loop, qboolean bForceStart); // empty name stops music
 float cgi_S_GetSampleLength(sfxHandle_t sfx);
@@ -1110,7 +1110,7 @@ void cgi_R_DrawStretchPic(float x, float y, float w, float h,
 	float s1, float t1, float s2, float t2, qhandle_t h_shader);
 
 void cgi_R_ModelBounds(qhandle_t model, vec3_t mins, vec3_t maxs);
-void cgi_R_LerpTag(orientation_t* tag, qhandle_t mod, int start_frame, int end_frame,
+void cgi_R_LerpTag(orientation_t* tag, qhandle_t mod, int startFrame, int endFrame,
 	float frac, const char* tagName);
 // Does weird, barely controllable rotation behaviour
 void cgi_R_DrawRotatePic(float x, float y, float w, float h,

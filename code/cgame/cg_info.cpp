@@ -394,13 +394,13 @@ static void CG_LoadBar()
 	// Draw right cap
 	CG_DrawPic(tickleft + tickwidth * cg.loadLCARSStage, ticktop, capwidth, tickheight, cgs.media.loadTickCap);
 
-	constexpr int x = (640 - LOADBAR_CLIP_WIDTH) / 2;
+	/*constexpr int x = (640 - LOADBAR_CLIP_WIDTH) / 2;
 
 	if (cg.loadLCARSStage >= 4)
 	{
 		constexpr int y = 50;
 		CG_DrawPic(x, y, LOADBAR_CLIP_WIDTH, LOADBAR_CLIP_HEIGHT, cgs.media.load_SerenitySaberSystems);
-	}
+	}*/
 }
 
 int CG_WeaponCheck(int weapon_index);

@@ -50,7 +50,7 @@ RB_CheckOverflow
 */
 void RB_CheckOverflow(const int verts, const int indexes) {
 	if (tess.numVertexes + verts < SHADER_MAX_VERTEXES
-		&& tess.num_indexes + indexes < SHADER_MAX_INDEXES) {
+		&& tess.numIndexes + indexes < SHADER_MAX_INDEXES) {
 		return;
 	}
 
@@ -79,13 +79,13 @@ void RB_AddQuadStampExt(vec3_t origin, vec3_t left, vec3_t up, byte* color, cons
 	const int ndx = tess.numVertexes;
 
 	// triangle indexes for a simple quad
-	tess.indexes[tess.num_indexes] = ndx;
-	tess.indexes[tess.num_indexes + 1] = ndx + 1;
-	tess.indexes[tess.num_indexes + 2] = ndx + 3;
+	tess.indexes[tess.numIndexes] = ndx;
+	tess.indexes[tess.numIndexes + 1] = ndx + 1;
+	tess.indexes[tess.numIndexes + 2] = ndx + 3;
 
-	tess.indexes[tess.num_indexes + 3] = ndx + 3;
-	tess.indexes[tess.num_indexes + 4] = ndx + 1;
-	tess.indexes[tess.num_indexes + 5] = ndx + 2;
+	tess.indexes[tess.numIndexes + 3] = ndx + 3;
+	tess.indexes[tess.numIndexes + 4] = ndx + 1;
+	tess.indexes[tess.numIndexes + 5] = ndx + 2;
 
 	tess.xyz[ndx][0] = origin[0] + left[0] + up[0];
 	tess.xyz[ndx][1] = origin[1] + left[1] + up[1];
@@ -136,7 +136,7 @@ void RB_AddQuadStampExt(vec3_t origin, vec3_t left, vec3_t up, byte* color, cons
 	ba_dest->ui = ba_source->ui;
 
 	tess.numVertexes += 4;
-	tess.num_indexes += 6;
+	tess.numIndexes += 6;
 }
 
 /*
@@ -289,13 +289,13 @@ static void DoLine(const vec3_t start, const vec3_t end, const vec3_t up, const 
 	tess.vertexColors[tess.numVertexes][3] = backEnd.currentEntity->e.shaderRGBA[3];
 	tess.numVertexes++;
 
-	tess.indexes[tess.num_indexes++] = vbase;
-	tess.indexes[tess.num_indexes++] = vbase + 1;
-	tess.indexes[tess.num_indexes++] = vbase + 2;
+	tess.indexes[tess.numIndexes++] = vbase;
+	tess.indexes[tess.numIndexes++] = vbase + 1;
+	tess.indexes[tess.numIndexes++] = vbase + 2;
 
-	tess.indexes[tess.num_indexes++] = vbase + 2;
-	tess.indexes[tess.num_indexes++] = vbase + 1;
-	tess.indexes[tess.num_indexes++] = vbase + 3;
+	tess.indexes[tess.numIndexes++] = vbase + 2;
+	tess.indexes[tess.numIndexes++] = vbase + 1;
+	tess.indexes[tess.numIndexes++] = vbase + 3;
 }
 
 static void DoLine2(const vec3_t start, const vec3_t end, const vec3_t up, const float span_width, const float span_width2, const float tc_start, const float tc_end)
@@ -341,13 +341,13 @@ static void DoLine2(const vec3_t start, const vec3_t end, const vec3_t up, const
 	tess.vertexColors[tess.numVertexes][3] = backEnd.currentEntity->e.shaderRGBA[3];
 	tess.numVertexes++;
 
-	tess.indexes[tess.num_indexes++] = vbase;
-	tess.indexes[tess.num_indexes++] = vbase + 1;
-	tess.indexes[tess.num_indexes++] = vbase + 2;
+	tess.indexes[tess.numIndexes++] = vbase;
+	tess.indexes[tess.numIndexes++] = vbase + 1;
+	tess.indexes[tess.numIndexes++] = vbase + 2;
 
-	tess.indexes[tess.num_indexes++] = vbase + 2;
-	tess.indexes[tess.num_indexes++] = vbase + 1;
-	tess.indexes[tess.num_indexes++] = vbase + 3;
+	tess.indexes[tess.numIndexes++] = vbase + 2;
+	tess.indexes[tess.numIndexes++] = vbase + 1;
+	tess.indexes[tess.numIndexes++] = vbase + 3;
 }
 
 //-----------------
@@ -500,9 +500,9 @@ static void RB_SurfaceCone()
 	// do the welding
 	for (i = 0; i < segments; i++)
 	{
-		tess.indexes[tess.num_indexes++] = vbase;
-		tess.indexes[tess.num_indexes++] = vbase + 1;
-		tess.indexes[tess.num_indexes++] = vbase + 2;
+		tess.indexes[tess.numIndexes++] = vbase;
+		tess.indexes[tess.numIndexes++] = vbase + 1;
+		tess.indexes[tess.numIndexes++] = vbase + 2;
 
 		vbase += 2;
 	}
@@ -620,13 +620,13 @@ static void RB_SurfaceCylinder()
 	// glue the verts
 	for (i = 0; i < segments; i++)
 	{
-		tess.indexes[tess.num_indexes++] = vbase;
-		tess.indexes[tess.num_indexes++] = vbase + 1;
-		tess.indexes[tess.num_indexes++] = vbase + 2;
+		tess.indexes[tess.numIndexes++] = vbase;
+		tess.indexes[tess.numIndexes++] = vbase + 1;
+		tess.indexes[tess.numIndexes++] = vbase + 2;
 
-		tess.indexes[tess.num_indexes++] = vbase + 2;
-		tess.indexes[tess.num_indexes++] = vbase + 1;
-		tess.indexes[tess.num_indexes++] = vbase + 3;
+		tess.indexes[tess.numIndexes++] = vbase + 2;
+		tess.indexes[tess.numIndexes++] = vbase + 1;
+		tess.indexes[tess.numIndexes++] = vbase + 3;
 
 		vbase += 2;
 	}
@@ -869,10 +869,10 @@ void RB_SurfacePolychain( srfPoly_t *p ) {
 
 	// generate fan indexes into the tess array
 	for ( i = 0; i < p->numVerts-2; i++ ) {
-		tess.indexes[tess.num_indexes + 0] = tess.numVertexes;
-		tess.indexes[tess.num_indexes + 1] = tess.numVertexes + i + 1;
-		tess.indexes[tess.num_indexes + 2] = tess.numVertexes + i + 2;
-		tess.num_indexes += 3;
+		tess.indexes[tess.numIndexes + 0] = tess.numVertexes;
+		tess.indexes[tess.numIndexes + 1] = tess.numVertexes + i + 1;
+		tess.indexes[tess.numIndexes + 2] = tess.numVertexes + i + 2;
+		tess.numIndexes += 3;
 	}
 
 	tess.numVertexes = numv;
@@ -896,10 +896,10 @@ void RB_SurfacePolychain(const srfPoly_t* p) {
 
 	// generate fan indexes into the tess array
 	for (i = 0; i < p->numVerts - 2; i++) {
-		tess.indexes[tess.num_indexes + 0] = tess.numVertexes;
-		tess.indexes[tess.num_indexes + 1] = tess.numVertexes + i + 1;
-		tess.indexes[tess.num_indexes + 2] = tess.numVertexes + i + 2;
-		tess.num_indexes += 3;
+		tess.indexes[tess.numIndexes + 0] = tess.numVertexes;
+		tess.indexes[tess.numIndexes + 1] = tess.numVertexes + i + 1;
+		tess.indexes[tess.numIndexes + 2] = tess.numVertexes + i + 2;
+		tess.numIndexes += 3;
 	}
 
 	tess.numVertexes = numv;
@@ -957,14 +957,14 @@ void RB_SurfaceTriangles(const srfTriangles_t* srf) {
 	const int dlight_bits = srf->dlightBits;
 	tess.dlightBits |= dlight_bits;
 
-	RB_CHECKOVERFLOW(srf->numVerts, srf->num_indexes);
+	RB_CHECKOVERFLOW(srf->numVerts, srf->numIndexes);
 
-	for (i = 0; i < srf->num_indexes; i += 3) {
-		tess.indexes[tess.num_indexes + i + 0] = tess.numVertexes + srf->indexes[i + 0];
-		tess.indexes[tess.num_indexes + i + 1] = tess.numVertexes + srf->indexes[i + 1];
-		tess.indexes[tess.num_indexes + i + 2] = tess.numVertexes + srf->indexes[i + 2];
+	for (i = 0; i < srf->numIndexes; i += 3) {
+		tess.indexes[tess.numIndexes + i + 0] = tess.numVertexes + srf->indexes[i + 0];
+		tess.indexes[tess.numIndexes + i + 1] = tess.numVertexes + srf->indexes[i + 1];
+		tess.indexes[tess.numIndexes + i + 2] = tess.numVertexes + srf->indexes[i + 2];
 	}
-	tess.num_indexes += srf->num_indexes;
+	tess.numIndexes += srf->numIndexes;
 
 	drawVert_t* dv = srf->verts;
 	float* xyz = tess.xyz[tess.numVertexes];
@@ -1247,12 +1247,12 @@ void RB_SurfaceMesh(md3Surface_t* surface) {
 
 	const int* triangles = reinterpret_cast<int*>(reinterpret_cast<byte*>(surface) + surface->ofsTriangles);
 	const int indexes = surface->numTriangles * 3;
-	const int bob = tess.num_indexes;
+	const int bob = tess.numIndexes;
 	const int doug = tess.numVertexes;
 	for (j = 0; j < indexes; j++) {
 		tess.indexes[bob + j] = doug + triangles[j];
 	}
-	tess.num_indexes += indexes;
+	tess.numIndexes += indexes;
 
 	const float* tex_coords = reinterpret_cast<float*>(reinterpret_cast<byte*>(surface) + surface->ofsSt);
 
@@ -1282,12 +1282,12 @@ void RB_SurfaceFace(srfSurfaceFace_t* surf) {
 	const unsigned int* indices = reinterpret_cast<unsigned*>(reinterpret_cast<char*>(surf) + surf->ofsIndices);
 
 	const int bob = tess.numVertexes;
-	glIndex_t* tess_indexes = tess.indexes + tess.num_indexes;
+	glIndex_t* tess_indexes = tess.indexes + tess.numIndexes;
 	for (i = surf->numIndices - 1; i >= 0; i--) {
 		tess_indexes[i] = indices[i] + bob;
 	}
 
-	tess.num_indexes += surf->numIndices;
+	tess.numIndexes += surf->numIndices;
 
 	float* v;
 
@@ -1409,7 +1409,7 @@ void RB_SurfaceGrid(srfGridMesh_t* cv) {
 		// see how many rows of both verts and indexes we can add without overflowing
 		do {
 			vrows = (SHADER_MAX_VERTEXES - tess.numVertexes) / lod_width;
-			irows = (SHADER_MAX_INDEXES - tess.num_indexes) / (lod_width * 6);
+			irows = (SHADER_MAX_INDEXES - tess.numIndexes) / (lod_width * 6);
 
 			// if we don't have enough space for at least one strip, flush the buffer
 			if (vrows < 2 || irows < 1) {
@@ -1474,7 +1474,7 @@ void RB_SurfaceGrid(srfGridMesh_t* cv) {
 		{
 			const int h = rows - 1;
 			const int w = lod_width - 1;
-			int num_indexes = tess.num_indexes;
+			int numIndexes = tess.numIndexes;
 			for (i = 0; i < h; i++) {
 				for (j = 0; j < w; j++) {
 					// vertex order to be reckognized as tristrips
@@ -1483,18 +1483,18 @@ void RB_SurfaceGrid(srfGridMesh_t* cv) {
 					const int v3 = v2 + lod_width;
 					const int v4 = v3 + 1;
 
-					tess.indexes[num_indexes] = v2;
-					tess.indexes[num_indexes + 1] = v3;
-					tess.indexes[num_indexes + 2] = v1;
+					tess.indexes[numIndexes] = v2;
+					tess.indexes[numIndexes + 1] = v3;
+					tess.indexes[numIndexes + 2] = v1;
 
-					tess.indexes[num_indexes + 3] = v1;
-					tess.indexes[num_indexes + 4] = v3;
-					tess.indexes[num_indexes + 5] = v4;
-					num_indexes += 6;
+					tess.indexes[numIndexes + 3] = v1;
+					tess.indexes[numIndexes + 4] = v3;
+					tess.indexes[numIndexes + 5] = v4;
+					numIndexes += 6;
 				}
 			}
 
-			tess.num_indexes = num_indexes;
+			tess.numIndexes = numIndexes;
 		}
 
 		tess.numVertexes += rows * lod_width;
@@ -1637,13 +1637,13 @@ static void RB_SurfaceLathe()
 			tess.vertexColors[tess.numVertexes][3] = e->shaderRGBA[3];
 			tess.numVertexes++;
 
-			tess.indexes[tess.num_indexes++] = vbase;
-			tess.indexes[tess.num_indexes++] = vbase + 1;
-			tess.indexes[tess.num_indexes++] = vbase + 3;
+			tess.indexes[tess.numIndexes++] = vbase;
+			tess.indexes[tess.numIndexes++] = vbase + 1;
+			tess.indexes[tess.numIndexes++] = vbase + 3;
 
-			tess.indexes[tess.num_indexes++] = vbase + 3;
-			tess.indexes[tess.num_indexes++] = vbase + 2;
-			tess.indexes[tess.num_indexes++] = vbase;
+			tess.indexes[tess.numIndexes++] = vbase + 3;
+			tess.indexes[tess.numIndexes++] = vbase + 2;
+			tess.indexes[tess.numIndexes++] = vbase;
 
 			// Shuffle new points to old
 			VectorCopy2(pt, oldpt);
@@ -1805,13 +1805,13 @@ static void RB_SurfaceClouds()
 			tess.vertexColors[tess.numVertexes][3] = e->shaderRGBA[3];
 			tess.numVertexes++;
 
-			tess.indexes[tess.num_indexes++] = vbase;
-			tess.indexes[tess.num_indexes++] = vbase + 1;
-			tess.indexes[tess.num_indexes++] = vbase + 3;
+			tess.indexes[tess.numIndexes++] = vbase;
+			tess.indexes[tess.numIndexes++] = vbase + 1;
+			tess.indexes[tess.numIndexes++] = vbase + 3;
 
-			tess.indexes[tess.num_indexes++] = vbase + 3;
-			tess.indexes[tess.num_indexes++] = vbase + 2;
-			tess.indexes[tess.num_indexes++] = vbase;
+			tess.indexes[tess.numIndexes++] = vbase + 3;
+			tess.indexes[tess.numIndexes++] = vbase + 2;
+			tess.indexes[tess.numIndexes++] = vbase;
 
 			// Shuffle new points to old
 			VectorCopy2(pt, oldpt);

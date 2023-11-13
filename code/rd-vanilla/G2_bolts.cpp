@@ -73,9 +73,9 @@ int G2_Find_Bolt_Surface_Num(const boltInfo_v& bltlist, const int surfaceNum, co
 
 //=========================================================================================
 //// Public Bolt Routines
-int G2_Add_Bolt_Surf_Num(const CGhoul2Info* ghl_info, boltInfo_v& bltlist, const surfaceInfo_v& slist, const int surf_num)
+int G2_Add_Bolt_Surf_Num(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const surfaceInfo_v& slist, const int surf_num)
 {
-	assert(ghl_info && ghl_info->mValid);
+	assert(ghlInfo && ghlInfo->mValid);
 	boltInfo_t temp_bolt;
 
 	assert(surf_num >= 0 && surf_num < static_cast<int>(slist.size()));
@@ -123,16 +123,16 @@ int G2_Add_Bolt_Surf_Num(const CGhoul2Info* ghl_info, boltInfo_v& bltlist, const
 
 void G2_Bolt_Not_Found(const char* bone_name);
 
-int G2_Add_Bolt(const CGhoul2Info* ghl_info, boltInfo_v& bltlist, const char* bone_name)
+int G2_Add_Bolt(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const char* bone_name)
 {
-	assert(ghl_info && ghl_info->mValid);
+	assert(ghlInfo && ghlInfo->mValid);
 	boltInfo_t temp_bolt;
 	uint32_t flags;
 
-	assert(G2_MODEL_OK(ghl_info));
+	assert(G2_MODEL_OK(ghlInfo));
 
 	// first up, we'll search for that which this bolt names in all the surfaces
-	const int surf_num = G2_IsSurfaceLegal(ghl_info->currentModel, bone_name, &flags);
+	const int surf_num = G2_IsSurfaceLegal(ghlInfo->currentModel, bone_name, &flags);
 
 	// did we find it as a surface?
 	if (surf_num != -1)
@@ -174,13 +174,13 @@ int G2_Add_Bolt(const CGhoul2Info* ghl_info, boltInfo_v& bltlist, const char* bo
 
 	// no, check to see if it's a bone then
 
-	const mdxaSkelOffsets_t* offsets = reinterpret_cast<mdxaSkelOffsets_t*>((byte*)ghl_info->aHeader + sizeof(mdxaHeader_t));
+	const mdxaSkelOffsets_t* offsets = reinterpret_cast<mdxaSkelOffsets_t*>((byte*)ghlInfo->aHeader + sizeof(mdxaHeader_t));
 
 	int x;
 	// walk the entire list of bones in the gla file for this model and see if any match the name of the bone we want to find
-	for (x = 0; x < ghl_info->aHeader->numBones; x++)
+	for (x = 0; x < ghlInfo->aHeader->numBones; x++)
 	{
-		const mdxaSkel_t* skel = reinterpret_cast<mdxaSkel_t*>((byte*)ghl_info->aHeader + sizeof(mdxaHeader_t) + offsets->offsets[x]);
+		const mdxaSkel_t* skel = reinterpret_cast<mdxaSkel_t*>((byte*)ghlInfo->aHeader + sizeof(mdxaHeader_t) + offsets->offsets[x]);
 		// if name is the same, we found it
 		if (!Q_stricmp(skel->name, bone_name))
 		{
@@ -189,7 +189,7 @@ int G2_Add_Bolt(const CGhoul2Info* ghl_info, boltInfo_v& bltlist, const char* bo
 	}
 
 	// check to see we did actually make a match with a bone in the model
-	if (x == ghl_info->aHeader->numBones)
+	if (x == ghlInfo->aHeader->numBones)
 	{
 		// didn't find it? Error
 		//assert(0&&x == mod_a->mdxa->numBones);

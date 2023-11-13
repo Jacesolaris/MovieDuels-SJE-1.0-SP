@@ -108,8 +108,8 @@ void BG_IK_MoveLimb(CGhoul2Info_v& ghoul2, const int bolt_index, const char* ani
 		VectorCopy(scale, ik_p.scale);
 
 		//base pose frames for the limb
-		ik_p.start_frame = anim->firstFrame + anim->num_frames;
-		ik_p.end_frame = anim->firstFrame + anim->num_frames;
+		ik_p.startFrame = anim->firstFrame + anim->numFrames;
+		ik_p.endFrame = anim->firstFrame + anim->numFrames;
 
 		//ikP.forceAnimOnBone = qfalse; //let it use existing anim if it's the same as this one.
 

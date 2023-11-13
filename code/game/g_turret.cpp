@@ -149,25 +149,25 @@ void turret_die(gentity_t* self, gentity_t* inflictor, gentity_t* attacker, cons
 }
 
 //start an animation on model_root both server side and client side
-void TurboLaser_SetBoneAnim(gentity_t* eweb, const int start_frame, const int end_frame)
+void TurboLaser_SetBoneAnim(gentity_t* eweb, const int startFrame, const int endFrame)
 {
 	//set info on the entity so it knows to start the anim on the client next snapshot.
 	//eweb->s.eFlags |= EF_G2ANIMATING;
 
-	if (eweb->s.torsoAnim == start_frame && eweb->s.legsAnim == end_frame)
+	if (eweb->s.torsoAnim == startFrame && eweb->s.legsAnim == endFrame)
 	{
 		//already playing this anim, let's flag it to restart
 		//eweb->s.torsoFlip = !eweb->s.torsoFlip;
 	}
 	else
 	{
-		eweb->s.torsoAnim = start_frame;
-		eweb->s.legsAnim = end_frame;
+		eweb->s.torsoAnim = startFrame;
+		eweb->s.legsAnim = endFrame;
 	}
 
 	//now set the animation on the server ghoul2 instance.
 	assert(&eweb->ghoul2[0]);
-	gi.G2API_SetBoneAnim(&eweb->ghoul2[0], "model_root", start_frame, end_frame,
+	gi.G2API_SetBoneAnim(&eweb->ghoul2[0], "model_root", startFrame, endFrame,
 		BONE_ANIM_OVERRIDE_FREEZE | BONE_ANIM_BLEND, 1.0f, level.time, -1, 100);
 }
 
@@ -584,7 +584,7 @@ static qboolean turret_find_enemies(gentity_t* self)
 		trace_t tr;
 		gi.trace(&tr, org2, nullptr, nullptr, org, self->s.number, MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 
-		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entity_num == target->s.number))
+		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entityNum == target->s.number))
 		{
 			vec3_t enemy_dir;
 			// Only acquire if have a clear shot, Is it in range and closer than our best?
@@ -694,7 +694,7 @@ void turret_base_think(gentity_t* self)
 					gi.trace(&tr, org2, nullptr, nullptr, org, self->s.number, MASK_SHOT, static_cast<EG2_Collision>(0),
 						0);
 
-					if (self->spawnflags & SPF_TURRETG2_TURBO || !tr.allsolid && !tr.startsolid && tr.entity_num == self
+					if (self->spawnflags & SPF_TURRETG2_TURBO || !tr.allsolid && !tr.startsolid && tr.entityNum == self
 						->enemy->s.number)
 					{
 						turn_off = qfalse; // Can see our enemy
@@ -1151,9 +1151,9 @@ void laser_arm_fire(gentity_t* ent)
 	// Only deal damage when in alt-fire mode
 	if (trace.fraction < 1.0 && ent->alt_fire)
 	{
-		if (trace.entity_num < ENTITYNUM_WORLD)
+		if (trace.entityNum < ENTITYNUM_WORLD)
 		{
-			gentity_t* hapless_victim = &g_entities[trace.entity_num];
+			gentity_t* hapless_victim = &g_entities[trace.entityNum];
 			if (hapless_victim && hapless_victim->takedamage && ent->damage)
 			{
 				G_Damage(hapless_victim, ent, ent->nextTrain->activator, fwd, trace.endpos, ent->damage,
@@ -1519,7 +1519,7 @@ static qboolean pas_find_enemies(gentity_t* self)
 		trace_t tr;
 		gi.trace(&tr, org2, nullptr, nullptr, org, self->s.number, MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 
-		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entity_num == target->s.number))
+		if (!tr.allsolid && !tr.startsolid && (tr.fraction == 1.0 || tr.entityNum == target->s.number))
 		{
 			vec3_t enemy_dir;
 			// Only acquire if have a clear shot, Is it in range and closer than our best?
@@ -1594,7 +1594,7 @@ void pas_adjust_enemy(gentity_t* ent)
 		trace_t tr;
 		gi.trace(&tr, org2, nullptr, nullptr, org, ent->s.number, MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 
-		if (tr.allsolid || tr.startsolid || tr.entity_num != ent->enemy->s.number)
+		if (tr.allsolid || tr.startsolid || tr.entityNum != ent->enemy->s.number)
 		{
 			// trace failed
 			keep = qfalse;
@@ -1915,7 +1915,7 @@ qboolean place_portable_assault_sentry(gentity_t* self, vec3_t origin, vec3_t an
 	gi.trace(&tr, tr.endpos, mins, maxs, pos, self->s.number, MASK_SHOT, static_cast<EG2_Collision>(0), 0);
 
 	// check for a decent surface, meaning mostly flat...should probably also check surface parms so we don't set us down on lava or something.
-	if (!tr.startsolid && !tr.allsolid && tr.fraction < 1.0f && tr.plane.normal[2] > 0.9f && tr.entity_num >=
+	if (!tr.startsolid && !tr.allsolid && tr.fraction < 1.0f && tr.plane.normal[2] > 0.9f && tr.entityNum >=
 		ENTITYNUM_WORLD)
 	{
 		// Then spawn us if it seems cool.

@@ -1320,10 +1320,10 @@ void FinishSpawningItem(gentity_t* ent)
 			static_cast<EG2_Collision>(0), 0);
 		if (tr.startsolid)
 		{
-			if (&g_entities[tr.entity_num] != nullptr)
+			if (&g_entities[tr.entityNum] != nullptr)
 			{
 				gi.Printf(S_COLOR_RED"FinishSpawningItem: removing %s startsolid at %s (in a %s)\n", ent->classname,
-					vtos(ent->s.origin), g_entities[tr.entity_num].classname);
+					vtos(ent->s.origin), g_entities[tr.entityNum].classname);
 			}
 			else
 			{
@@ -1341,7 +1341,7 @@ void FinishSpawningItem(gentity_t* ent)
 		}
 
 		// allow to ride movers
-		ent->s.groundEntityNum = tr.entity_num;
+		ent->s.groundEntityNum = tr.entityNum;
 
 		G_SetOrigin(ent, tr.endpos);
 	}
@@ -1548,7 +1548,7 @@ void G_BounceItem(gentity_t* ent, trace_t* trace)
 	{
 		//stop
 		G_SetOrigin(ent, trace->endpos);
-		ent->s.groundEntityNum = trace->entity_num;
+		ent->s.groundEntityNum = trace->entityNum;
 		if (droppedSaber)
 		{
 			//a dropped saber item

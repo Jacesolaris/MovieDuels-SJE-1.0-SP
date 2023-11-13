@@ -656,7 +656,7 @@ using srfTriangles_t = struct {
 	//	float			radius;
 
 		// triangle definitions
-	int				num_indexes;
+	int				numIndexes;
 	int* indexes;
 
 	int				numVerts;
@@ -807,8 +807,9 @@ using model_t = struct model_s {
 
 void		R_ModelInit();
 model_t* R_GetModelByHandle(qhandle_t index);
-void		R_LerpTag(orientation_t* tag, qhandle_t handle, int start_frame, int end_frame,
-	float frac, const char* tag_name);
+
+int R_LerpTag(orientation_t* tag, const qhandle_t handle, const int startFrame, const int endFrame, const float frac, const char* tagName);
+
 void		R_ModelBounds(qhandle_t handle, vec3_t mins, vec3_t maxs);
 
 void		R_Modellist_f();
@@ -1207,7 +1208,7 @@ void R_AddLightningBoltSurfaces(trRefEntity_t* e);
 
 void R_AddPolygonSurfaces();
 
-void R_DecomposeSort(unsigned sort, int* entity_num, shader_t** shader,
+void R_DecomposeSort(unsigned sort, int* entityNum, shader_t** shader,
 	int* fogNum, int* dlight_map);
 
 void R_AddDrawSurf(const surfaceType_t* surface, const shader_t* shader, int fog_index, int dlight_map);
@@ -1388,7 +1389,7 @@ struct shaderCommands_s
 
 	int			dlightBits;	// or together of all vertexDlightBits
 
-	int			num_indexes;
+	int			numIndexes;
 	int			numVertexes;
 
 	// info extracted from current shader
@@ -1418,7 +1419,7 @@ extern	bool		styleUpdated[MAX_LIGHT_STYLES];
 void RB_BeginSurface(shader_t* shader, int fogNum);
 void RB_EndSurface();
 void RB_CheckOverflow(int verts, int indexes);
-#define RB_CHECKOVERFLOW(v,i) if (tess.numVertexes + (v) >= SHADER_MAX_VERTEXES || tess.num_indexes + (i) >= SHADER_MAX_INDEXES ) {RB_CheckOverflow(v,i);}
+#define RB_CHECKOVERFLOW(v,i) if (tess.numVertexes + (v) >= SHADER_MAX_VERTEXES || tess.numIndexes + (i) >= SHADER_MAX_INDEXES ) {RB_CheckOverflow(v,i);}
 
 void RB_StageIteratorGeneric();
 void RB_StageIteratorSky();

@@ -1460,20 +1460,20 @@ static void CG_RegisterEffects()
 }
 
 /*
-void CG_RegisterClientModels (int entity_num)
+void CG_RegisterClientModels (int entityNum)
 
 Only call if clientInfo->infoValid is not true
 
 For players and NPCs to register their models
 */
-void CG_RegisterClientModels(const int entity_num)
+void CG_RegisterClientModels(const int entityNum)
 {
-	if (entity_num < 0 || entity_num > ENTITYNUM_WORLD)
+	if (entityNum < 0 || entityNum > ENTITYNUM_WORLD)
 	{
 		return;
 	}
 
-	const gentity_t* ent = &g_entities[entity_num];
+	const gentity_t* ent = &g_entities[entityNum];
 
 	if (!ent->client)
 	{
@@ -1489,9 +1489,9 @@ void CG_RegisterClientModels(const int entity_num)
 
 	CG_RegisterClientRenderInfo(&ent->client->clientInfo, &ent->client->renderInfo);
 
-	if (entity_num < MAX_CLIENTS)
+	if (entityNum < MAX_CLIENTS)
 	{
-		memcpy(&cgs.clientinfo[entity_num], &ent->client->clientInfo, sizeof(clientInfo_t));
+		memcpy(&cgs.clientinfo[entityNum], &ent->client->clientInfo, sizeof(clientInfo_t));
 	}
 }
 
@@ -3225,7 +3225,7 @@ void CG_Init(const int serverCommandSequence)
 	cgs.media.whiteShader = cgi_R_RegisterShader("white");
 	cgs.media.loadTick = cgi_R_RegisterShaderNoMip("gfx/hud/load_tick");
 	cgs.media.loadTickCap = cgi_R_RegisterShaderNoMip("gfx/hud/load_tick_cap");
-	cgs.media.load_SerenitySaberSystems = cgi_R_RegisterShaderNoMip("gfx/hud/load_SerenitySaberSystems");
+	//cgs.media.load_SerenitySaberSystems = cgi_R_RegisterShaderNoMip("gfx/hud/load_SerenitySaberSystems");
 
 	const char* force_icon_files[NUM_FORCE_POWERS] =
 	{

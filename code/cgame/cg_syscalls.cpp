@@ -213,9 +213,9 @@ void cgi_S_StopSounds()
 	Q_syscall(CG_S_STOPSOUNDS);
 }
 
-void cgi_S_StartSound(const vec3_t origin, const int entity_num, const int entchannel, const sfxHandle_t sfx)
+void cgi_S_StartSound(const vec3_t origin, const int entityNum, const int entchannel, const sfxHandle_t sfx)
 {
-	Q_syscall(CG_S_STARTSOUND, origin, entity_num, entchannel, sfx);
+	Q_syscall(CG_S_STARTSOUND, origin, entityNum, entchannel, sfx);
 }
 
 void cgi_AS_ParseSets()
@@ -253,20 +253,20 @@ void cgi_S_ClearLoopingSounds()
 	Q_syscall(CG_S_CLEARLOOPINGSOUNDS);
 }
 
-void cgi_S_AddLoopingSound(const int entity_num, const vec3_t origin, const vec3_t velocity, const sfxHandle_t sfx,
+void cgi_S_AddLoopingSound(const int entityNum, const vec3_t origin, const vec3_t velocity, const sfxHandle_t sfx,
 	const soundChannel_t chan)
 {
-	Q_syscall(CG_S_ADDLOOPINGSOUND, entity_num, origin, velocity, sfx, chan);
+	Q_syscall(CG_S_ADDLOOPINGSOUND, entityNum, origin, velocity, sfx, chan);
 }
 
-void cgi_S_UpdateEntityPosition(const int entity_num, const vec3_t origin)
+void cgi_S_UpdateEntityPosition(const int entityNum, const vec3_t origin)
 {
-	Q_syscall(CG_S_UPDATEENTITYPOSITION, entity_num, origin);
+	Q_syscall(CG_S_UPDATEENTITYPOSITION, entityNum, origin);
 }
 
-void cgi_S_Respatialize(const int entity_num, const vec3_t origin, vec3_t axis[3], const qboolean inwater)
+void cgi_S_Respatialize(const int entityNum, const vec3_t origin, vec3_t axis[3], const qboolean inwater)
 {
-	Q_syscall(CG_S_RESPATIALIZE, entity_num, origin, axis, inwater);
+	Q_syscall(CG_S_RESPATIALIZE, entityNum, origin, axis, inwater);
 }
 
 sfxHandle_t cgi_S_RegisterSound(const char* sample)
@@ -410,10 +410,10 @@ void cgi_R_ModelBounds(const qhandle_t model, vec3_t mins, vec3_t maxs)
 	Q_syscall(CG_R_MODELBOUNDS, model, mins, maxs);
 }
 
-void cgi_R_LerpTag(orientation_t* tag, const qhandle_t mod, const int start_frame, const int end_frame,
+void cgi_R_LerpTag(orientation_t* tag, const qhandle_t mod, const int startFrame, const int endFrame,
 	const float frac, const char* tagName)
 {
-	Q_syscall(CG_R_LERPTAG, tag, mod, start_frame, end_frame, PASSFLOAT(frac), tagName);
+	Q_syscall(CG_R_LERPTAG, tag, mod, startFrame, endFrame, PASSFLOAT(frac), tagName);
 }
 
 void cgi_R_DrawRotatePic(const float x, const float y, const float w, const float h,

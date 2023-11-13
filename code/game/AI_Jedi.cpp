@@ -104,7 +104,7 @@ extern float NPC_EnemyRangeFromBolt(int bolt_index);
 extern qboolean WP_SabersCheckLock2(gentity_t* attacker, gentity_t* defender, sabersLockMode_t lock_mode);
 extern void G_Knockdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
 	qboolean break_saber_lock);
-extern qboolean G_EntIsBreakable(int entity_num, const gentity_t* breaker);
+extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
 extern qboolean PM_LockedAnim(int anim);
 extern qboolean G_ClearLineOfSight(const vec3_t point1, const vec3_t point2, int ignore, int clipmask);
 extern qboolean PM_WalkingOrRunningAnim(int anim);
@@ -759,13 +759,13 @@ void tavion_scepter_damage()
 			if (trace.fraction < 1.0f)
 			{
 				//hit something
-				gentity_t* trace_ent = &g_entities[trace.entity_num];
+				gentity_t* trace_ent = &g_entities[trace.entityNum];
 
 				//UGH
 				G_PlayEffect(G_EffectIndex("scepter/impact.efx"), trace.endpos, trace.plane.normal);
 
 				if (trace_ent->takedamage
-					&& trace.entity_num != last_hit
+					&& trace.entityNum != last_hit
 					&& (!trace_ent->client || trace_ent == NPC->enemy || trace_ent->client->NPC_class != NPC->client->
 						NPC_class))
 				{
@@ -791,7 +791,7 @@ void tavion_scepter_damage()
 						}
 					}
 					hit = qtrue;
-					last_hit = trace.entity_num;
+					last_hit = trace.entityNum;
 				}
 			}
 		}
@@ -1401,7 +1401,7 @@ static qboolean jedi_clear_path_to_spot(vec3_t dest, const int impact_ent_num)
 	if (trace.fraction < 1.0f)
 	{
 		//hit something
-		if (impact_ent_num != ENTITYNUM_NONE && trace.entity_num == impact_ent_num)
+		if (impact_ent_num != ENTITYNUM_NONE && trace.entityNum == impact_ent_num)
 		{
 			//hit what we're going after
 			return qtrue;
@@ -1499,7 +1499,7 @@ qboolean npc_move_dir_clear(const int forwardmove, const int rightmove, const qb
 	if (trace.fraction < 0.6)
 	{
 		//Going to bump into something very close, don't move, just turn
-		if (NPC->enemy && trace.entity_num == NPC->enemy->s.number || NPCInfo->goalEntity && trace.entity_num ==
+		if (NPC->enemy && trace.entityNum == NPC->enemy->s.number || NPCInfo->goalEntity && trace.entityNum ==
 			NPCInfo->goalEntity->s.number)
 		{
 			//okay to bump into enemy or goal
@@ -1509,7 +1509,7 @@ qboolean npc_move_dir_clear(const int forwardmove, const int rightmove, const qb
 		if (reset)
 		{
 			//actually want to screw with the ucmd
-			//gi.Printf( "%d avoiding walk into wall (entnum %d)\n", level.time, trace.entity_num );
+			//gi.Printf( "%d avoiding walk into wall (entnum %d)\n", level.time, trace.entityNum );
 			ucmd.forwardmove = 0;
 			ucmd.rightmove = 0;
 			VectorClear(NPC->client->ps.moveDir);
@@ -1558,7 +1558,7 @@ qboolean npc_move_dir_clear(const int forwardmove, const int rightmove, const qb
 	{
 		//Not going off a cliff
 		//FIXME: what if plane.normal is sloped?  We'll slide off, not land... plus this doesn't account for slide-movement...
-		//gi.Printf( "%d walk off cliff okay will hit entnum %d at dropdist of %4.2f\n", level.time, trace.entity_num, (trace.fraction*bottom_max) );
+		//gi.Printf( "%d walk off cliff okay will hit entnum %d at dropdist of %4.2f\n", level.time, trace.entityNum, (trace.fraction*bottom_max) );
 		return qtrue;
 	}
 
@@ -4481,8 +4481,8 @@ evasionType_t jedi_check_flip_evasions(gentity_t* self, const float rightdot)
 			vec3_t ideal_normal;
 			VectorSubtract(self->currentOrigin, traceto, ideal_normal);
 			VectorNormalize(ideal_normal);
-			const gentity_t* trace_ent = &g_entities[trace.entity_num];
-			if (trace.entity_num < ENTITYNUM_WORLD && trace_ent && trace_ent->s.solid != SOLID_BMODEL || DotProduct(
+			const gentity_t* trace_ent = &g_entities[trace.entityNum];
+			if (trace.entityNum < ENTITYNUM_WORLD && trace_ent && trace_ent->s.solid != SOLID_BMODEL || DotProduct(
 				trace.plane.normal, ideal_normal) > 0.7f)
 			{
 				//it's a ent of some sort or it's a wall roughly facing us
@@ -6858,7 +6858,7 @@ gentity_t* jedi_find_enemy_in_cone(const gentity_t* self, gentity_t* fallback, c
 		gi.trace(&tr, self->currentOrigin, vec3_origin, vec3_origin, check->currentOrigin, self->s.number, MASK_SHOT,
 			static_cast<EG2_Collision>(0), 0);
 
-		if (tr.fraction < 1.0f && tr.entity_num != check->s.number)
+		if (tr.fraction < 1.0f && tr.entityNum != check->s.number)
 		{
 			//must have clear shot
 			continue;
@@ -8149,10 +8149,10 @@ void jedi_check_jumps()
 	if (trace.allsolid || trace.startsolid || trace.fraction < 1.0f)
 	{
 		//hit ground!
-		if (trace.entity_num < ENTITYNUM_WORLD)
+		if (trace.entityNum < ENTITYNUM_WORLD)
 		{
 			//landed on an ent
-			const gentity_t* groundEnt = &g_entities[trace.entity_num];
+			const gentity_t* groundEnt = &g_entities[trace.entityNum];
 			if (groundEnt->svFlags & SVF_GLASS_BRUSH)
 			{
 				//don't land on breakable glass!

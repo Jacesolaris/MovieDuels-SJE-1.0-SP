@@ -99,9 +99,9 @@ void SFxHelper::CloseFile(const fileHandle_t fh)
 }
 
 //------------------------------------------------------
-void SFxHelper::PlaySound(const vec3_t org, const int entity_num, const int entchannel, const int sfx_handle)
+void SFxHelper::PlaySound(const vec3_t org, const int entityNum, const int entchannel, const int sfx_handle)
 {
-	cgi_S_StartSound(org, entity_num, entchannel, sfx_handle);
+	cgi_S_StartSound(org, entityNum, entchannel, sfx_handle);
 }
 
 //------------------------------------------------------
