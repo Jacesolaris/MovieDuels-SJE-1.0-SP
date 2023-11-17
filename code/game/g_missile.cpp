@@ -907,7 +907,6 @@ void G_BoltBlockMissile(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			angs[YAW] += Q_irand(-slop_factor, slop_factor);
 			AngleVectors(angs, forward, nullptr, nullptr);
 		}
-		reflected = qtrue;
 		VectorCopy(forward, bounce_dir);
 
 		if (d_JediAI->integer || d_blockinfo->integer || g_DebugSaberCombat->integer)
@@ -945,6 +944,7 @@ void G_BoltBlockMissile(gentity_t* ent, gentity_t* missile, vec3_t forward)
 		{
 			WP_ForcePowerDrain(blocker, FP_SABER_DEFENSE, force_points_used_used);
 		}
+		reflected = qtrue;
 	}
 	else if (bolt_block_reflection && !npc_reflection) //GOES TO ENEMY
 	{
@@ -996,7 +996,6 @@ void G_BoltBlockMissile(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			}
 
 			VectorNormalize(bounce_dir);
-			reflected = qtrue;
 
 			if (blocker->client->ps.forcePower < BLOCKPOINTS_THIRTY)
 			{
@@ -1033,6 +1032,7 @@ void G_BoltBlockMissile(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			{
 				Com_Printf(S_COLOR_GREEN"JKA Mode Bolt Blocking to enemy\n");
 			}
+			reflected = qtrue;
 		}
 	}
 	else if (npc_reflection && !saber_block_reflection && !bolt_block_reflection) //GOES TO ENEMY
@@ -1086,7 +1086,6 @@ void G_BoltBlockMissile(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			}
 
 			VectorNormalize(bounce_dir);
-			reflected = qtrue;
 
 			if (blocker->client->ps.forcePower < BLOCKPOINTS_THIRTY)
 			{
@@ -1123,6 +1122,7 @@ void G_BoltBlockMissile(gentity_t* ent, gentity_t* missile, vec3_t forward)
 			{
 				Com_Printf(S_COLOR_CYAN"JKA Mode G_ReflectMissileNPC\n");
 			}
+			reflected = qtrue;
 		}
 	}
 
@@ -3586,7 +3586,6 @@ void wp_handle_bolt_block_sje_blockpoints(gentity_t* ent, gentity_t* missile, ve
 			angs[YAW] += Q_irand(-slop_factor, slop_factor);
 			AngleVectors(angs, forward, nullptr, nullptr);
 		}
-		reflected = qtrue;
 		VectorCopy(forward, bounce_dir);
 
 		if (d_JediAI->integer || d_blockinfo->integer || g_DebugSaberCombat->integer)
@@ -3634,6 +3633,7 @@ void wp_handle_bolt_block_sje_blockpoints(gentity_t* ent, gentity_t* missile, ve
 		{
 			WP_BlockPointsDrain(blocker, block_points_used_used);
 		}
+		reflected = qtrue;
 	}
 	else if (bolt_block_reflection && !npc_reflection) //GOES TO ENEMY
 	{
@@ -3685,7 +3685,6 @@ void wp_handle_bolt_block_sje_blockpoints(gentity_t* ent, gentity_t* missile, ve
 			}
 
 			VectorNormalize(bounce_dir);
-			reflected = qtrue;
 
 			if (blocker->client->ps.blockPoints < BLOCKPOINTS_THIRTY)
 			{
@@ -3732,6 +3731,7 @@ void wp_handle_bolt_block_sje_blockpoints(gentity_t* ent, gentity_t* missile, ve
 			{
 				Com_Printf(S_COLOR_GREEN"Advanced MD Mode Bolt Blocking to enemy\n");
 			}
+			reflected = qtrue;
 		}
 	}
 	else if (npc_reflection && !saber_block_reflection && !bolt_block_reflection) //GOES TO ENEMY
@@ -3785,7 +3785,6 @@ void wp_handle_bolt_block_sje_blockpoints(gentity_t* ent, gentity_t* missile, ve
 			}
 
 			VectorNormalize(bounce_dir);
-			reflected = qtrue;
 
 			if (blocker->client->ps.blockPoints < BLOCKPOINTS_THIRTY)
 			{
@@ -3838,6 +3837,7 @@ void wp_handle_bolt_block_sje_blockpoints(gentity_t* ent, gentity_t* missile, ve
 			{
 				Com_Printf(S_COLOR_GREEN"Advanced MD Mode G_ReflectMissileNPC\n");
 			}
+			reflected = qtrue;
 		}
 	}
 
@@ -4076,7 +4076,6 @@ void wp_handle_bolt_block_sje_forcepoints(gentity_t* ent, gentity_t* missile, ve
 			angs[YAW] += Q_irand(-slop_factor, slop_factor);
 			AngleVectors(angs, forward, nullptr, nullptr);
 		}
-		reflected = qtrue;
 		VectorCopy(forward, bounce_dir);
 
 		if (d_JediAI->integer || d_blockinfo->integer || g_DebugSaberCombat->integer)
@@ -4124,6 +4123,7 @@ void wp_handle_bolt_block_sje_forcepoints(gentity_t* ent, gentity_t* missile, ve
 		{
 			WP_ForcePowerDrain(blocker, FP_SABER_DEFENSE, force_points_used_used);
 		}
+		reflected = qtrue;
 	}
 	else if (bolt_block_reflection && !npc_reflection) //GOES TO ENEMY
 	{
@@ -4175,7 +4175,6 @@ void wp_handle_bolt_block_sje_forcepoints(gentity_t* ent, gentity_t* missile, ve
 			}
 
 			VectorNormalize(bounce_dir);
-			reflected = qtrue;
 
 			if (blocker->client->ps.forcePower < BLOCKPOINTS_THIRTY)
 			{
@@ -4222,6 +4221,7 @@ void wp_handle_bolt_block_sje_forcepoints(gentity_t* ent, gentity_t* missile, ve
 			{
 				Com_Printf(S_COLOR_GREEN"MD Mode Bolt Blocking to enemy\n");
 			}
+			reflected = qtrue;
 		}
 	}
 	else if (npc_reflection && !saber_block_reflection && !bolt_block_reflection) //GOES TO ENEMY
@@ -4275,7 +4275,6 @@ void wp_handle_bolt_block_sje_forcepoints(gentity_t* ent, gentity_t* missile, ve
 			}
 
 			VectorNormalize(bounce_dir);
-			reflected = qtrue;
 
 			if (blocker->client->ps.forcePower < BLOCKPOINTS_THIRTY)
 			{
@@ -4328,6 +4327,7 @@ void wp_handle_bolt_block_sje_forcepoints(gentity_t* ent, gentity_t* missile, ve
 			{
 				Com_Printf(S_COLOR_CYAN"MD Mode G_ReflectMissileNPC\n");
 			}
+			reflected = qtrue;
 		}
 	}
 

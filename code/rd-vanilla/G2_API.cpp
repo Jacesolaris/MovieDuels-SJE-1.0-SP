@@ -261,7 +261,7 @@ public:
 };
 
 #include "assert.h"
-ErrorReporter& G2APIError()
+static ErrorReporter& G2APIError()
 {
 	static ErrorReporter singleton("G2API");
 	return singleton;
@@ -684,12 +684,12 @@ std::vector<CGhoul2Info>& DebugG2Info(int handle)
 	return ((Ghoul2InfoArray*)(&TheGhoul2InfoArray()))->GetDebug(handle);
 }
 
-CGhoul2Info& DebugG2InfoI(int handle, int item)
+static CGhoul2Info& DebugG2InfoI(int handle, int item)
 {
 	return ((Ghoul2InfoArray*)(&TheGhoul2InfoArray()))->GetDebug(handle)[item];
 }
 
-void TestAllGhoul2Anims()
+static void TestAllGhoul2Anims()
 {
 	((Ghoul2InfoArray*)(&TheGhoul2InfoArray()))->TestAllAnims();
 }
