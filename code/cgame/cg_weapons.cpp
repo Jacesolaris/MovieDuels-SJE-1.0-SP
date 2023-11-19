@@ -52,7 +52,7 @@ const char* CG_DisplayBoxedText(int iBoxX, int iBoxY, int iBoxWidth, int iBoxHei
 	const char* psText, int iFontHandle, float fScale,
 	const vec4_t v4Color);
 extern int fire_deley_time();
-extern qboolean is_holding_reloadable_gun(const gentity_t* ent);
+extern qboolean IsHoldingReloadableGun(const gentity_t* ent);
 
 /*
 ==========================
@@ -4397,7 +4397,7 @@ void CG_NextWeapon_f()
 		return;
 	}
 
-	if (g_entities[0].client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWELVE && is_holding_reloadable_gun(cg_entities[0].gent))
+	if (g_entities[0].client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWELVE && IsHoldingReloadableGun(cg_entities[0].gent))
 	{
 		if (cg_entities[0].gent->s.weapon == WP_BRYAR_PISTOL ||
 			cg_entities[0].gent->s.weapon == WP_BLASTER_PISTOL ||
@@ -4657,7 +4657,7 @@ void CG_PrevWeapon_f()
 		return;
 	}
 
-	if (g_entities[0].client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWELVE && is_holding_reloadable_gun(cg_entities[0].gent))
+	if (g_entities[0].client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWELVE && IsHoldingReloadableGun(cg_entities[0].gent))
 	{
 		if (cg_entities[0].gent->s.weapon == WP_BRYAR_PISTOL ||
 			cg_entities[0].gent->s.weapon == WP_BLASTER_PISTOL ||
@@ -4819,7 +4819,7 @@ void CG_ChangeWeapon(const int num)
 		return;
 	}
 
-	if (player->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWELVE && is_holding_reloadable_gun(cg_entities[0].gent))
+	if (player->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWELVE && IsHoldingReloadableGun(cg_entities[0].gent))
 	{
 		if (cg_entities[0].gent->s.weapon == WP_BRYAR_PISTOL ||
 			cg_entities[0].gent->s.weapon == WP_BLASTER_PISTOL ||
@@ -4956,7 +4956,7 @@ void CG_Weapon_f()
 		return;
 	}
 
-	if (g_entities[0].client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_TWELVE && is_holding_reloadable_gun(cg_entities[0].gent))
+	if (g_entities[0].client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_TWELVE && IsHoldingReloadableGun(cg_entities[0].gent))
 	{
 		if (cg_entities[0].gent->s.weapon == WP_BRYAR_PISTOL ||
 			cg_entities[0].gent->s.weapon == WP_BLASTER_PISTOL ||

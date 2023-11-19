@@ -82,11 +82,11 @@ using CachedEndianedModelBinary_t = CachedEndianedModelBinary_s;
 using CachedModels_t = std::map <sstring_t, CachedEndianedModelBinary_t>;
 CachedModels_t* CachedModels = nullptr;	// the important cache item.
 
-void RE_RegisterModels_StoreShaderRequest(const char* ps_model_file_name, const char* ps_shader_name, const int* pi_shader_index_poke)
+void RE_RegisterModels_StoreShaderRequest(const char* psModelFileName, const char* ps_shader_name, const int* pi_shader_index_poke)
 {
 	char s_model_name[MAX_QPATH];
 
-	Q_strncpyz(s_model_name, ps_model_file_name, sizeof s_model_name);
+	Q_strncpyz(s_model_name, psModelFileName, sizeof s_model_name);
 	Q_strlwr(s_model_name);
 
 	CachedEndianedModelBinary_t& model_bin = (*CachedModels)[s_model_name];
@@ -130,11 +130,11 @@ static const byte FakeGLAFile[] =
 // returns qtrue if loaded, and sets the supplied qbool to true if it was from cache (instead of disk)
 //   (which we need to know to avoid LittleLong()ing everything again (well, the Mac needs to know anyway)...
 //
-qboolean RE_RegisterModels_GetDiskFile(const char* ps_model_file_name, void** ppv_buffer, qboolean* pqb_already_cached)
+qboolean RE_RegisterModels_GetDiskFile(const char* psModelFileName, void** ppv_buffer, qboolean* pqb_already_cached)
 {
 	char s_model_name[MAX_QPATH];
 
-	Q_strncpyz(s_model_name, ps_model_file_name, sizeof s_model_name);
+	Q_strncpyz(s_model_name, psModelFileName, sizeof s_model_name);
 	Q_strlwr(s_model_name);
 
 	const CachedEndianedModelBinary_t& ModelBin = (*CachedModels)[s_model_name];
@@ -146,7 +146,7 @@ qboolean RE_RegisterModels_GetDiskFile(const char* ps_model_file_name, void** pp
 
 			// special case intercept first...
 			//
-		if (strcmp(sDEFAULT_GLA_NAME ".gla", ps_model_file_name) == 0)
+		if (strcmp(sDEFAULT_GLA_NAME ".gla", psModelFileName) == 0)
 		{
 			// return fake params as though it was found on disk...
 			//
@@ -169,11 +169,11 @@ qboolean RE_RegisterModels_GetDiskFile(const char* ps_model_file_name, void** pp
 
 // if return == true, no further action needed by the caller...
 //
-void* RE_RegisterModels_Malloc(const int iSize, void* pv_disk_buffer_if_just_loaded, const char* ps_model_file_name, qboolean* pqb_already_found, const memtag_t eTag)
+void* RE_RegisterModels_Malloc(const int iSize, void* pvDiskBufferIfJustLoaded, const char* psModelFileName, qboolean* pqbAlreadyFound, const memtag_t eTag)
 {
 	char s_model_name[MAX_QPATH];
 
-	Q_strncpyz(s_model_name, ps_model_file_name, sizeof s_model_name);
+	Q_strncpyz(s_model_name, psModelFileName, sizeof s_model_name);
 	Q_strlwr(s_model_name);
 
 	CachedEndianedModelBinary_t& model_bin = (*CachedModels)[s_model_name];
@@ -187,18 +187,18 @@ void* RE_RegisterModels_Malloc(const int iSize, void* pv_disk_buffer_if_just_loa
 		//
 		// ... groan, but not if doing a limb hierarchy creation (some VV stuff?), in which case it's NULL
 		//
-		if (pv_disk_buffer_if_just_loaded)
+		if (pvDiskBufferIfJustLoaded)
 		{
-			R_MorphMallocTag(pv_disk_buffer_if_just_loaded, eTag);
+			R_MorphMallocTag(pvDiskBufferIfJustLoaded, eTag);
 		}
 		else
 		{
-			pv_disk_buffer_if_just_loaded = R_Malloc(iSize, eTag, qfalse);
+			pvDiskBufferIfJustLoaded = R_Malloc(iSize, eTag, qfalse);
 		}
 
-		model_bin.pModelDiskImage = pv_disk_buffer_if_just_loaded;
+		model_bin.pModelDiskImage = pvDiskBufferIfJustLoaded;
 		model_bin.iAllocSize = iSize;
-		*pqb_already_found = qfalse;
+		*pqbAlreadyFound = qfalse;
 	}
 	else
 	{
@@ -223,7 +223,7 @@ void* RE_RegisterModels_Malloc(const int iSize, void* pv_disk_buffer_if_just_loa
 				*pi_shader_poke_ptr = sh->index;
 			}
 		}
-		*pqb_already_found = qtrue;	// tell caller not to re-Endian or re-Shader this binary
+		*pqbAlreadyFound = qtrue;	// tell caller not to re-Endian or re-Shader this binary
 	}
 
 	model_bin.iLastLevelUsedOn = RE_RegisterMedia_GetLevel();

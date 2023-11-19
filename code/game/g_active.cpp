@@ -7835,7 +7835,7 @@ int fire_deley_time()
 	return 500;
 }
 
-qboolean is_holding_reloadable_gun(const gentity_t* ent)
+qboolean IsHoldingReloadableGun(const gentity_t* ent)
 {
 	switch (ent->s.weapon)
 	{
@@ -7910,7 +7910,7 @@ int magazine_size(const gentity_t* ent, const int ammo)
 	return -1;
 }
 
-void wp_reload_gun(gentity_t* ent)
+void WP_ReloadGun(gentity_t* ent)
 {
 	if (ent->reloadCooldown > level.time)
 	{
@@ -7927,7 +7927,7 @@ void wp_reload_gun(gentity_t* ent)
 		return;
 	}
 
-	if (is_holding_reloadable_gun(ent))
+	if (IsHoldingReloadableGun(ent))
 	{
 		if (ent->client->ps.BlasterAttackChainCount > BLASTERMISHAPLEVEL_TWELVE)
 		{
@@ -8159,7 +8159,7 @@ void wp_reload_gun(gentity_t* ent)
 	}
 }
 
-void cancel_reload(gentity_t* ent)
+void CancelReload(gentity_t* ent)
 {
 	ent->reloadTime = 0;
 	ent->reloadCooldown = level.time + 500;

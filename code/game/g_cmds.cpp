@@ -1789,9 +1789,9 @@ void G_TauntSound(const gentity_t* ent, const int taunt)
 
 extern qboolean PM_CrouchAnim(int anim);
 extern qboolean Block_Button_Held(const gentity_t* defender);
-extern qboolean is_holding_reloadable_gun(const gentity_t* ent);
-extern void wp_reload_gun(gentity_t* ent);
-extern void cancel_reload(gentity_t* ent);
+extern qboolean IsHoldingReloadableGun(const gentity_t* ent);
+extern void WP_ReloadGun(gentity_t* ent);
+extern void CancelReload(gentity_t* ent);
 extern qboolean npc_is_mando(const gentity_t* self);
 extern qboolean PM_RestAnim(int anim);
 
@@ -2427,15 +2427,15 @@ void G_SetTauntAnim(gentity_t* ent, const int taunt)
 			}
 			break;
 		case TAUNT_RELOAD:
-			if (is_holding_reloadable_gun(ent) && g_AllowReload->integer == 1) //SP
+			if (IsHoldingReloadableGun(ent) && g_AllowReload->integer == 1) //SP
 			{
 				if (ent->reloadTime > 0)
 				{
-					cancel_reload(ent);
+					CancelReload(ent);
 				}
 				else
 				{
-					wp_reload_gun(ent);
+					WP_ReloadGun(ent);
 				}
 				break;
 			}
@@ -2586,13 +2586,23 @@ void G_SetsaberdownorAnim(gentity_t* ent)
 			}
 		}
 	}
-	else if (ent->client->ps.weapon != WP_SABER)
-	{
-		G_SetTauntAnim(ent, TAUNT_TAUNT);
-	}
 	else
 	{
-		G_SetTauntAnim(ent, TAUNT_TAUNT);
+		if (IsHoldingReloadableGun(ent)) //SP
+		{
+			if (ent->reloadTime > 0)
+			{
+				CancelReload(ent);
+			}
+			else
+			{
+				WP_ReloadGun(ent);
+			}
+		}
+		else
+		{
+			G_SetTauntAnim(ent, TAUNT_TAUNT);
+		}
 	}
 }
 
@@ -2924,7 +2934,7 @@ void ClientCommand(const int client_num)
 	}
 	else if (Q_stricmp(cmd, "saberdown") == 0)
 	{
-		if (is_holding_reloadable_gun(ent) && g_AllowReload->integer == 1) //SP
+		if (IsHoldingReloadableGun(ent) && g_AllowReload->integer == 1) //SP
 		{
 			ent = G_GetSelfForPlayerCmd();
 			G_SetTauntAnim(ent, TAUNT_RELOAD);

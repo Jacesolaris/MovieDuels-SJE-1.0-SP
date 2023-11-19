@@ -1499,7 +1499,7 @@ extern qboolean PM_RunningAnim(int anim);
 extern qboolean PM_WalkingAnim(int anim);
 extern int fire_deley_time();
 extern void CG_ChangeWeapon(int num);
-extern qboolean is_holding_reloadable_gun(const gentity_t* ent);
+extern qboolean IsHoldingReloadableGun(const gentity_t* ent);
 
 //---------------------------------------------------------
 void FireWeapon(gentity_t* ent, const qboolean alt_fire)
@@ -1527,7 +1527,7 @@ void FireWeapon(gentity_t* ent, const qboolean alt_fire)
 		return;
 	}
 
-	if (ent->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_FIFTEEN && is_holding_reloadable_gun(ent))
+	if (ent->client->ps.BlasterAttackChainCount >= BLASTERMISHAPLEVEL_FIFTEEN && IsHoldingReloadableGun(ent))
 	{
 		if (ent->s.weapon == WP_BRYAR_PISTOL ||
 			ent->s.weapon == WP_BLASTER_PISTOL ||

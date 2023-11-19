@@ -1286,14 +1286,14 @@ void		RE_SetWorldVisData(const byte* vis);
 qhandle_t	RE_RegisterModel(const char* name);
 qhandle_t	RE_RegisterSkin(const char* name);
 int			RE_GetAnimationCFG(const char* ps_cfg_filename, char* ps_dest, int i_dest_size);
-void		RE_Shutdown(qboolean destroyWindow);
+void RE_Shutdown(const qboolean destroyWindow, const qboolean restarting);
 
 void		RE_RegisterMedia_LevelLoadBegin(const char* ps_map_name, ForceReload_e e_force_reload, qboolean b_allow_screen_dissolve);
 void		RE_RegisterMedia_LevelLoadEnd();
 int			RE_RegisterMedia_GetLevel();
 qboolean	RE_RegisterModels_LevelLoadEnd(qboolean b_delete_everything_not_used_this_level = qfalse);
-void* RE_RegisterModels_Malloc(int iSize, void* pv_disk_buffer_if_just_loaded, const char* ps_model_file_name, qboolean* pqb_already_found, memtag_t eTag);
-void		RE_RegisterModels_StoreShaderRequest(const char* ps_model_file_name, const char* ps_shader_name, const int* pi_shader_index_poke);
+void* RE_RegisterModels_Malloc(const int iSize, void* pvDiskBufferIfJustLoaded, const char* psModelFileName, qboolean* pqbAlreadyFound, const memtag_t eTag);
+void		RE_RegisterModels_StoreShaderRequest(const char* psModelFileName, const char* ps_shader_name, const int* pi_shader_index_poke);
 void		RE_RegisterModels_Info_f();
 qboolean	RE_RegisterImages_LevelLoadEnd();
 void		RE_RegisterImages_Info_f();
