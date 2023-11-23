@@ -2240,10 +2240,10 @@ STATIC
 ===============================================================================
 */
 
-/*QUAKED func_static (0 .5 .8) ? F_PUSH F_PULL SWITCH_SHADER CRUSHER IMPACT SOLITARY PLAYER_USE INACTIVE BROADCAST
+/*QUAKED func_static (0 .5 .8) ? F_PUSH F_PULL SWITChShader CRUSHER IMPACT SOLITARY PLAYER_USE INACTIVE BROADCAST
 F_PUSH		Will be used when you Force-Push it
 F_PULL		Will be used when you Force-Pull it
-SWITCH_SHADER	Toggle the shader anim frame between 1 and 2 when used
+SWITChShader	Toggle the shader anim frame between 1 and 2 when used
 CRUSHER		Make it do damage when it's blocked
 IMPACT		Make it do damage when it hits any entity
 SOLITARY	Can only be pushed when directly under crosshair, when pushed you shall push nothing else BUT me.
@@ -2289,7 +2289,7 @@ void SP_func_static(gentity_t* ent)
 		ent->s.radarIcon = G_IconIndex(ent->radarIcon);
 	}
 
-	if (ent->spawnflags & 4/*SWITCH_SHADER*/)
+	if (ent->spawnflags & 4/*SWITChShader*/)
 	{
 		ent->s.eFlags |= EF_SHADER_ANIM; //use frame-controlled shader anim
 		ent->s.frame = 0; //first stage of anim
@@ -2318,7 +2318,7 @@ void func_static_use(gentity_t* self, gentity_t* other, gentity_t* activator)
 {
 	G_ActivateBehavior(self, BSET_USE);
 
-	if (self->spawnflags & 4/*SWITCH_SHADER*/)
+	if (self->spawnflags & 4/*SWITChShader*/)
 	{
 		self->s.frame = self->s.frame ? 0 : 1; //toggle frame
 	}

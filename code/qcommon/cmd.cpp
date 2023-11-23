@@ -52,7 +52,7 @@ next frame.  This allows commands like:
 bind g "cmd use rocket ; +attack ; wait ; -attack ; cmd use blaster"
 ============
 */
-void Cmd_Wait_f()
+static void Cmd_Wait_f()
 {
 	if (Cmd_Argc() == 2)
 	{
@@ -114,7 +114,7 @@ Adds command text immediately after the current command
 Adds a \n to the text
 ============
 */
-void Cbuf_InsertText(const char* text)
+static void Cbuf_InsertText(const char* text)
 {
 	const int len = strlen(text) + 1;
 	if (len + cmd_text.cursize > cmd_text.maxsize)
@@ -273,7 +273,7 @@ void Cbuf_Execute()
 Cmd_Exec_f
 ===============
 */
-void Cmd_Exec_f()
+static void Cmd_Exec_f(void)
 {
 	union
 	{
@@ -286,8 +286,7 @@ void Cmd_Exec_f()
 
 	if (Cmd_Argc() != 2)
 	{
-		Com_Printf("exec%s <filename> : execute a script file%s\n",
-			quiet ? "q" : "", quiet ? " without notification" : "");
+		//Com_Printf("exec%s <filename> : execute a script file%s\n", quiet ? "q" : "", quiet ? " without notification" : "");
 		return;
 	}
 
@@ -314,7 +313,7 @@ Cmd_Vstr_f
 Inserts the current value of a variable as command text
 ===============
 */
-void Cmd_Vstr_f()
+static void Cmd_Vstr_f()
 {
 	if (Cmd_Argc() != 2)
 	{
@@ -333,7 +332,7 @@ Cmd_Echo_f
 Just prints the rest of the line to the console
 ===============
 */
-void Cmd_Echo_f()
+static void Cmd_Echo_f()
 {
 	Com_Printf("%s\n", Cmd_Args());
 }
@@ -366,7 +365,7 @@ static cmd_function_t* cmd_functions; // possible commands to execute
 Cmd_FindCommand
 ============
 */
-cmd_function_t* Cmd_FindCommand(const char* cmd_name)
+static cmd_function_t* Cmd_FindCommand(const char* cmd_name)
 {
 	for (cmd_function_t* cmd = cmd_functions; cmd; cmd = cmd->next)
 		if (!Q_stricmp(cmd_name, cmd->name))
@@ -469,7 +468,7 @@ The interpreted versions use this because
 they can't have pointers returned to them
 ============
 */
-void Cmd_ArgsFromBuffer(char* buffer, const int buffer_length)
+static void Cmd_ArgsFromBuffer(char* buffer, const int buffer_length)
 {
 	Q_strncpyz(buffer, Cmd_Args(), buffer_length);
 }
@@ -483,7 +482,7 @@ For rcon use when you want to transmit without altering quoting
 https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=543
 ============
 */
-char* Cmd_Cmd()
+static char* Cmd_Cmd()
 {
 	return cmd_cmd;
 }
@@ -805,7 +804,7 @@ void Cmd_ExecuteString(const char* text)
 Cmd_List_f
 ============
 */
-void Cmd_List_f()
+static void Cmd_List_f()
 {
 	const cmd_function_t* cmd;
 	int i, j;

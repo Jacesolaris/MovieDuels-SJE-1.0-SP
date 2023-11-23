@@ -66,6 +66,7 @@ extern cvar_t* g_dismemberment;
 extern cvar_t* g_debugSaberLock;
 extern cvar_t* g_saberLockRandomNess;
 extern cvar_t* d_slowmodeath;
+extern cvar_t* com_rend2;
 extern cvar_t* g_cheats;
 extern cvar_t* g_saberRestrictForce;
 extern cvar_t* g_saberPickuppableDroppedSabers;
@@ -634,10 +635,13 @@ void G_CreateG2HolsteredWeaponModel(gentity_t* ent, const char* ps_weapon_model,
 				}
 				else
 				{
-					gi.G2API_SetBoneAnglesOffset(&ent->ghoul2[ent->holsterModel[weapon_num]],
-						"ModView internal default",
-						angles, BONE_ANGLES_PREMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z,
-						nullptr, 0, 0, offset);
+					if (com_rend2->integer == 0) //rend2 is off
+					{
+						gi.G2API_SetBoneAnglesOffset(&ent->ghoul2[ent->holsterModel[weapon_num]],
+							"ModView internal default",
+							angles, BONE_ANGLES_PREMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z,
+							nullptr, 0, 0, offset);
+					}
 				}
 			}
 			else
@@ -726,10 +730,14 @@ void G_CreateG2AttachedWeaponModel(gentity_t* ent, const char* ps_weapon_model, 
 			{
 				constexpr vec3_t gun_angles = { 0.0f, 0.0f, 0.0f };
 				constexpr vec3_t offset = { 0.0f, 0.0f, -10.0f };
-				gi.G2API_SetSurfaceOnOff(&ent->ghoul2[ent->weaponModel[weapon_num]], "eweb_cannon", 0x00000002);
-				gi.G2API_SetBoneAnglesOffset(&ent->ghoul2[ent->weaponModel[weapon_num]], "base", gun_angles,
-					BONE_ANGLES_PREMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0,
-					offset);
+
+				if (com_rend2->integer == 0) //rend2 is off
+				{
+					gi.G2API_SetSurfaceOnOff(&ent->ghoul2[ent->weaponModel[weapon_num]], "eweb_cannon", 0x00000002);
+					gi.G2API_SetBoneAnglesOffset(&ent->ghoul2[ent->weaponModel[weapon_num]], "base", gun_angles,
+						BONE_ANGLES_PREMULT, POSITIVE_X, NEGATIVE_Y, NEGATIVE_Z, nullptr, 0, 0,
+						offset);
+				}
 			}
 			else
 			{
@@ -2239,7 +2247,7 @@ int WP_SaberInitBladeData(gentity_t* ent)
 			saberent->svFlags = SVF_USE_CURRENT_ORIGIN;
 			saberent->s.weapon = WP_SABER;
 			saberent->owner = ent;
-			saberent->s.otherEntityNum = ent->s.number;
+			saberent->s.otherentity_num = ent->s.number;
 			//clear the enemy
 			saberent->enemy = nullptr;
 
@@ -11591,7 +11599,7 @@ void WP_SaberDamageTrace_MD(gentity_t* ent, int saber_num, int blade_num)
 		if (ent->s.number < ent->client->ps.saberLockEnemy)
 		{
 			vec3_t hit_norm = { 0, 0, 1 };
-			
+
 			if (wp_sabers_intersection(ent, &g_entities[ent->client->ps.saberLockEnemy], g_saberFlashPos))
 			{
 				int index = 1;

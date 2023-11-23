@@ -414,10 +414,10 @@ void Tusken_StaffTrace()
 	const int bolt_index = gi.G2API_AddBolt(&NPC->ghoul2[NPC->weaponModel[0]], "*weapon");
 	if (bolt_index != -1)
 	{
-		const int cur_time = cg.time ? cg.time : level.time;
+		const int curTime = cg.time ? cg.time : level.time;
 		qboolean hit = qfalse;
 		int last_hit = ENTITYNUM_NONE;
-		for (int time = cur_time - 25; time <= cur_time + 25 && !hit; time += 25)
+		for (int time = curTime - 25; time <= curTime + 25 && !hit; time += 25)
 		{
 			mdxaBone_t bolt_matrix;
 			vec3_t tip, dir, base;
@@ -480,10 +480,10 @@ void Tusken_StaffTracenew(gentity_t* self)
 	const int bolt_index = gi.G2API_AddBolt(&self->ghoul2[self->weaponModel[0]], "*weapon");
 	if (bolt_index != -1)
 	{
-		const int cur_time = cg.time ? cg.time : level.time;
+		const int curTime = cg.time ? cg.time : level.time;
 		qboolean hit = qfalse;
 		int last_hit = ENTITYNUM_NONE;
-		for (int time = cur_time - 25; time <= cur_time + 25 && !hit; time += 25)
+		for (int time = curTime - 25; time <= curTime + 25 && !hit; time += 25)
 		{
 			mdxaBone_t bolt_matrix;
 			vec3_t tip, dir, base;

@@ -38,6 +38,9 @@ cvar_t* cl_debuggraph;
 cvar_t* cl_graphheight;
 cvar_t* cl_graphscale;
 cvar_t* cl_graphshift;
+extern cvar_t* cl_com_outcast;
+
+extern cvar_t* cl_com_rend2;
 
 /*
 ================
@@ -50,8 +53,8 @@ void SCR_DrawNamedPic(const float x, const float y, const float width, const flo
 {
 	assert(width != 0);
 
-	const qhandle_t h_shader = re.RegisterShader(picname);
-	re.DrawStretchPic(x, y, width, height, 0, 0, 1, 1, h_shader);
+	const qhandle_t hShader = re.RegisterShader(picname);
+	re.DrawStretchPic(x, y, width, height, 0, 0, 1, 1, hShader);
 }
 
 /*
@@ -78,9 +81,9 @@ Coordinates are 640*480 virtual values
 A width of 0 will draw with the original image width
 =================
 */
-void SCR_DrawPic(const float x, const float y, const float width, const float height, const qhandle_t h_shader)
+void SCR_DrawPic(const float x, const float y, const float width, const float height, const qhandle_t hShader)
 {
-	re.DrawStretchPic(x, y, width, height, 0, 0, 1, 1, h_shader);
+	re.DrawStretchPic(x, y, width, height, 0, 0, 1, 1, hShader);
 }
 
 /*
@@ -393,6 +396,9 @@ void SCR_Init()
 void UI_SetActiveMenu(const char* menuname, const char* menuID);
 void _UI_Refresh(int realtime);
 void UI_DrawConnect(const char* servername, const char* updateInfoString);
+extern cvar_t* cl_com_outcast;
+
+extern cvar_t* cl_com_rend2;
 
 /*
 ==================

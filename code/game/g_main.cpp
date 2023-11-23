@@ -82,31 +82,31 @@ void SetInUse(const gentity_t* ent)
 {
 	assert((uintptr_t)ent >= (uintptr_t)g_entities);
 	assert((uintptr_t)ent <= (uintptr_t)(g_entities + MAX_GENTITIES - 1));
-	const unsigned int ent_num = ent - g_entities;
-	g_entityInUseBits[ent_num / 32] |= static_cast<unsigned>(1) << (ent_num & 0x1f);
+	const unsigned int entNum = ent - g_entities;
+	g_entityInUseBits[entNum / 32] |= static_cast<unsigned>(1) << (entNum & 0x1f);
 }
 
 void ClearInUse(const gentity_t* ent)
 {
 	assert((uintptr_t)ent >= (uintptr_t)g_entities);
 	assert((uintptr_t)ent <= (uintptr_t)(g_entities + MAX_GENTITIES - 1));
-	const unsigned int ent_num = ent - g_entities;
-	g_entityInUseBits[ent_num / 32] &= ~(static_cast<unsigned>(1) << (ent_num & 0x1f));
+	const unsigned int entNum = ent - g_entities;
+	g_entityInUseBits[entNum / 32] &= ~(static_cast<unsigned>(1) << (entNum & 0x1f));
 }
 
-qboolean PInUse(const unsigned int ent_num)
+qboolean PInUse(const unsigned int entNum)
 {
-	assert(ent_num >= 0);
-	assert(ent_num < MAX_GENTITIES);
-	return static_cast<qboolean>((g_entityInUseBits[ent_num / 32] & static_cast<unsigned>(1) << (ent_num & 0x1f)) != 0);
+	assert(entNum >= 0);
+	assert(entNum < MAX_GENTITIES);
+	return static_cast<qboolean>((g_entityInUseBits[entNum / 32] & static_cast<unsigned>(1) << (entNum & 0x1f)) != 0);
 }
 
 /*qboolean PInUse2(gentity_t *ent)
 {
 	assert(((unsigned int)ent)>=(unsigned int)g_entities);
 	assert(((unsigned int)ent)<=(unsigned int)(g_entities+MAX_GENTITIES-1));
-	unsigned int ent_num=ent-g_entities;
-	return((g_entityInUseBits[ent_num/32]&(((unsigned int)1)<<(ent_num&0x1f)))!=0);
+	unsigned int entNum=ent-g_entities;
+	return((g_entityInUseBits[entNum/32]&(((unsigned int)1)<<(entNum&0x1f)))!=0);
 }
 */
 
@@ -320,9 +320,11 @@ cvar_t* g_ffamode;
 cvar_t* g_SaberBounceOnWalls;
 cvar_t* g_SaberMustReturn;
 
-cvar_t* g_AllowWeather;
+cvar_t* com_rend2;
 
 cvar_t* g_overpoweredsaberthrow;
+
+cvar_t* g_AllowWeather;
 
 extern char* G_GetLocationForEnt(const gentity_t* ent);
 extern void CP_FindCombatPointWaypoints();
@@ -958,6 +960,8 @@ void G_InitCvars()
 	g_SaberBounceOnWalls = gi.cvar("g_saberbounceonwalls", "0", CVAR_ARCHIVE);
 
 	g_SaberMustReturn = gi.cvar("g_sabermustreturn", "0", CVAR_ARCHIVE);
+
+	com_rend2 = gi.cvar("com_rend2", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
 
 	g_overpoweredsaberthrow = gi.cvar("g_overpoweredsaberthrow", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
 

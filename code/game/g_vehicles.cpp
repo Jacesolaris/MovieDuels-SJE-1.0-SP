@@ -116,12 +116,12 @@ void Vehicle_SetAnim(gentity_t* ent, int setAnimParts, int anim, int setAnimFlag
 }
 
 void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tMins, const vec3_t tMaxs, const vec3_t end,
-	int pass_entity_num, int contentmask)
+	int passEntityNum, int contentmask)
 {
 #ifdef _JK2MP
-	trap_Trace(results, start, tMins, tMaxs, end, pass_entity_num, contentmask);
+	trap_Trace(results, start, tMins, tMaxs, end, passEntityNum, contentmask);
 #else
-	gi.trace(results, start, tMins, tMaxs, end, pass_entity_num, contentmask, static_cast<EG2_Collision>(0), 0);
+	gi.trace(results, start, tMins, tMaxs, end, passEntityNum, contentmask, static_cast<EG2_Collision>(0), 0);
 #endif
 }
 
@@ -904,7 +904,7 @@ void G_EjectDroidUnit(Vehicle_t* p_veh, qboolean kill)
 #else
 	p_veh->m_pDroidUnit->owner = nullptr;
 #endif
-	//	p_veh->m_pDroidUnit->s.otherEntityNum2 = ENTITYNUM_NONE;
+	//	p_veh->m_pDroidUnit->s.otherentity_num2 = ENTITYNUM_NONE;
 #ifdef QAGAME
 	{
 		gentity_t* droidEnt = (gentity_t*)p_veh->m_pDroidUnit;
@@ -1600,7 +1600,7 @@ static bool Update(Vehicle_t* p_veh, const usercmd_t* pUmcd)
 	int i;
 	int prevSpeed;
 	int nextSpeed;
-	int cur_time;
+	int curTime;
 	int halfMaxSpeed;
 	playerState_t* parent_ps;
 	constexpr qboolean link_held = qfalse;
@@ -1612,12 +1612,12 @@ static bool Update(Vehicle_t* p_veh, const usercmd_t* pUmcd)
 #endif
 
 #ifndef _JK2MP//SP
-	cur_time = level.time;
+	curTime = level.time;
 #elif QAGAME//MP GAME
-	cur_time = level.time;
+	curTime = level.time;
 #elif CGAME//MP CGAME
 	//FIXME: pass in ucmd?  Not sure if this is reliable...
-	cur_time = pm->cmd.serverTime;
+	curTime = pm->cmd.serverTime;
 #endif
 
 	//increment the ammo for all rechargeable weapons
@@ -2029,8 +2029,8 @@ static bool Update(Vehicle_t* p_veh, const usercmd_t* pUmcd)
 
 	// Shifting Sounds
 	//=====================================================================
-	if (p_veh->m_iTurboTime < cur_time &&
-		p_veh->m_iSoundDebounceTimer < cur_time &&
+	if (p_veh->m_iTurboTime < curTime &&
+		p_veh->m_iSoundDebounceTimer < curTime &&
 		(nextSpeed > prevSpeed && nextSpeed > halfMaxSpeed && prevSpeed < halfMaxSpeed || nextSpeed > halfMaxSpeed &&
 			!Q_irand(0, 1000))
 		)
@@ -2072,7 +2072,7 @@ static bool Update(Vehicle_t* p_veh, const usercmd_t* pUmcd)
 		}
 		if (shift_sound)
 		{
-			p_veh->m_iSoundDebounceTimer = cur_time + Q_irand(1000, 4000);
+			p_veh->m_iSoundDebounceTimer = curTime + Q_irand(1000, 4000);
 			G_SoundIndexOnEnt(p_veh->m_pParentEntity, CHAN_AUTO, shift_sound);
 		}
 	}
@@ -2699,7 +2699,7 @@ int G_FlyVehicleImpactDir(gentity_t* veh, trace_t* trace)
 //try to break surfaces off the ship on impact
 #define TURN_ON				0x00000000
 #define TURN_OFF			0x00000100
-extern void NPC_SetSurfaceOnOff(gentity_t* ent, const char* surface_name, int surfaceFlags); //NPC_utils.c
+extern void NPC_SetSurfaceOnOff(gentity_t* ent, const char* surfaceName, int surfaceFlags); //NPC_utils.c
 
 void G_SetVehDamageFlags(gentity_t* veh, int shipSurf, int damageLevel)
 {
@@ -3016,31 +3016,31 @@ void G_VehUpdateShields(gentity_t* targ)
 }
 #endif
 
-int G_ShipSurfaceForSurfName(const char* surface_name)
+int G_ShipSurfaceForSurfName(const char* surfaceName)
 {
-	if (!surface_name)
+	if (!surfaceName)
 	{
 		return -1;
 	}
-	if (!Q_strncmp("nose", surface_name, 4)
-		|| !Q_strncmp("f_gear", surface_name, 6)
-		|| !Q_strncmp("glass", surface_name, 5))
+	if (!Q_strncmp("nose", surfaceName, 4)
+		|| !Q_strncmp("f_gear", surfaceName, 6)
+		|| !Q_strncmp("glass", surfaceName, 5))
 	{
 		return SHIPSURF_FRONT;
 	}
-	if (!Q_strncmp("body", surface_name, 4))
+	if (!Q_strncmp("body", surfaceName, 4))
 	{
 		return SHIPSURF_BACK;
 	}
-	if (!Q_strncmp("r_wing1", surface_name, 7)
-		|| !Q_strncmp("r_wing2", surface_name, 7)
-		|| !Q_strncmp("r_gear", surface_name, 6))
+	if (!Q_strncmp("r_wing1", surfaceName, 7)
+		|| !Q_strncmp("r_wing2", surfaceName, 7)
+		|| !Q_strncmp("r_gear", surfaceName, 6))
 	{
 		return SHIPSURF_RIGHT;
 	}
-	if (!Q_strncmp("l_wing1", surface_name, 7)
-		|| !Q_strncmp("l_wing2", surface_name, 7)
-		|| !Q_strncmp("l_gear", surface_name, 6))
+	if (!Q_strncmp("l_wing1", surfaceName, 7)
+		|| !Q_strncmp("l_wing2", surfaceName, 7)
+		|| !Q_strncmp("l_gear", surfaceName, 6))
 	{
 		return SHIPSURF_LEFT;
 	}

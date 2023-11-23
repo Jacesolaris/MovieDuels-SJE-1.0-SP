@@ -78,6 +78,8 @@ cvar_t* cl_inGameVideo;
 
 cvar_t* cl_consoleKeys;
 cvar_t* cl_consoleUseScanCode;
+cvar_t* cl_com_outcast;
+cvar_t* cl_com_rend2;
 
 clientActive_t cl;
 clientConnection_t clc;
@@ -1381,6 +1383,10 @@ void CL_Init()
 	//UI_SetSexandSoundForModel changes to match sounds.cfg for model
 	Cvar_Get("handicap", "100", CVAR_USERINFO | CVAR_SAVEGAME | CVAR_NORESTART);
 #endif
+
+	cl_com_outcast = Cvar_Get("com_outcast", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
+
+	cl_com_rend2 = Cvar_Get("com_rend2", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
 
 	//
 	// register our commands

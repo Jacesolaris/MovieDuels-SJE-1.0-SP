@@ -1837,7 +1837,7 @@ static void RB_IterateStagesGeneric(const shaderCommands_t* input)
 			continue;
 		}
 
-		int	state_bits = p_stage->stateBits;
+		int	stateBits = p_stage->stateBits;
 		auto	force_alpha_gen = static_cast<alphaGen_t>(0);
 		auto	force_rgb_gen = static_cast<colorGen_t>(0);
 
@@ -1848,7 +1848,7 @@ static void RB_IterateStagesGeneric(const shaderCommands_t* input)
 			{
 				continue;	// need to keep going in case the LM is in a later stage
 			}
-			state_bits = GLS_DSTBLEND_ZERO | GLS_SRCBLEND_ONE;	//we want to replace the prior stages with this LM, not blend
+			stateBits = GLS_DSTBLEND_ZERO | GLS_SRCBLEND_ONE;	//we want to replace the prior stages with this LM, not blend
 		}
 
 		if (backEnd.currentEntity)
@@ -1857,14 +1857,14 @@ static void RB_IterateStagesGeneric(const shaderCommands_t* input)
 			{
 				// we want to be able to rip a hole in the thing being disintegrated, and by doing the depth-testing it avoids some kinds of artefacts, but will probably introduce others?
 				//	NOTE: adjusting the alphaFunc seems to help a bit
-				state_bits = GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA | GLS_DEPTHMASK_TRUE | GLS_ATEST_GE_C0;
+				stateBits = GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA | GLS_DEPTHMASK_TRUE | GLS_ATEST_GE_C0;
 			}
 
 			if (backEnd.currentEntity->e.renderfx & RF_ALPHA_FADE)
 			{
 				if (backEnd.currentEntity->e.shaderRGBA[3] < 255)
 				{
-					state_bits = GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA;
+					stateBits = GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA;
 					force_alpha_gen = AGEN_ENTITY;
 				}
 			}
@@ -1975,7 +1975,7 @@ static void RB_IterateStagesGeneric(const shaderCommands_t* input)
 			}
 			else
 			{
-				GL_State(state_bits);
+				GL_State(stateBits);
 			}
 
 			//

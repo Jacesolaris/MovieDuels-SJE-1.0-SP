@@ -420,7 +420,7 @@ int G_IconIndex(const char* name);
 Ghoul2 Insert Start
 */
 int G_SkinIndex(const char* name);
-void G_SetBoltSurfaceRemoval(int ent_num, int model_index, int bolt_index, int surface_index = -1,
+void G_SetBoltSurfaceRemoval(int entNum, int modelIndex, int bolt_index, int surface_index = -1,
 	float duration = 5000);
 /*
 Ghoul2 Insert End
@@ -434,12 +434,12 @@ void G_PlayEffect(const char* name, const vec3_t origin, const vec3_t axis[3]);
 void G_PlayEffect(int fx_id, const vec3_t origin);
 void G_PlayEffect(int fx_id, const vec3_t origin, const vec3_t fwd);
 void G_PlayEffect(int fx_id, const vec3_t origin, const vec3_t axis[3]);
-void G_PlayEffect(int fx_id, int model_index, int bolt_index, int ent_num, const vec3_t origin,
+void G_PlayEffect(int fx_id, int modelIndex, int bolt_index, int entNum, const vec3_t origin,
 	int i_loop_time = qfalse,
 	qboolean is_relative = qfalse); //i_loop_time 0 = not looping, 1 for infinite, else duration
-void G_PlayEffect(int fx_id, int ent_num, const vec3_t fwd);
-void G_StopEffect(int fx_id, int model_index, int bolt_index, int ent_num);
-void G_StopEffect(const char* name, int model_index, int bolt_index, int ent_num);
+void G_PlayEffect(int fx_id, int entNum, const vec3_t fwd);
+void G_StopEffect(int fx_id, int modelIndex, int bolt_index, int entNum);
+void G_StopEffect(const char* name, int modelIndex, int bolt_index, int entNum);
 
 int G_BSPIndex(const char* name);
 
@@ -540,7 +540,7 @@ void WP_LoadWeaponParms();
 
 void IT_LoadItemParms();
 
-void IT_LoadWeatherParms();
+void IT_LoadWeatherParms(void);
 
 //
 // g_client.c
@@ -590,7 +590,7 @@ void G_RunThink(gentity_t* ent);
 void NORETURN QDECL G_Error(const char* fmt, ...);
 void SetInUse(const gentity_t* ent);
 void ClearInUse(const gentity_t* ent);
-qboolean PInUse(unsigned int ent_num);
+qboolean PInUse(unsigned int entNum);
 qboolean PInUse2(gentity_t* ent);
 void WriteInUseBits();
 void ReadInUseBits();
@@ -702,7 +702,7 @@ extern qboolean G_ClearLOS(gentity_t* self, const vec3_t end);
 #define	RTF_NONE	0
 #define	RTF_NAVGOAL	0x00000001
 
-using reference_tag_t = struct reference_tag_s
+using referenceTag_t = struct referenceTag_s
 {
 	char name[MAX_REFNAME];
 	vec3_t origin;
@@ -712,7 +712,7 @@ using reference_tag_t = struct reference_tag_s
 };
 
 extern void TAG_Init();
-extern reference_tag_t* TAG_Add(const char* name, const char* owner, vec3_t origin, vec3_t angles, int radius,
+extern referenceTag_t* TAG_Add(const char* name, const char* owner, vec3_t origin, vec3_t angles, int radius,
 	int flags);
 
 extern int TAG_GetOrigin(const char* owner, const char* name, vec3_t origin);

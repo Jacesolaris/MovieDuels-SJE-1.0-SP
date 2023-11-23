@@ -580,7 +580,7 @@ using drawSurf_t = struct drawSurf_s {
 // as soon as it is called
 using srfPoly_t = struct srfPoly_s {
 	surfaceType_t	surfaceType;
-	qhandle_t		h_shader;
+	qhandle_t		hShader;
 	int				fogIndex;
 	int				numVerts;
 	polyVert_t* verts;
@@ -1233,9 +1233,9 @@ void	GL_SetDefaultState();
 void	GL_SelectTexture(int unit);
 void	GL_TextureMode(const char* string);
 void	GL_CheckErrors();
-void	GL_State(uint32_t state_bits);
+void	GL_State(uint32_t stateBits);
 void	GL_TexEnv(int env);
-void	GL_Cull(int cull_type);
+void	GL_Cull(int cullType);
 
 #define GLS_SRCBLEND_ZERO						0x00000001
 #define GLS_SRCBLEND_ONE						0x00000002
@@ -1277,7 +1277,7 @@ void	GL_Cull(int cull_type);
 void	RE_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte* data, int i_client, qboolean b_dirty);
 void	RE_UploadCinematic(int cols, int rows, const byte* data, int client, qboolean dirty);
 void	RE_GetScreenShot(byte* buffer, int w, int h);
-byte* RE_TempRawImage_ReadFromFile(const char* ps_local_filename, int* pi_width, int* pi_height, byte* pb_re_sample_buffer, qboolean qb_vert_flip);
+byte* RE_TempRawImage_ReadFromFile(const char* psLocalFilename, int* piWidth, int* piHeight, byte* pb_re_sample_buffer, const qboolean qbVertFlip);
 void	RE_TempRawImage_CleanUp();
 
 void		RE_BeginRegistration(glconfig_t* glconfig_out);
@@ -1286,7 +1286,7 @@ void		RE_SetWorldVisData(const byte* vis);
 qhandle_t	RE_RegisterModel(const char* name);
 qhandle_t	RE_RegisterSkin(const char* name);
 int			RE_GetAnimationCFG(const char* ps_cfg_filename, char* ps_dest, int i_dest_size);
-void RE_Shutdown(const qboolean destroyWindow, const qboolean restarting);
+void		RE_Shutdown(const qboolean destroyWindow, const qboolean restarting);
 
 void		RE_RegisterMedia_LevelLoadBegin(const char* ps_map_name, ForceReload_e e_force_reload, qboolean b_allow_screen_dissolve);
 void		RE_RegisterMedia_LevelLoadEnd();
@@ -1337,7 +1337,7 @@ qhandle_t		 RE_RegisterShader(const char* name);
 qhandle_t		 RE_RegisterShaderNoMip(const char* name);
 
 shader_t* R_FindShader(const char* name, const int* lightmap_index, const byte* styles, qboolean mip_raw_image);
-shader_t* R_GetShaderByHandle(qhandle_t h_shader);
+shader_t* R_GetShaderByHandle(qhandle_t hShader);
 void		R_InitShaders();
 void		R_ShaderList_f();
 
@@ -1427,7 +1427,7 @@ void RB_StageIteratorSky();
 void RB_AddQuadStamp(vec3_t origin, vec3_t left, vec3_t up, byte* color);
 void RB_AddQuadStampExt(vec3_t origin, vec3_t left, vec3_t up, byte* color, float s1, float t1, float s2, float t2);
 
-void RB_ShowImages();
+void RB_ShowImages(void);
 
 /*
 ============================================================
@@ -1519,7 +1519,7 @@ void R_InitNextFrame();
 
 void RE_ClearScene();
 void RE_AddRefEntityToScene(const refEntity_t* ent);
-void RE_AddPolyToScene(qhandle_t h_shader, int numVerts, const polyVert_t* verts, int numPolys);
+void RE_AddPolyToScene(qhandle_t hShader, int numVerts, const polyVert_t* verts, int numPolys);
 void RE_AddLightToScene(const vec3_t org, float intensity, float r, float g, float b);
 void RE_RenderScene(const refdef_t* fd);
 
@@ -1762,25 +1762,22 @@ using backEndData_t = struct {
 
 extern	backEndData_t* backEndData;
 
-void* R_GetCommandBuffer(int bytes);
+void* R_GetCommandBuffer(const unsigned int bytes);
 void RB_ExecuteRenderCommands(const void* data);
 
-void R_IssuePendingRenderCommands();
+void R_IssuePendingRenderCommands(void);
 
-void R_AddDrawSurfCmd(drawSurf_t* draw_surfs, int num_draw_surfs);
+void R_AddDrawSurfCmd(drawSurf_t* drawSurfs, const int numDrawSurfs);
 
 void RE_SetColor(const float* rgba);
-void RE_StretchPic(float x, float y, float w, float h,
-	float s1, float t1, float s2, float t2, qhandle_t h_shader);
-void RE_RotatePic(float x, float y, float w, float h,
-	float s1, float t1, float s2, float t2, float a, qhandle_t h_shader);
-void RE_RotatePic2(float x, float y, float w, float h,
-	float s1, float t1, float s2, float t2, float a, qhandle_t h_shader);
+void RE_StretchPic(const float x, const float y, const float w, const float h, const float s1, const float t1, const float s2, const float t2, const qhandle_t hShader);
+void RE_RotatePic(const float x, const float y, const float w, const float h, const float s1, const float t1, const float s2, const float t2, const float a, const qhandle_t hShader);
+void RE_RotatePic2(const float x, const float y, const float w, const float h, const float s1, const float t1, const float s2, const float t2, const float a, const qhandle_t hShader);
 void RE_RenderWorldEffects();
-void RE_LAGoggles();
-void RE_Scissor(float x, float y, float w, float h);
-void RE_BeginFrame(stereoFrame_t stereo_frame);
-void RE_EndFrame(int* front_end_msec, int* back_end_msec);
+void RE_LAGoggles(void);
+void RE_Scissor(const float x, const float y, const float w, const float h);
+void RE_BeginFrame(const stereoFrame_t stereoFrame);
+void RE_EndFrame(int* frontEndMsec, int* backEndMsec);
 qboolean	RE_ProcessDissolve();
 qboolean	RE_InitDissolve(qboolean bForceCircularExtroWipe);
 

@@ -203,7 +203,7 @@ void BG_IK_MoveLimb(CGhoul2Info_v& ghoul2, const int bolt_index, const char* ani
 		}
 		VectorCopy(origin, ik_m.origin); //our position in the world.
 
-		ik_m.bone_name[0] = 0;
+		ik_m.boneName[0] = 0;
 		if (gi.G2API_IKMove(ghoul2, time, &ik_m))
 		{
 			//now do the standard model animate stuff with ragdoll update params.

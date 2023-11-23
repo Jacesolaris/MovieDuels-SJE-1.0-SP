@@ -548,7 +548,7 @@ void S_MP3_CalcVols_f()
 // returns qfalse if failed to load, else fills in *p_data
 //
 extern	cvar_t* com_buildScript;
-static qboolean S_LoadSound_FileLoadAndNameAdjuster(char* ps_filename, byte** p_data, int* pi_size, const int i_name_strlen)
+static qboolean S_LoadSound_FileLoadAndNameAdjuster(char* ps_filename, byte** p_data, int* piSize, const int i_name_strlen)
 {
 	char* psVoice = strstr(ps_filename, "chars");
 	if (psVoice)
@@ -642,12 +642,12 @@ static qboolean S_LoadSound_FileLoadAndNameAdjuster(char* ps_filename, byte** p_
 		}
 	}
 
-	*pi_size = FS_ReadFile(ps_filename, reinterpret_cast<void**>(p_data));	// try WAV
+	*piSize = FS_ReadFile(ps_filename, reinterpret_cast<void**>(p_data));	// try WAV
 	if (!*p_data) {
 		ps_filename[i_name_strlen - 3] = 'm';
 		ps_filename[i_name_strlen - 2] = 'p';
 		ps_filename[i_name_strlen - 1] = '3';
-		*pi_size = FS_ReadFile(ps_filename, reinterpret_cast<void**>(p_data));	// try MP3
+		*piSize = FS_ReadFile(ps_filename, reinterpret_cast<void**>(p_data));	// try MP3
 
 		if (!*p_data)
 		{
@@ -667,13 +667,13 @@ static qboolean S_LoadSound_FileLoadAndNameAdjuster(char* ps_filename, byte** p_
 				ps_filename[i_name_strlen - 3] = 'w';
 				ps_filename[i_name_strlen - 2] = 'a';
 				ps_filename[i_name_strlen - 1] = 'v';
-				*pi_size = FS_ReadFile(ps_filename, reinterpret_cast<void**>(p_data));	// try English WAV
+				*piSize = FS_ReadFile(ps_filename, reinterpret_cast<void**>(p_data));	// try English WAV
 				if (!*p_data)
 				{
 					ps_filename[i_name_strlen - 3] = 'm';
 					ps_filename[i_name_strlen - 2] = 'p';
 					ps_filename[i_name_strlen - 1] = '3';
-					*pi_size = FS_ReadFile(ps_filename, reinterpret_cast<void**>(p_data));	// try English MP3
+					*piSize = FS_ReadFile(ps_filename, reinterpret_cast<void**>(p_data));	// try English MP3
 				}
 			}
 

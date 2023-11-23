@@ -2428,7 +2428,7 @@ void NPC_InitAnimTable()
 	}
 }
 
-extern int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullptr);
+extern int G_ParseAnimFileSet(const char* skeletonName, const char* model_name = nullptr);
 
 void NPC_InitGame()
 {

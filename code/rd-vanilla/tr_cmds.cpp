@@ -31,7 +31,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 R_PerformanceCounters
 =====================
 */
-void R_PerformanceCounters() {
+static void R_PerformanceCounters(void)
+{
 	if (!r_speeds->integer) {
 		// clear the counters even if we aren't printing
 		memset(&tr.pc, 0, sizeof tr.pc);
@@ -94,7 +95,7 @@ R_IssueRenderCommands
 int	c_blockedOnRender;
 int	c_blockedOnMain;
 
-void R_IssueRenderCommands(const qboolean runPerformanceCounters)
+static void R_IssueRenderCommands(const qboolean runPerformanceCounters)
 {
 	renderCommandList_t* cmd_list = &backEndData->commands;
 
@@ -125,7 +126,8 @@ R_IssuePendingRenderCommands
 Issue any pending commands and wait for them to complete.
 ====================
 */
-void R_IssuePendingRenderCommands() {
+void R_IssuePendingRenderCommands(void)
+{
 	if (!tr.registered) {
 		return;
 	}
@@ -139,13 +141,13 @@ R_GetCommandBufferReserved
 make sure there is enough command space
 ============
 */
-void* R_GetCommandBufferReserved(unsigned int bytes, const int reserved_bytes)
+static void* R_GetCommandBufferReserved(unsigned int bytes, const int reservedBytes)
 {
 	renderCommandList_t* cmd_list = &backEndData->commands;
 	bytes = PAD(bytes, sizeof(void*));
 
 	// always leave room for the end of list command
-	if (cmd_list->used + bytes + sizeof(int) + reserved_bytes > MAX_RENDER_COMMANDS) {
+	if (cmd_list->used + bytes + sizeof(int) + reservedBytes > MAX_RENDER_COMMANDS) {
 		if (bytes > MAX_RENDER_COMMANDS - static_cast<int>(sizeof(int))) {
 			Com_Error(ERR_FATAL, "R_GetCommandBuffer: bad size %i", bytes);
 		}
@@ -164,7 +166,8 @@ R_GetCommandBuffer
 returns NULL if there is not enough space for important commands
 ============
 */
-void* R_GetCommandBuffer(const unsigned int bytes) {
+static void* R_GetCommandBuffer(const unsigned int bytes)
+{
 	return R_GetCommandBufferReserved(bytes, PAD(sizeof(swapBuffersCommand_t), sizeof(void*)));
 }
 
@@ -174,15 +177,16 @@ R_AddDrawSurfCmd
 
 =============
 */
-void	R_AddDrawSurfCmd(drawSurf_t* draw_surfs, const int num_draw_surfs) {
+void R_AddDrawSurfCmd(drawSurf_t* drawSurfs, const int numDrawSurfs)
+{
 	drawSurfsCommand_t* cmd = static_cast<drawSurfsCommand_t*>(R_GetCommandBuffer(sizeof * cmd));
 	if (!cmd) {
 		return;
 	}
 	cmd->commandId = RC_DRAW_SURFS;
 
-	cmd->drawSurfs = draw_surfs;
-	cmd->numDrawSurfs = num_draw_surfs;
+	cmd->drawSurfs = drawSurfs;
+	cmd->numDrawSurfs = numDrawSurfs;
 
 	cmd->refdef = tr.refdef;
 	cmd->viewParms = tr.viewParms;
@@ -195,7 +199,7 @@ RE_SetColor
 Passing NULL will set the color to white
 =============
 */
-void	RE_SetColor(const float* rgba) {
+void RE_SetColor(const float* rgba) {
 	if (!tr.registered) {
 		return;
 	}
@@ -218,8 +222,8 @@ void	RE_SetColor(const float* rgba) {
 RE_StretchPic
 =============
 */
-void RE_StretchPic(const float x, const float y, const float w, const float h,
-	const float s1, const float t1, const float s2, const float t2, const qhandle_t h_shader) {
+void RE_StretchPic(const float x, const float y, const float w, const float h, const float s1, const float t1, const float s2, const float t2, const qhandle_t hShader)
+{
 	stretchPicCommand_t* cmd = static_cast<stretchPicCommand_t*>(R_GetCommandBuffer(sizeof * cmd));
 
 	if (!tr.registered) {
@@ -229,7 +233,7 @@ void RE_StretchPic(const float x, const float y, const float w, const float h,
 		return;
 	}
 	cmd->commandId = RC_STRETCH_PIC;
-	cmd->shader = R_GetShaderByHandle(h_shader);
+	cmd->shader = R_GetShaderByHandle(hShader);
 	cmd->x = x;
 	cmd->y = y;
 	cmd->w = w;
@@ -245,8 +249,8 @@ void RE_StretchPic(const float x, const float y, const float w, const float h,
 RE_RotatePic
 =============
 */
-void RE_RotatePic(const float x, const float y, const float w, const float h,
-	const float s1, const float t1, const float s2, const float t2, const float a, const qhandle_t h_shader) {
+void RE_RotatePic(const float x, const float y, const float w, const float h,const float s1, const float t1, const float s2, const float t2, const float a, const qhandle_t hShader) 
+{
 	rotatePicCommand_t* cmd = static_cast<rotatePicCommand_t*>(R_GetCommandBuffer(sizeof * cmd));
 
 	if (!tr.registered) {
@@ -256,7 +260,7 @@ void RE_RotatePic(const float x, const float y, const float w, const float h,
 		return;
 	}
 	cmd->commandId = RC_ROTATE_PIC;
-	cmd->shader = R_GetShaderByHandle(h_shader);
+	cmd->shader = R_GetShaderByHandle(hShader);
 	cmd->x = x;
 	cmd->y = y;
 	cmd->w = w;
@@ -273,8 +277,8 @@ void RE_RotatePic(const float x, const float y, const float w, const float h,
 RE_RotatePic2
 =============
 */
-void RE_RotatePic2(const float x, const float y, const float w, const float h,
-	const float s1, const float t1, const float s2, const float t2, const float a, const qhandle_t h_shader) {
+void RE_RotatePic2(const float x, const float y, const float w, const float h,const float s1, const float t1, const float s2, const float t2, const float a, const qhandle_t hShader) 
+{
 	rotatePicCommand_t* cmd = static_cast<rotatePicCommand_t*>(R_GetCommandBuffer(sizeof * cmd));
 
 	if (!tr.registered) {
@@ -284,7 +288,7 @@ void RE_RotatePic2(const float x, const float y, const float w, const float h,
 		return;
 	}
 	cmd->commandId = RC_ROTATE_PIC2;
-	cmd->shader = R_GetShaderByHandle(h_shader);
+	cmd->shader = R_GetShaderByHandle(hShader);
 	cmd->x = x;
 	cmd->y = y;
 	cmd->w = w;
@@ -296,7 +300,7 @@ void RE_RotatePic2(const float x, const float y, const float w, const float h,
 	cmd->a = a;
 }
 
-void RE_LAGoggles()
+void RE_LAGoggles(void)
 {
 	tr.refdef.rdflags |= RDF_doLAGoggles | RDF_doFullbright;
 	tr.refdef.doLAGoggles = qtrue;
@@ -354,7 +358,8 @@ If running in stereo, RE_BeginFrame will be called twice
 for each RE_EndFrame
 ====================
 */
-void RE_BeginFrame(const stereoFrame_t stereo_frame) {
+void RE_BeginFrame(const stereoFrame_t stereoFrame)
+{
 	if (!tr.registered) {
 		return;
 	}
@@ -441,19 +446,19 @@ void RE_BeginFrame(const stereoFrame_t stereo_frame) {
 	cmd->commandId = RC_DRAW_BUFFER;
 
 	if (glConfig.stereoEnabled) {
-		if (stereo_frame == STEREO_LEFT) {
+		if (stereoFrame == STEREO_LEFT) {
 			cmd->buffer = GL_BACK_LEFT;
 		}
-		else if (stereo_frame == STEREO_RIGHT) {
+		else if (stereoFrame == STEREO_RIGHT) {
 			cmd->buffer = GL_BACK_RIGHT;
 		}
 		else {
-			Com_Error(ERR_FATAL, "RE_BeginFrame: Stereo is enabled, but stereoFrame was %i", stereo_frame);
+			Com_Error(ERR_FATAL, "RE_BeginFrame: Stereo is enabled, but stereoFrame was %i", stereoFrame);
 		}
 	}
 	else {
-		if (stereo_frame != STEREO_CENTER) {
-			Com_Error(ERR_FATAL, "RE_BeginFrame: Stereo is disabled, but stereoFrame was %i", stereo_frame);
+		if (stereoFrame != STEREO_CENTER) {
+			Com_Error(ERR_FATAL, "RE_BeginFrame: Stereo is disabled, but stereoFrame was %i", stereoFrame);
 		}
 		//		if ( !Q_stricmp( r_drawBuffer->string, "GL_FRONT" ) ) {
 		//			cmd->buffer = (int)GL_FRONT;
@@ -471,7 +476,7 @@ RE_EndFrame
 Returns the number of msec spent in the back end
 =============
 */
-void RE_EndFrame(int* front_end_msec, int* back_end_msec)
+void RE_EndFrame(int* frontEndMsec, int* backEndMsec)
 {
 	if (!tr.registered) {
 		return;
@@ -486,12 +491,12 @@ void RE_EndFrame(int* front_end_msec, int* back_end_msec)
 
 	R_InitNextFrame();
 
-	if (front_end_msec) {
-		*front_end_msec = tr.frontEndMsec;
+	if (frontEndMsec) {
+		*frontEndMsec = tr.frontEndMsec;
 	}
 	tr.frontEndMsec = 0;
-	if (back_end_msec) {
-		*back_end_msec = backEnd.pc.msec;
+	if (backEndMsec) {
+		*backEndMsec = backEnd.pc.msec;
 	}
 	backEnd.pc.msec = 0;
 

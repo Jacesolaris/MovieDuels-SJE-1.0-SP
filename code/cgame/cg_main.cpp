@@ -37,7 +37,7 @@ extern namePrecache_m* as_preCacheMap;
 extern void CG_RegisterNPCCustomSounds(clientInfo_t* ci);
 
 extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
-extern int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullptr);
+extern int G_ParseAnimFileSet(const char* skeletonName, const char* model_name = nullptr);
 extern void CG_DrawDataPadInventorySelect();
 vmCvar_t cg_com_kotor;
 
@@ -482,6 +482,8 @@ vmCvar_t cg_jumpSounds;
 
 vmCvar_t cg_rollSounds;
 
+vmCvar_t cg_com_rend2;
+
 using cvarTable_t = struct
 {
 	vmCvar_t* vmCvar;
@@ -494,7 +496,7 @@ static cvarTable_t cvarTable[] = {
 	{&cg_autoswitch, "cg_autoswitch", "1", CVAR_ARCHIVE},
 	{&cg_drawGun, "cg_drawGun", "1", CVAR_ARCHIVE},
 	{&cg_fov, "cg_fov", "80", CVAR_ARCHIVE},
-	{&cg_fovAspectAdjust, "cg_fovAspectAdjust", "0", CVAR_ARCHIVE},
+	{&cg_fovAspectAdjust, "cg_fovAspectAdjust", "1", CVAR_ARCHIVE},
 	{&cg_stereoSeparation, "cg_stereoSeparation", "0.4", CVAR_ARCHIVE},
 	{&cg_shadows, "cg_shadows", "3", CVAR_ARCHIVE},
 	{&cg_renderToTextureFX, "cg_renderToTextureFX", "1", CVAR_ARCHIVE},
@@ -701,6 +703,8 @@ static cvarTable_t cvarTable[] = {
 	{&cg_jumpSounds, "cg_jumpSounds", "1", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART},
 
 	{&cg_rollSounds, "cg_rollSounds", "2", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART},
+
+	{ &cg_com_rend2, "com_rend2", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART },
 };
 
 static constexpr size_t cvarTableSize = std::size(cvarTable);
@@ -1370,7 +1374,7 @@ void CG_RegisterClientRenderInfo(clientInfo_t* ci, const renderInfo_t* ri)
 //	files an effect may use.
 //-------------------------------------
 extern void CG_InitGlass();
-extern void cgi_RE_WorldEffectCommand(const char* command);
+extern void cgi_R_WorldEffectCommand(const char* command);
 
 extern cvar_t* g_delayedShutdown;
 
@@ -1411,7 +1415,7 @@ static void CG_RegisterEffects()
 			break;
 		}
 
-		cgi_RE_WorldEffectCommand(effectName);
+		cgi_R_WorldEffectCommand(effectName);
 	}
 
 	// Set up the glass effects mini-system.
@@ -3123,13 +3127,13 @@ void CG_CreateMiscEnts()
 void CG_DrawMiscEnts()
 {
 	cgMiscEntData_t* MiscEnt = MiscEnts;
-	refEntity_t ref_ent;
+	refEntity_t refEnt;
 	vec3_t cullOrigin;
 
-	memset(&ref_ent, 0, sizeof ref_ent);
-	ref_ent.reType = RT_MODEL;
-	ref_ent.frame = 0;
-	ref_ent.renderfx = RF_LIGHTING_ORIGIN;
+	memset(&refEnt, 0, sizeof refEnt);
+	refEnt.reType = RT_MODEL;
+	refEnt.frame = 0;
+	refEnt.renderfx = RF_LIGHTING_ORIGIN;
 	for (int i = 0; i < NumMiscEnts; i++)
 	{
 		VectorCopy(MiscEnt->origin, cullOrigin);
@@ -3142,13 +3146,13 @@ void CG_DrawMiscEnts()
 			if (VectorLengthSquared(difference) - MiscEnt->radius <= 8192 * 8192/*RMG_distancecull.value*/)
 			{
 				//fixme: need access to the real cull dist here
-				ref_ent.hModel = MiscEnt->hModel;
-				AnglesToAxis(MiscEnt->angles, ref_ent.axis);
-				VectorCopy(MiscEnt->scale, ref_ent.modelScale);
-				VectorCopy(MiscEnt->origin, ref_ent.origin);
-				VectorCopy(cullOrigin, ref_ent.lightingOrigin);
-				ScaleModelAxis(&ref_ent);
-				cgi_R_AddRefEntityToScene(&ref_ent);
+				refEnt.hModel = MiscEnt->hModel;
+				AnglesToAxis(MiscEnt->angles, refEnt.axis);
+				VectorCopy(MiscEnt->scale, refEnt.modelScale);
+				VectorCopy(MiscEnt->origin, refEnt.origin);
+				VectorCopy(cullOrigin, refEnt.lightingOrigin);
+				ScaleModelAxis(&refEnt);
+				cgi_R_AddRefEntityToScene(&refEnt);
 			}
 		}
 		MiscEnt++;

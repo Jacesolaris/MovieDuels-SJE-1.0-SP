@@ -819,7 +819,7 @@ static void Svcmd_RunScript_f()
 	}
 }
 
-void Svcmd_Weather_f()
+void Svcmd_Weather_f(void)
 {
 	char arg1[MAX_STRING_CHARS]{};
 	int num;

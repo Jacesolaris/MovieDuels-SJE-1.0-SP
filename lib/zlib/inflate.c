@@ -660,12 +660,12 @@ int flush;
 #endif
 				((BITS(8) << 8) + (hold >> 8)) % 31) {
 				strm->msg = (char*)"incorrect header check";
-					state->mode = BAD;
-					break;
+				state->mode = BAD;
+				break;
 			}
 			if (BITS(4) != Z_DEFLATED) {
 				strm->msg = (char*)"unknown compression method";
-					state->mode = BAD;
+				state->mode = BAD;
 				break;
 			}
 			DROPBITS(4);

@@ -2755,8 +2755,7 @@ void FS_Startup(const char* gameName) {
 		homePath = fs_basepath->string;
 	}
 	fs_homepath = Cvar_Get("fs_homepath", homePath, CVAR_USER_CREATED);
-	
-	
+
 	fs_gamedirvar = Cvar_Get("fs_game", "MD", CVAR_INIT | CVAR_SYSTEMINFO);
 	//fs_gamedirvar = Cvar_Get("fs_game", "MD-MP", CVAR_INIT | CVAR_SYSTEMINFO);
 
@@ -2765,6 +2764,8 @@ void FS_Startup(const char* gameName) {
 	Cvar_Get("com_outcast", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
 
 	Cvar_Get("com_kotor", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
+
+	Cvar_Get("com_rend2", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
 
 	g_trueguns = Cvar_Get("cg_trueguns", "0", 0);
 

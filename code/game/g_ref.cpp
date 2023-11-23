@@ -29,8 +29,8 @@ extern int delayedShutDown;
 
 #define	TAG_GENERIC_NAME	"__WORLD__"	//If a designer chooses this name, cut a finger off as an example to the others
 
-using refTag_v = std::vector<reference_tag_t*>;
-using refTag_m = std::map<std::string, reference_tag_t*>;
+using refTag_v = std::vector<referenceTag_t*>;
+using refTag_m = std::map<std::string, referenceTag_t*>;
 
 using tagOwner_t = struct tagOwner_s
 {
@@ -132,7 +132,7 @@ TAG_Find
 -------------------------
 */
 
-reference_tag_t* TAG_Find(const char* owner, const char* name)
+referenceTag_t* TAG_Find(const char* owner, const char* name)
 {
 	tagOwner_t* tagOwner = VALIDSTRING(owner) ? TAG_FindOwner(owner) : TAG_FindOwner(TAG_GENERIC_NAME);
 
@@ -175,10 +175,10 @@ TAG_Add
 -------------------------
 */
 
-reference_tag_t* TAG_Add(const char* name, const char* owner, vec3_t origin, vec3_t angles, const int radius,
+referenceTag_t* TAG_Add(const char* name, const char* owner, vec3_t origin, vec3_t angles, const int radius,
 	const int flags)
 {
-	const auto tag = new reference_tag_t;
+	const auto tag = new referenceTag_t;
 	VALIDATEP(tag);
 
 	//Copy the information
@@ -251,7 +251,7 @@ TAG_GetOrigin
 
 int TAG_GetOrigin(const char* owner, const char* name, vec3_t origin)
 {
-	const reference_tag_t* tag = TAG_Find(owner, name);
+	const referenceTag_t* tag = TAG_Find(owner, name);
 
 	if (!tag)
 	{
@@ -275,7 +275,7 @@ Had to get rid of that damn assert for dev
 
 int TAG_GetOrigin2(const char* owner, const char* name, vec3_t origin)
 {
-	const reference_tag_t* tag = TAG_Find(owner, name);
+	const referenceTag_t* tag = TAG_Find(owner, name);
 
 	if (tag == nullptr)
 	{
@@ -295,7 +295,7 @@ TAG_GetAngles
 
 int TAG_GetAngles(const char* owner, const char* name, vec3_t angles)
 {
-	const reference_tag_t* tag = TAG_Find(owner, name);
+	const referenceTag_t* tag = TAG_Find(owner, name);
 
 	VALIDATEB(tag);
 
@@ -312,7 +312,7 @@ TAG_GetRadius
 
 int TAG_GetRadius(const char* owner, const char* name)
 {
-	const reference_tag_t* tag = TAG_Find(owner, name);
+	const referenceTag_t* tag = TAG_Find(owner, name);
 
 	VALIDATEB(tag);
 
@@ -327,7 +327,7 @@ TAG_GetFlags
 
 int TAG_GetFlags(const char* owner, const char* name)
 {
-	const reference_tag_t* tag = TAG_Find(owner, name);
+	const referenceTag_t* tag = TAG_Find(owner, name);
 
 	VALIDATEB(tag);
 
@@ -400,7 +400,7 @@ void ref_link(gentity_t* ent)
 	G_FreeEntity(ent);
 }
 
-void SP_reference_tag(gentity_t* ent)
+void SP_referenceTag(gentity_t* ent)
 {
 	if (ent->target)
 	{

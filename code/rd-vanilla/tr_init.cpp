@@ -191,6 +191,8 @@ cvar_t* r_screenshotJpegQuality;
 
 cvar_t* g_Weather;
 
+cvar_t* r_com_rend2;
+
 #if !defined(__APPLE__)
 PFNGLSTENCILOPSEPARATEPROC qglStencilOpSeparate;
 #endif
@@ -241,7 +243,7 @@ bool g_bTextureRectangleHack = false;
 
 void RE_SetLightStyle(int style, int color);
 
-void R_Splash()
+static void R_Splash()
 {
 	image_t* p_image = R_FindImageFile("menu/splash", qfalse, qfalse, qfalse, GL_CLAMP);
 
@@ -278,7 +280,7 @@ void R_Splash()
 	}
 	else
 	{
-		extern void	RB_SetGL2D();
+		extern void	RB_SetGL2D(void);
 		RB_SetGL2D();
 
 		GL_Bind(p_image);
@@ -301,6 +303,11 @@ void R_Splash()
 		qglTexCoord2f(1, 1);
 		qglVertex2f(x2, y2);
 		qglEnd();
+	}
+
+	if (r_com_rend2->integer != 0)
+	{
+		ri.Cvar_Set("com_rend2", "0");
 	}
 
 	ri.WIN_Present(&window);
@@ -762,6 +769,10 @@ static void InitOpenGL()
 	}
 	else
 	{
+		if (r_com_rend2->integer != 0)
+		{
+			ri.Cvar_Set("com_rend2", "0");
+		}
 		// set default state
 		GL_SetDefaultState();
 	}
@@ -861,7 +872,7 @@ byte* RB_ReadPixels(const int x, const int y, const int width, const int height,
 R_TakeScreenshot
 ==================
 */
-void R_TakeScreenshot(const int x, const int y, const int width, const int height, const char* file_name) {
+static void R_TakeScreenshot(const int x, const int y, const int width, const int height, const char* fileName) {
 	byte* destptr;
 
 	int padlen;
@@ -908,7 +919,7 @@ void R_TakeScreenshot(const int x, const int y, const int width, const int heigh
 	if (glConfig.deviceSupportsGamma)
 		R_GammaCorrect(allbuf + offset, memcount);
 
-	ri.FS_WriteFile(file_name, buffer, memcount + 18);
+	ri.FS_WriteFile(fileName, buffer, memcount + 18);
 
 	R_Free(allbuf);
 }
@@ -918,7 +929,7 @@ void R_TakeScreenshot(const int x, const int y, const int width, const int heigh
 R_TakeScreenshotPNG
 ==================
 */
-void R_TakeScreenshotPNG(const int x, const int y, const int width, const int height, const char* fileName) {
+static void R_TakeScreenshotPNG(const int x, const int y, const int width, const int height, const char* fileName) {
 	size_t offset = 0;
 	int padlen = 0;
 
@@ -932,7 +943,7 @@ void R_TakeScreenshotPNG(const int x, const int y, const int width, const int he
 R_TakeScreenshotJPEG
 ==================
 */
-void R_TakeScreenshotJPEG(const int x, const int y, const int width, const int height, const char* fileName) {
+static void R_TakeScreenshotJPEG(const int x, const int y, const int width, const int height, const char* fileName) {
 	size_t offset = 0;
 	int padlen;
 
@@ -1677,6 +1688,8 @@ void R_Register()
 	broadsword_ragtobase = ri.Cvar_Get("broadsword_ragtobase", "2", 0);
 	broadsword_dircap = ri.Cvar_Get("broadsword_dircap", "64", 0);
 
+	r_com_rend2 = ri.Cvar_Get("com_rend2", "0", CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART);
+
 	g_Weather = ri.Cvar_Get("r_weather", "0", CVAR_ARCHIVE);
 	/*
 	Ghoul2 Insert End
@@ -1727,7 +1740,7 @@ void R_Init()
 	int	err;
 	int i;
 
-	//ri.Printf( PRINT_ALL, "----- R_Init -----\n" );
+	ri.Printf(PRINT_ALL, "----- Loading Vanilla renderer-----\n");
 
 	ShaderEntryPtrs_Clear();
 
@@ -1799,7 +1812,12 @@ void R_Init()
 	// print info
 	GfxInfo_f();
 
-	//ri.Printf( PRINT_ALL, "----- finished R_Init -----\n" );
+	if (r_com_rend2->integer != 0)
+	{
+		ri.Cvar_Set("com_rend2", "0");
+	}
+
+	ri.Printf(PRINT_ALL, "----- Vanilla renderer loaded-----\n");
 }
 
 /*
@@ -1809,7 +1827,7 @@ RE_Shutdown
 */
 extern void R_ShutdownWorldEffects();
 
-void RE_Shutdown(const qboolean destroyWindow, const qboolean restarting)
+void RE_Shutdown(const qboolean destroy_window, const qboolean restarting)
 {
 	for (const auto& command : commands)
 		ri.Cmd_RemoveCommand(command.cmd);
@@ -1852,7 +1870,7 @@ void RE_Shutdown(const qboolean destroyWindow, const qboolean restarting)
 	if (tr.registered)
 	{
 		R_IssuePendingRenderCommands();
-		if (destroyWindow)
+		if (destroy_window)
 		{
 			R_DeleteTextures();	// only do this for vid_restart now, not during things like map load
 
@@ -1867,7 +1885,7 @@ void RE_Shutdown(const qboolean destroyWindow, const qboolean restarting)
 	}
 
 	// shut down platform specific OpenGL stuff
-	if (destroyWindow) {
+	if (destroy_window) {
 		ri.WIN_Shutdown();
 	}
 	tr.registered = qfalse;
@@ -1981,14 +1999,14 @@ extern void RE_WorldEffectCommand(const char* command);
 extern qboolean R_inPVS(vec3_t p1, vec3_t p2);
 extern void RE_GetModelBounds(const refEntity_t* ref_ent, vec3_t bounds1, vec3_t bounds2);
 extern void G2API_AnimateG2Models(CGhoul2Info_v& ghoul2, const int acurrent_time, CRagDollUpdateParams* params);
-extern qboolean G2API_GetRagBonePos(CGhoul2Info_v& ghoul2, const char* bone_name, vec3_t pos, vec3_t entAngles, vec3_t ent_pos, vec3_t entScale);
-extern qboolean G2API_RagEffectorKick(CGhoul2Info_v& ghoul2, const char* bone_name, vec3_t velocity);
+extern qboolean G2API_GetRagBonePos(CGhoul2Info_v& ghoul2, const char* boneName, vec3_t pos, vec3_t entAngles, vec3_t ent_pos, vec3_t entScale);
+extern qboolean G2API_RagEffectorKick(CGhoul2Info_v& ghoul2, const char* boneName, vec3_t velocity);
 extern qboolean G2API_RagForceSolve(CGhoul2Info_v& ghoul2, const qboolean force);
-extern qboolean G2API_SetBoneIKState(CGhoul2Info_v& ghoul2, const int time, const char* bone_name, const int ik_state, sharedSetBoneIKStateParams_t* params);
+extern qboolean G2API_SetBoneIKState(CGhoul2Info_v& ghoul2, const int time, const char* boneName, const int ikState, sharedSetBoneIKStateParams_t* params);
 extern qboolean G2API_IKMove(CGhoul2Info_v& ghoul2, int time, sharedIKMoveParams_t* params);
-extern qboolean G2API_RagEffectorGoal(CGhoul2Info_v& ghoul2, const char* bone_name, vec3_t pos);
-extern qboolean G2API_RagPCJGradientSpeed(CGhoul2Info_v& ghoul2, const char* bone_name, const float speed);
-extern qboolean G2API_RagPCJConstraint(CGhoul2Info_v& ghoul2, const char* bone_name, vec3_t min, vec3_t max);
+extern qboolean G2API_RagEffectorGoal(CGhoul2Info_v& ghoul2, const char* boneName, vec3_t pos);
+extern qboolean G2API_RagPCJGradientSpeed(CGhoul2Info_v& ghoul2, const char* boneName, const float speed);
+extern qboolean G2API_RagPCJConstraint(CGhoul2Info_v& ghoul2, const char* boneName, vec3_t min, vec3_t max);
 extern void G2API_SetRagDoll(CGhoul2Info_v& ghoul2, CRagDollParams* parms);
 #ifdef G2_PERFORMANCE_ANALYSIS
 extern void G2Time_ResetTimers(void);

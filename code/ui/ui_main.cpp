@@ -470,6 +470,7 @@ cvar_t* g_NPCsabercolor;
 cvar_t* g_NPCsabertwo;
 cvar_t* g_NPCsabertwocolor;
 vmCvar_t ui_com_kotor;
+vmCvar_t ui_com_rend2;
 
 static void UI_UpdateScreenshot()
 {
@@ -605,6 +606,8 @@ static cvarTable_t cvarTable[] =
 	{&ui_npc_sabertwocolor, "ui_npc_sabertwocolor", "", nullptr},
 
 	{&ui_com_kotor, "com_kotor", "0", nullptr, CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART},
+
+	{&ui_com_rend2, "com_rend2", "0", nullptr, CVAR_ARCHIVE | CVAR_SAVEGAME | CVAR_NORESTART},
 };
 
 constexpr auto FP_UPDATED_NONE = -1;
@@ -781,13 +784,13 @@ Text_PaintChar
 ================
 */
 /*
-static void Text_PaintChar(float x, float y, float width, float height, float scale, float s, float t, float s2, float t2, qhandle_t h_shader)
+static void Text_PaintChar(float x, float y, float width, float height, float scale, float s, float t, float s2, float t2, qhandle_t hShader)
 {
 	float w, h;
 
 	w = width * scale;
 	h = height * scale;
-	ui.R_DrawStretchPic((int)x, (int)y, w, h, s, t, s2, t2, h_shader );	//make the coords (int) or else the chars bleed
+	ui.R_DrawStretchPic((int)x, (int)y, w, h, s, t, s2, t2, hShader );	//make the coords (int) or else the chars bleed
 }
 */
 
@@ -2619,7 +2622,7 @@ qboolean UI_ParseAnimFileSet(const char* animCFG, int* animFileIndex)
 	return qtrue;
 }
 
-int UI_G2SetAnim(CGhoul2Info* ghlInfo, const char* bone_name, const int animNum, const qboolean freeze)
+int UI_G2SetAnim(CGhoul2Info* ghlInfo, const char* boneName, const int animNum, const qboolean freeze)
 {
 	int animIndex;
 
@@ -2664,7 +2667,7 @@ int UI_G2SetAnim(CGhoul2Info* ghlInfo, const char* bone_name, const int animNum,
 		flags |= BONE_ANIM_BLEND;
 		constexpr int blend_time = 150;
 
-		re.G2API_SetBoneAnim(ghlInfo, bone_name, sFrame, eFrame, flags, anim_speed, time, -1, blend_time);
+		re.G2API_SetBoneAnim(ghlInfo, boneName, sFrame, eFrame, flags, anim_speed, time, -1, blend_time);
 
 		return anim->frameLerp * (anim->numFrames - 2);
 	}
@@ -3320,7 +3323,7 @@ void UI_LoadMenus(const char* menuFile, const qboolean reset)
 	Com_Printf("---------------- MovieDuels-SJE-1.0-SP---------------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------Update 9---------------------------------\n");
-	Com_Printf("------------------Build Date 19/11/2023--------------------------\n");
+	Com_Printf("------------------Build Date 23/11/2023--------------------------\n");
 	Com_Printf("-----------------------------------------------------------------\n");
 	Com_Printf("------------------------LightSaber-------------------------------\n");
 	Com_Printf("-----------An elegant weapon for a more civilized age------------\n");

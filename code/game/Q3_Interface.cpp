@@ -61,7 +61,7 @@ extern int TAG_GetOrigin2(const char* owner, const char* name, vec3_t origin);
 extern cvar_t* g_SerenityJediEngineMode;
 extern void G_PlayDoorLoopSound(gentity_t* ent);
 extern void G_PlayDoorSound(gentity_t* ent, int type);
-extern void NPC_SetLookTarget(const gentity_t* self, int ent_num, int clearTime);
+extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 extern void NPC_ClearLookTarget(const gentity_t* self);
 extern void WP_SaberSetColor(const gentity_t* ent, int saber_num, int blade_num, const char* colorName);
 extern void WP_SetSaber(gentity_t* ent, int saber_num, const char* saber_name);
@@ -72,7 +72,7 @@ extern void G_ChangeModel(const char* new_model);
 extern void WP_SetSaberOrigin(gentity_t* self, vec3_t new_org);
 extern void Rail_LockCenterOfTrack(const char* trackName);
 extern void Rail_UnLockCenterOfTrack(const char* trackName);
-extern void G_GetBoltPosition(gentity_t* self, int bolt_index, vec3_t pos, int model_index = 0);
+extern void G_GetBoltPosition(gentity_t* self, int bolt_index, vec3_t pos, int modelIndex = 0);
 extern qboolean G_DoDismembermentcin(gentity_t* self, vec3_t point, int mod, int hit_loc,
 	qboolean force = qfalse);
 extern void G_ChangeScale(const char* data);
@@ -8246,20 +8246,20 @@ void CQuake3GameInterface::DebugPrint(const e_DebugPrintLevel level, const char*
 
 	case WL_DEBUG:
 	{
-		int ent_num;
+		int entNum;
 
-		sscanf(text, "%d", &ent_num);
+		sscanf(text, "%d", &entNum);
 
-		if (m_entFilter >= 0 && m_entFilter != ent_num)
+		if (m_entFilter >= 0 && m_entFilter != entNum)
 			return;
 
 		auto buffer = text;
 		buffer += 5;
 
-		if (ent_num < 0 || ent_num >= MAX_GENTITIES)
-			ent_num = 0;
+		if (entNum < 0 || entNum >= MAX_GENTITIES)
+			entNum = 0;
 
-		Com_Printf(S_COLOR_BLUE"DEBUG: %s(%d): %s\n", g_entities[ent_num].script_targetname, ent_num, buffer);
+		Com_Printf(S_COLOR_BLUE"DEBUG: %s(%d): %s\n", g_entities[entNum].script_targetname, entNum, buffer);
 		break;
 	}
 	default:

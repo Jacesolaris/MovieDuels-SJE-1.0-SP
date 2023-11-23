@@ -26,7 +26,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #include "../client/keycodes.h"
 
-constexpr auto UI_API_VERSION = 3;
+#define UI_API_VERSION 4
 
 using uiimport_t = struct
 {
@@ -84,7 +84,7 @@ using uiimport_t = struct
 	// Nothing is drawn until R_RenderScene is called.
 	void (*R_ClearScene)();
 	void (*R_AddRefEntityToScene)(const refEntity_t* re);
-	void (*R_AddPolyToScene)(qhandle_t h_shader, int numVerts, const polyVert_t* verts, int numPolys);
+	void (*R_AddPolyToScene)(qhandle_t hShader, int numVerts, const polyVert_t* verts, int numPolys);
 	void (*R_AddLightToScene)(const vec3_t org, float intensity, float r, float g, float b);
 	void (*R_RenderScene)(const refdef_t* fd);
 
@@ -92,9 +92,9 @@ using uiimport_t = struct
 
 	void (*R_SetColor)(const float* rgba); // NULL = 1,1,1,1
 	void (*R_DrawStretchPic)(float x, float y, float w, float h, float s1, float t1, float s2, float t2,
-		qhandle_t h_shader); // 0 = white
+		qhandle_t hShader); // 0 = white
 	void (*R_ScissorPic)(float x, float y, float w, float h, float s1, float t1, float s2, float t2,
-		qhandle_t h_shader); // 0 = white
+		qhandle_t hShader); // 0 = white
 
 	// force a screen update, only used during gamestate load
 	void (*UpdateScreen)();

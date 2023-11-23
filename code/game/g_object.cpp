@@ -287,7 +287,7 @@ void G_StartObjectMoving(gentity_t* object, vec3_t dir, const float speed, const
 	}
 }
 
-gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, const int model_index, const int frame,
+gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, const int modelIndex, const int frame,
 	const trType_t tr_type,
 	const int effect_id = 0)
 {
@@ -303,7 +303,7 @@ gentity_t* G_CreateObject(gentity_t* owner, vec3_t origin, vec3_t angles, const 
 	object->e_ThinkFunc = thinkF_G_RunObject;
 	object->s.eType = ET_GENERAL;
 	object->s.eFlags |= EF_AUTO_SIZE; //CG_Ents will create the mins & max itself based on model bounds
-	object->s.modelindex = model_index;
+	object->s.modelindex = modelIndex;
 	//FIXME: allow to set a targetname/script_targetname and animation info?
 	object->s.frame = object->startFrame = object->endFrame = frame;
 	object->owner = owner;

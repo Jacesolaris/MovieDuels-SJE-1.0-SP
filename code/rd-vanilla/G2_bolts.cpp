@@ -121,18 +121,18 @@ int G2_Add_Bolt_Surf_Num(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const 
 	return bltlist.size() - 1;
 }
 
-void G2_Bolt_Not_Found(const char* bone_name);
+void G2_Bolt_Not_Found(const char* boneName);
 
-int G2_Add_Bolt(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const char* bone_name)
+int G2_Add_Bolt(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const surfaceInfo_v& slist, const char* boneName)
 {
 	assert(ghlInfo && ghlInfo->mValid);
-	boltInfo_t temp_bolt;
-	uint32_t flags;
+	boltInfo_t			temp_bolt;
+	uint32_t			flags;
 
 	assert(G2_MODEL_OK(ghlInfo));
 
 	// first up, we'll search for that which this bolt names in all the surfaces
-	const int surf_num = G2_IsSurfaceLegal(ghlInfo->currentModel, bone_name, &flags);
+	const int surf_num = G2_IsSurfaceLegal(ghlInfo->currentModel, boneName, &flags);
 
 	// did we find it as a surface?
 	if (surf_num != -1)
@@ -182,7 +182,7 @@ int G2_Add_Bolt(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const char* bon
 	{
 		const mdxaSkel_t* skel = reinterpret_cast<mdxaSkel_t*>((byte*)ghlInfo->aHeader + sizeof(mdxaHeader_t) + offsets->offsets[x]);
 		// if name is the same, we found it
-		if (!Q_stricmp(skel->name, bone_name))
+		if (!Q_stricmp(skel->name, boneName))
 		{
 			break;
 		}
@@ -194,7 +194,7 @@ int G2_Add_Bolt(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const char* bon
 		// didn't find it? Error
 		//assert(0&&x == mod_a->mdxa->numBones);
 #if _DEBUG
-		G2_Bolt_Not_Found(bone_name);
+		G2_Bolt_Not_Found(boneName);
 #endif
 		return -1;
 	}
@@ -217,7 +217,7 @@ int G2_Add_Bolt(const CGhoul2Info* ghlInfo, boltInfo_v& bltlist, const char* bon
 		// if this bone entry has info in it, bounce over it
 		if (bltlist[i].boneNumber == -1 && bltlist[i].surface_number == -1)
 		{
-			// if we found an entry that had a -1 for the bonenumber, then we hit a bone slot that was empty
+			// if we found an entry that had a -1 for the bone number, then we hit a bone slot that was empty
 			bltlist[i].boneNumber = x;
 			bltlist[i].boltUsed = 1;
 			bltlist[i].surfaceType = 0;

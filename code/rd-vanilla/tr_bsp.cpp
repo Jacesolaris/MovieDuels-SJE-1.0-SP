@@ -100,7 +100,7 @@ R_ColorShiftLightingBytes
 
 ===============
 */
-void R_ColorShiftLightingBytes(byte in[4], byte out[4]) {
+static void R_ColorShiftLightingBytes(byte in[4], byte out[4]) {
 	// shift the color data based on overbright range
 	const int shift = Q_max(0, r_mapOverBrightBits->integer - tr.overbrightBits);
 
@@ -130,7 +130,7 @@ R_ColorShiftLightingBytes
 
 ===============
 */
-void R_ColorShiftLightingBytes(byte in[3]) {
+static void R_ColorShiftLightingBytes(byte in[3]) {
 	// shift the color data based on overbright range
 	const int shift = Q_max(0, r_mapOverBrightBits->integer - tr.overbrightBits);
 
@@ -262,7 +262,8 @@ void		RE_SetWorldVisData(const byte* vis) {
 R_LoadVisibility
 =================
 */
-static	void R_LoadVisibility(const lump_t* l, world_t& worldData) {
+static	void R_LoadVisibility(const lump_t* l, world_t& worldData)
+{
 	int len = worldData.numClusters + 63 & ~63;
 	worldData.novis = static_cast<unsigned char*>(R_Hunk_Alloc(len, qfalse));
 	memset(worldData.novis, 0xff, len);
@@ -763,16 +764,16 @@ static	void R_SetParent(mnode_t* node, mnode_t* parent)
 R_LoadNodesAndLeafs
 =================
 */
-static	void R_LoadNodesAndLeafs(const lump_t* node_lump, const lump_t* leaf_lump, world_t& worldData) {
+static	void R_LoadNodesAndLeafs(const lump_t* nodeLump, const lump_t* leafLump, world_t& worldData) {
 	int			i, j;
 
-	dnode_t* in = reinterpret_cast<dnode_t*>(fileBase + node_lump->fileofs);
-	if (node_lump->filelen % sizeof(dnode_t) ||
-		leaf_lump->filelen % sizeof(dleaf_t)) {
+	dnode_t* in = reinterpret_cast<dnode_t*>(fileBase + nodeLump->fileofs);
+	if (nodeLump->filelen % sizeof(dnode_t) ||
+		leafLump->filelen % sizeof(dleaf_t)) {
 		Com_Error(ERR_DROP, "LoadMap: funny lump size in %s", worldData.name);
 	}
-	const int num_nodes = node_lump->filelen / sizeof(dnode_t);
-	const int num_leafs = leaf_lump->filelen / sizeof(dleaf_t);
+	const int num_nodes = nodeLump->filelen / sizeof(dnode_t);
+	const int num_leafs = leafLump->filelen / sizeof(dleaf_t);
 
 	mnode_t* out = static_cast<mnode_s*>(R_Hunk_Alloc((num_nodes + num_leafs) * sizeof * out, qtrue));
 
@@ -805,7 +806,7 @@ static	void R_LoadNodesAndLeafs(const lump_t* node_lump, const lump_t* leaf_lump
 	}
 
 	// load leafs
-	dleaf_t* inLeaf = reinterpret_cast<dleaf_t*>(fileBase + leaf_lump->fileofs);
+	dleaf_t* inLeaf = reinterpret_cast<dleaf_t*>(fileBase + leafLump->fileofs);
 	for (i = 0; i < num_leafs; i++, inLeaf++, out++)
 	{
 		for (j = 0; j < 3; j++)
@@ -1077,7 +1078,7 @@ R_LoadLightGrid
 
 ================
 */
-void R_LoadLightGrid(const lump_t* l, world_t& worldData)
+static void R_LoadLightGrid(const lump_t* l, world_t& worldData)
 {
 	int		i;
 	vec3_t	maxs{};
@@ -1118,7 +1119,8 @@ R_LoadLightGridArray
 
 ================
 */
-void R_LoadLightGridArray(const lump_t* l, world_t& worldData) {
+static void R_LoadLightGridArray(const lump_t* l, world_t& worldData) 
+{
 	world_t* w;
 #ifdef Q3_BIG_ENDIAN
 	int i;
@@ -1149,7 +1151,8 @@ void R_LoadLightGridArray(const lump_t* l, world_t& worldData) {
 R_LoadEntities
 ================
 */
-void R_LoadEntities(const lump_t* l, world_t& worldData) {
+static void R_LoadEntities(const lump_t* l, world_t& worldData)
+{
 	const char* p;
 	float ambient = 1;
 

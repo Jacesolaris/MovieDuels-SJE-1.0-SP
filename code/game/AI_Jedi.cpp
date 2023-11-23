@@ -48,7 +48,7 @@ extern void G_StartMatrixEffect(const gentity_t* ent, int me_flags = 0, int leng
 	int spin_time = 0);
 extern void ForceJump(gentity_t* self, const usercmd_t* ucmd);
 extern void NPC_ClearLookTarget(const gentity_t* self);
-extern void NPC_SetLookTarget(const gentity_t* self, int ent_num, int clearTime);
+extern void NPC_SetLookTarget(const gentity_t* self, int entNum, int clearTime);
 extern void NPC_TempLookTarget(const gentity_t* self, int lookEntNum, int minLookTime, int maxLookTime);
 extern qboolean G_ExpandPointToBBox(vec3_t point, const vec3_t mins, const vec3_t maxs, int ignore, int clipmask);
 extern gitem_t* FindItemForAmmo(ammo_t ammo);
@@ -732,10 +732,10 @@ void tavion_scepter_damage()
 
 	if (NPC->genericBolt1 != -1)
 	{
-		const int cur_time = cg.time ? cg.time : level.time;
+		const int curTime = cg.time ? cg.time : level.time;
 		qboolean hit = qfalse;
 		int last_hit = ENTITYNUM_NONE;
-		for (int time = cur_time - 25; time <= cur_time + 25 && !hit; time += 25)
+		for (int time = curTime - 25; time <= curTime + 25 && !hit; time += 25)
 		{
 			mdxaBone_t bolt_matrix;
 			vec3_t tip, dir, base;
@@ -10035,8 +10035,8 @@ qboolean kothos_heal_rosh()
 			//BEG HACK LINE
 			gentity_t* tent = G_TempEntity(NPC->currentOrigin, EV_KOTHOS_BEAM);
 			tent->svFlags |= SVF_BROADCAST;
-			tent->s.otherEntityNum = NPC->s.number;
-			tent->s.otherEntityNum2 = NPC->client->leader->s.number;
+			tent->s.otherentity_num = NPC->s.number;
+			tent->s.otherentity_num2 = NPC->client->leader->s.number;
 			//END HACK LINE
 
 			NPC->client->leader->health += Q_irand(1 + g_spskill->integer * 2, 4 + g_spskill->integer * 3);

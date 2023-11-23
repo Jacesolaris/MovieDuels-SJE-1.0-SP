@@ -3103,7 +3103,7 @@ extern "C" {
 			*/
 #ifdef PNG_STDIO_SUPPORTED
 	PNG_EXPORT(234, int, png_image_begin_read_from_file, (png_imagep image,
-		const char* file_name));
+		const char* fileName));
 	/* The named file is opened for read and the image header is filled in
 	 * from the PNG header in the file.
 	 */

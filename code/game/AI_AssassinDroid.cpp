@@ -319,7 +319,6 @@ void deka_bubble_shield_update()
 				NPC->client->renderInfo.customRGBA[2] =
 				NPC->client->renderInfo.customRGBA[3] = NPC->client->ps.stats[STAT_ARMOR] - 100;
 
-
 			//if (g_SerenityJediEngineMode->integer == 2 && g_allowgunnerbash->integer > 0)
 			//{
 			//	// If Touched By An Enemy, ALWAYS Shove Them

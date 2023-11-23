@@ -1465,7 +1465,7 @@ static qboolean ParseStage(shaderStage_t* stage, const char** text)
 					ri.Printf(PRINT_ERROR, "ERROR: rgbGen vertex used on a model! in shader '%s'\n", shader.name);
 				}
 				stage->rgbGen = CGEN_VERTEX;
-				if (stage->alphaGen == 0) 
+				if (stage->alphaGen == 0)
 				{
 					stage->alphaGen = AGEN_VERTEX;
 				}
@@ -3311,7 +3311,7 @@ an external lightmap image and/or sets the index to a valid number
 #define EXTERNAL_LIGHTMAP     "lm_%04d.tga"     // THIS MUST BE IN SYNC WITH Q3MAP2
 static const int* R_FindLightmap(const int* lightmap_index)
 {
-	char          file_name[MAX_QPATH];
+	char          fileName[MAX_QPATH];
 
 	// don't bother with vertex lighting
 	if (*lightmap_index < 0)
@@ -3331,8 +3331,8 @@ static const int* R_FindLightmap(const int* lightmap_index)
 	R_IssuePendingRenderCommands(); //
 
 	// attempt to load an external lightmap
-	Com_sprintf(file_name, sizeof file_name, "%s/" EXTERNAL_LIGHTMAP, tr.worldDir, *lightmap_index);
-	image_t* image = R_FindImageFile(file_name, qfalse, qfalse, static_cast<qboolean>(r_ext_compressed_lightmaps->integer != 0),
+	Com_sprintf(fileName, sizeof fileName, "%s/" EXTERNAL_LIGHTMAP, tr.worldDir, *lightmap_index);
+	image_t* image = R_FindImageFile(fileName, qfalse, qfalse, static_cast<qboolean>(r_ext_compressed_lightmaps->integer != 0),
 		GL_CLAMP);
 	if (image == nullptr)
 	{
@@ -3565,16 +3565,16 @@ When a handle is passed in by another module, this range checks
 it and returns a valid (possibly default) shader_t to be used internally.
 ====================
 */
-shader_t* R_GetShaderByHandle(const qhandle_t h_shader) {
-	if (h_shader < 0) {
-		ri.Printf(PRINT_WARNING, "R_GetShaderByHandle: out of range h_shader '%d'\n", h_shader);
+shader_t* R_GetShaderByHandle(const qhandle_t hShader) {
+	if (hShader < 0) {
+		ri.Printf(PRINT_WARNING, "R_GetShaderByHandle: out of range hShader '%d'\n", hShader);
 		return tr.defaultShader;
 	}
-	if (h_shader >= tr.numShaders) {
-		ri.Printf(PRINT_WARNING, "R_GetShaderByHandle: out of range h_shader '%d'\n", h_shader);
+	if (hShader >= tr.numShaders) {
+		ri.Printf(PRINT_WARNING, "R_GetShaderByHandle: out of range hShader '%d'\n", hShader);
 		return tr.defaultShader;
 	}
-	return tr.shaders[h_shader];
+	return tr.shaders[hShader];
 }
 
 /*

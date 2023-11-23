@@ -6116,17 +6116,17 @@ void CG_DrawBlockPointBars()
 	}
 }
 
-void CG_AddBlockPointBarEnt(const int ent_num)
+void CG_AddBlockPointBarEnt(const int entNum)
 {
 	if (cg_numBlockPointBarEnts >= MAX_BLOCKPOINT_BAR_ENTS)
 	{
 		return;
 	}
 
-	if (DistanceSquared(cg_entities[ent_num].lerpOrigin, g_entities[0].client->renderInfo.eyePoint) <
+	if (DistanceSquared(cg_entities[entNum].lerpOrigin, g_entities[0].client->renderInfo.eyePoint) <
 		BLOCKPOINT_BAR_RANGE * BLOCKPOINT_BAR_RANGE)
 	{
-		cg_BlockPointBarEnts[cg_numBlockPointBarEnts++] = ent_num;
+		cg_BlockPointBarEnts[cg_numBlockPointBarEnts++] = entNum;
 	}
 }
 
@@ -6167,17 +6167,17 @@ void CG_DrawFatiguePointBars()
 	}
 }
 
-void CG_AddFatiguePointBarEnt(const int ent_num)
+void CG_AddFatiguePointBarEnt(const int entNum)
 {
 	if (cg_numFatigueBarEnts >= MAX_FATIGUEPOINT_BAR_ENTS)
 	{
 		return;
 	}
 
-	if (DistanceSquared(cg_entities[ent_num].lerpOrigin, g_entities[0].client->renderInfo.eyePoint) < Fatigue_BAR_RANGE
+	if (DistanceSquared(cg_entities[entNum].lerpOrigin, g_entities[0].client->renderInfo.eyePoint) < Fatigue_BAR_RANGE
 		* Fatigue_BAR_RANGE)
 	{
-		cg_FatiguePointBarEnts[cg_numFatigueBarEnts++] = ent_num;
+		cg_FatiguePointBarEnts[cg_numFatigueBarEnts++] = entNum;
 	}
 }
 
@@ -6266,17 +6266,17 @@ void CG_DrawHealthBars()
 
 constexpr auto HEALTHBARRANGE = 200;
 
-void CG_AddHealthBarEnt(const int ent_num)
+void CG_AddHealthBarEnt(const int entNum)
 {
 	if (cg_numHealthBarEnts >= MAX_HEALTH_BAR_ENTS)
 	{
 		return;
 	}
 
-	if (DistanceSquared(cg_entities[ent_num].lerpOrigin, g_entities[0].client->renderInfo.eyePoint) < HEALTHBARRANGE *
+	if (DistanceSquared(cg_entities[entNum].lerpOrigin, g_entities[0].client->renderInfo.eyePoint) < HEALTHBARRANGE *
 		HEALTHBARRANGE)
 	{
-		cg_healthBarEnts[cg_numHealthBarEnts++] = ent_num;
+		cg_healthBarEnts[cg_numHealthBarEnts++] = entNum;
 	}
 }
 
@@ -6581,7 +6581,7 @@ static void CG_DrawCrosshair(vec3_t world_point)
 	}
 	else
 	{
-		qhandle_t h_shader;
+		qhandle_t hShader;
 		if (cg_weaponcrosshairs.integer)
 		{
 			if (cg.snap->ps.weapon == WP_SABER ||
@@ -6661,18 +6661,18 @@ static void CG_DrawCrosshair(vec3_t world_point)
 			}
 			else
 			{
-				h_shader = cgs.media.crosshairShader[cg_drawCrosshair.integer % NUM_CROSSHAIRS];
+				hShader = cgs.media.crosshairShader[cg_drawCrosshair.integer % NUM_CROSSHAIRS];
 
 				cgi_R_DrawStretchPic(x + cg.refdef.x + 0.5 * (640 - w), y + cg.refdef.y + 0.5 * (480 - h), w, h, 0, 0,
-					1, 1, h_shader);
+					1, 1, hShader);
 			}
 		}
 		else
 		{
-			h_shader = cgs.media.crosshairShader[cg_drawCrosshair.integer % NUM_CROSSHAIRS];
+			hShader = cgs.media.crosshairShader[cg_drawCrosshair.integer % NUM_CROSSHAIRS];
 
 			cgi_R_DrawStretchPic(x + cg.refdef.x + 0.5 * (640 - w), y + cg.refdef.y + 0.5 * (480 - h), w, h, 0, 0, 1, 1,
-				h_shader);
+				hShader);
 		}
 	}
 
@@ -7795,8 +7795,8 @@ float cg_draw_radar(const float y)
 				{
 					//I'm in a vehicle
 					//if it's targeting me, then play an alarm sound if I'm in a vehicle
-					if (cent->currentState.otherEntityNum == cg.predicted_player_state.client_num || cent->
-						currentState.otherEntityNum == cg.predicted_player_state.m_iVehicleNum)
+					if (cent->currentState.otherentity_num == cg.predicted_player_state.client_num || cent->
+						currentState.otherentity_num == cg.predicted_player_state.m_iVehicleNum)
 					{
 						if (radarLockSoundDebounceTime < cg.time)
 						{

@@ -62,6 +62,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define CLIENT_CONSOLE_TITLE "OpenJO Console (SP)"
 #define HOMEPATH_NAME_UNIX "openjo"
 #define HOMEPATH_NAME_WIN "OpenJO"
+#define HOMEPATH_NAME_MACOSX HOMEPATH_NAME_WIN
 #else
 #define PRODUCT_NAME   "MovieDuels-SP"
 
@@ -227,6 +228,7 @@ constexpr auto LS_NUM_STYLES = 32;
 #define	LS_SWITCH_START			(LS_STYLES_START+LS_NUM_STYLES)
 constexpr auto LS_NUM_SWITCH = 32;
 #define MAX_LIGHT_STYLES		64
+#define	LS_LSNONE			0xff
 
 // print levels from renderer (FIXME: set up for game / cgame?)
 using printParm_t = enum
@@ -392,7 +394,7 @@ public:
 	~COM_ParseSession() { COM_EndParseSession(); };
 };
 
-int COM_GetCurrentParseLine();
+int COM_GetCurrentParseLine(void);
 char* COM_Parse(const char** data_p);
 char* COM_ParseExt(const char** data_p, qboolean allow_line_breaks);
 int COM_Compress(char* data_p);
@@ -406,6 +408,7 @@ qboolean COM_ParseVec4(const char** buffer, vec4_t* c);
 void COM_MatchToken(char** buf_p, char* match);
 
 int Q_parseSaberColor(const char* p, float* color);
+qboolean SkipBracedSection(const char** program, int depth);
 void SkipBracedSection(const char** program);
 void SkipRestOfLine(const char** data);
 
@@ -2948,8 +2951,8 @@ using entityState_t = struct entityState_s
 	vec3_t angles;
 	vec3_t angles2;
 
-	int otherEntityNum; // shotgun sources, etc
-	int otherEntityNum2;
+	int otherentity_num; // shotgun sources, etc
+	int otherentity_num2;
 
 	int groundEntityNum; // -1 = in air
 
@@ -3097,8 +3100,8 @@ using entityState_t = struct entityState_s
 		saved_game.write<float>(origin2);
 		saved_game.write<float>(angles);
 		saved_game.write<float>(angles2);
-		saved_game.write<int32_t>(otherEntityNum);
-		saved_game.write<int32_t>(otherEntityNum2);
+		saved_game.write<int32_t>(otherentity_num);
+		saved_game.write<int32_t>(otherentity_num2);
 		saved_game.write<int32_t>(groundEntityNum);
 		saved_game.write<int32_t>(constantLight);
 		saved_game.write<int32_t>(loopSound);
@@ -3216,8 +3219,8 @@ using entityState_t = struct entityState_s
 		saved_game.read<float>(origin2);
 		saved_game.read<float>(angles);
 		saved_game.read<float>(angles2);
-		saved_game.read<int32_t>(otherEntityNum);
-		saved_game.read<int32_t>(otherEntityNum2);
+		saved_game.read<int32_t>(otherentity_num);
+		saved_game.read<int32_t>(otherentity_num2);
 		saved_game.read<int32_t>(groundEntityNum);
 		saved_game.read<int32_t>(constantLight);
 		saved_game.read<int32_t>(loopSound);
@@ -3346,7 +3349,7 @@ using SSkinGoreData = struct SSkinGoreData_s
 	vec3_t angles;
 	vec3_t position;
 	int current_time;
-	int ent_num;
+	int entNum;
 	vec3_t rayDirection; // in world space
 	vec3_t hitLocation; // in world space
 	vec3_t scale;
@@ -3394,7 +3397,7 @@ using sharedRagDollUpdateParams_t = struct
 //rww - update parms for ik bone stuff
 using sharedIKMoveParams_t = struct
 {
-	char bone_name[512]; //name of bone
+	char boneName[512]; //name of bone
 	vec3_t desiredOrigin; //world coordinate that this bone should be attempting to reach
 	vec3_t origin; //world coordinate of the entity who owns the g2 instance that owns the bone
 	float movementSpeed; //how fast the bone should move toward the destination

@@ -125,16 +125,17 @@ void GL_SelectTexture(const int unit)
 /*
 ** GL_Cull
 */
-void GL_Cull(const int cull_type) {
-	if (glState.faceCulling == cull_type) {
+void GL_Cull(int cullType)
+{
+	if (glState.faceCulling == cullType) {
 		return;
 	}
-	glState.faceCulling = cull_type;
+	glState.faceCulling = cullType;
 	if (backEnd.projection2D) {	//don't care, we're in 2d when it's always disabled
 		return;
 	}
 
-	if (cull_type == CT_TWO_SIDED)
+	if (cullType == CT_TWO_SIDED)
 	{
 		qglDisable(GL_CULL_FACE);
 	}
@@ -142,7 +143,7 @@ void GL_Cull(const int cull_type) {
 	{
 		qglEnable(GL_CULL_FACE);
 
-		if (cull_type == CT_BACK_SIDED)
+		if (cullType == CT_BACK_SIDED)
 		{
 			if (backEnd.viewParms.isMirror)
 			{
@@ -204,9 +205,9 @@ void GL_TexEnv(const int env)
 ** This routine is responsible for setting the most commonly changed state
 ** in Q3.
 */
-void GL_State(const uint32_t state_bits)
+void GL_State(const uint32_t stateBits)
 {
-	const uint32_t diff = state_bits ^ glState.glStateBits;
+	const uint32_t diff = stateBits ^ glState.glStateBits;
 
 	if (!diff)
 	{
@@ -218,7 +219,7 @@ void GL_State(const uint32_t state_bits)
 	//
 	if (diff & GLS_DEPTHFUNC_EQUAL)
 	{
-		if (state_bits & GLS_DEPTHFUNC_EQUAL)
+		if (stateBits & GLS_DEPTHFUNC_EQUAL)
 		{
 			qglDepthFunc(GL_EQUAL);
 		}
@@ -233,11 +234,11 @@ void GL_State(const uint32_t state_bits)
 	//
 	if (diff & (GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS))
 	{
-		if (state_bits & (GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS))
+		if (stateBits & (GLS_SRCBLEND_BITS | GLS_DSTBLEND_BITS))
 		{
 			GLenum dst_factor;
 			GLenum src_factor;
-			switch (state_bits & GLS_SRCBLEND_BITS)
+			switch (stateBits & GLS_SRCBLEND_BITS)
 			{
 			case GLS_SRCBLEND_ZERO:
 				src_factor = GL_ZERO;
@@ -271,7 +272,7 @@ void GL_State(const uint32_t state_bits)
 				Com_Error(ERR_DROP, "GL_State: invalid src blend state bits\n");
 			}
 
-			switch (state_bits & GLS_DSTBLEND_BITS)
+			switch (stateBits & GLS_DSTBLEND_BITS)
 			{
 			case GLS_DSTBLEND_ZERO:
 				dst_factor = GL_ZERO;
@@ -316,7 +317,7 @@ void GL_State(const uint32_t state_bits)
 	//
 	if (diff & GLS_DEPTHMASK_TRUE)
 	{
-		if (state_bits & GLS_DEPTHMASK_TRUE)
+		if (stateBits & GLS_DEPTHMASK_TRUE)
 		{
 			qglDepthMask(GL_TRUE);
 		}
@@ -331,7 +332,7 @@ void GL_State(const uint32_t state_bits)
 	//
 	if (diff & GLS_POLYMODE_LINE)
 	{
-		if (state_bits & GLS_POLYMODE_LINE)
+		if (stateBits & GLS_POLYMODE_LINE)
 		{
 			qglPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
@@ -346,7 +347,7 @@ void GL_State(const uint32_t state_bits)
 	//
 	if (diff & GLS_DEPTHTEST_DISABLE)
 	{
-		if (state_bits & GLS_DEPTHTEST_DISABLE)
+		if (stateBits & GLS_DEPTHTEST_DISABLE)
 		{
 			qglDisable(GL_DEPTH_TEST);
 		}
@@ -361,7 +362,7 @@ void GL_State(const uint32_t state_bits)
 	//
 	if (diff & GLS_ATEST_BITS)
 	{
-		switch (state_bits & GLS_ATEST_BITS)
+		switch (stateBits & GLS_ATEST_BITS)
 		{
 		case 0:
 			qglDisable(GL_ALPHA_TEST);
@@ -388,7 +389,7 @@ void GL_State(const uint32_t state_bits)
 		}
 	}
 
-	glState.glStateBits = state_bits;
+	glState.glStateBits = stateBits;
 }
 
 /*
@@ -398,7 +399,7 @@ RB_Hyperspace
 A player has predicted a teleport, but hasn't arrived yet
 ================
 */
-static void RB_Hyperspace() {
+static void RB_Hyperspace(void) {
 	if (!backEnd.isHyperspace) {
 		// do initialization shit
 	}
@@ -410,7 +411,7 @@ static void RB_Hyperspace() {
 	backEnd.isHyperspace = qtrue;
 }
 
-void SetViewportAndScissor() {
+void SetViewportAndScissor(void) {
 	qglMatrixMode(GL_PROJECTION);
 	qglLoadMatrixf(backEnd.viewParms.projectionMatrix);
 	qglMatrixMode(GL_MODELVIEW);
@@ -430,7 +431,7 @@ Any mirrored or portaled views have already been drawn, so prepare
 to actually render the visible surfaces for this view
 =================
 */
-static void RB_BeginDrawingView()
+static void RB_BeginDrawingView(void)
 {
 	int clear_bits = GL_DEPTH_BUFFER_BIT;
 
@@ -617,7 +618,7 @@ RB_RenderDrawSurfList
 using postRender_t = struct
 {
 	int			fogNum;
-	int			ent_num;
+	int			entNum;
 	int			dlighted;
 	int			depthRange;
 	drawSurf_t* draw_surf;
@@ -627,7 +628,7 @@ using postRender_t = struct
 static postRender_t g_postRenders[MAX_POST_RENDERS];
 static int g_numPostRenders = 0;
 
-void RB_RenderDrawSurfList(drawSurf_t* draw_surfs, const int num_draw_surfs)
+static void RB_RenderDrawSurfList(drawSurf_t* drawSurfs, const int numDrawSurfs)
 {
 	shader_t* shader;
 	int				fogNum;
@@ -659,9 +660,9 @@ void RB_RenderDrawSurfList(drawSurf_t* draw_surfs, const int num_draw_surfs)
 	auto old_sort = static_cast<unsigned>(-1);
 	int depth_range = qfalse;
 
-	backEnd.pc.c_surfaces += num_draw_surfs;
+	backEnd.pc.c_surfaces += numDrawSurfs;
 
-	for (i = 0, draw_surf = draw_surfs; i < num_draw_surfs; i++, draw_surf++) {
+	for (i = 0, draw_surf = drawSurfs; i < numDrawSurfs; i++, draw_surf++) {
 		if (draw_surf->sort == old_sort) {
 			// fast path, same as previous sort
 			rb_surfaceTable[*draw_surf->surface](draw_surf->surface);
@@ -713,7 +714,7 @@ void RB_RenderDrawSurfList(drawSurf_t* draw_surfs, const int num_draw_surfs)
 				depth_range = old_depth_range;
 
 				//store off the ent num
-				p_render->ent_num = entityNum;
+				p_render->entNum = entityNum;
 
 				//remember the other values necessary for rendering this surf
 				p_render->draw_surf = draw_surf;
@@ -840,7 +841,7 @@ void RB_RenderDrawSurfList(drawSurf_t* draw_surfs, const int num_draw_surfs)
 
 			RB_BeginSurface(p_render->shader, p_render->fogNum);
 
-			backEnd.currentEntity = &backEnd.refdef.entities[p_render->ent_num];
+			backEnd.currentEntity = &backEnd.refdef.entities[p_render->entNum];
 
 			backEnd.refdef.floatTime = original_time - backEnd.currentEntity->e.shaderTime;
 
@@ -873,7 +874,7 @@ void RB_RenderDrawSurfList(drawSurf_t* draw_surfs, const int num_draw_surfs)
 			}
 
 			if (backEnd.currentEntity->e.renderfx & RF_DISTORTION &&
-				last_post_ent != p_render->ent_num)
+				last_post_ent != p_render->entNum)
 			{ //do the capture now, we only need to do it once per ent
 				int x, y;
 				const int rad = backEnd.currentEntity->e.radius;
@@ -907,7 +908,7 @@ void RB_RenderDrawSurfList(drawSurf_t* draw_surfs, const int num_draw_surfs)
 					//now copy a portion of the screen to this texture
 					qglCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16, c_x, c_y, rad, rad, 0);
 
-					last_post_ent = p_render->ent_num;
+					last_post_ent = p_render->entNum;
 				}
 			}
 
@@ -953,7 +954,7 @@ RB_SetGL2D
 
 ================
 */
-void	RB_SetGL2D() {
+void	RB_SetGL2D(void) {
 	backEnd.projection2D = qtrue;
 
 	// set 2D virtual screen size
@@ -983,7 +984,7 @@ RB_SetColor
 
 =============
 */
-const void* RB_SetColor(const void* data) {
+static const void* RB_SetColor(const void* data) {
 	const auto cmd = static_cast<const setColorCommand_t*>(data);
 
 	backEnd.color2D[0] = cmd->color[0] * 255;
@@ -999,7 +1000,7 @@ const void* RB_SetColor(const void* data) {
 RB_StretchPic
 =============
 */
-const void* RB_StretchPic(const void* data)
+static const void* RB_StretchPic(const void* data)
 {
 	const auto cmd = static_cast<const stretchPicCommand_t*>(data);
 
@@ -1072,7 +1073,7 @@ const void* RB_StretchPic(const void* data)
 RB_RotatePic
 =============
 */
-const void* RB_RotatePic(const void* data)
+static const void* RB_RotatePic(const void* data)
 {
 	const auto cmd = static_cast<const rotatePicCommand_t*>(data);
 
@@ -1155,7 +1156,7 @@ const void* RB_RotatePic(const void* data)
 RB_RotatePic2
 =============
 */
-const void* RB_RotatePic2(const void* data)
+static const void* RB_RotatePic2(const void* data)
 {
 	const auto cmd = static_cast<const rotatePicCommand_t*>(data);
 
@@ -1244,7 +1245,7 @@ const void* RB_RotatePic2(const void* data)
 RB_ScissorPic
 =============
 */
-const void* RB_Scissor(const void* data)
+static const void* RB_Scissor(const void* data)
 {
 	const auto cmd = static_cast<const scissorCommand_t*>(data);
 
@@ -1271,7 +1272,7 @@ RB_DrawSurfs
 
 =============
 */
-const void* RB_DrawSurfs(const void* data) 
+static const void* RB_DrawSurfs(const void* data)
 {
 	// finish any 2D drawing if needed
 	if (tess.numIndexes) {
@@ -1365,7 +1366,8 @@ RB_DrawBuffer
 
 =============
 */
-const void* RB_DrawBuffer(const void* data) {
+static const void* RB_DrawBuffer(const void* data)
+{
 	const auto cmd = static_cast<const drawBufferCommand_t*>(data);
 
 	qglDrawBuffer(cmd->buffer);
@@ -1437,7 +1439,7 @@ was there.  This is used to test for texture thrashing.
 Also called by RE_EndRegistration
 ===============
 */
-void RB_ShowImages()
+void RB_ShowImages(void)
 {
 	image_t* image;
 
@@ -1489,7 +1491,8 @@ RB_SwapBuffers
 =============
 */
 extern void RB_RenderWorldEffects();
-const void* RB_SwapBuffers(const void* data) {
+static const void* RB_SwapBuffers(const void* data)
+{
 	// finish any 2D drawing if needed
 	if (tess.numIndexes) {
 		RB_EndSurface();
@@ -1532,7 +1535,7 @@ const void* RB_SwapBuffers(const void* data) {
 	return cmd + 1;
 }
 
-const void* RB_WorldEffects(const void* data)
+static const void* RB_WorldEffects(const void* data)
 {
 	const auto cmd = static_cast<const setModeCommand_t*>(data);
 
@@ -1556,7 +1559,8 @@ const void* RB_WorldEffects(const void* data)
 RB_ExecuteRenderCommands
 ====================
 */
-void RB_ExecuteRenderCommands(const void* data) {
+void RB_ExecuteRenderCommands(const void* data)
+{
 	const int t1 = ri.Milliseconds();
 
 	while (true) {
@@ -1604,7 +1608,7 @@ void RB_ExecuteRenderCommands(const void* data) {
 GLuint g_uiCurrentPixelShaderType = 0x0;
 
 // Begin using a Pixel Shader.
-void BeginPixelShader(const GLuint ui_type, const GLuint ui_id)
+static void BeginPixelShader(const GLuint ui_type, const GLuint ui_id)
 {
 	switch (ui_type)
 	{
@@ -1640,7 +1644,7 @@ void BeginPixelShader(const GLuint ui_type, const GLuint ui_id)
 }
 
 // Stop using a Pixel Shader and return states to normal.
-void EndPixelShader()
+static void EndPixelShader()
 {
 	if (g_uiCurrentPixelShaderType == 0x0)
 		return;

@@ -32,7 +32,7 @@ constexpr auto G2T_CG_TIME = 1;
 constexpr auto NUM_G2T_TIME = 2;
 
 void G2API_SetTime(const int current_time, const int clock);
-int G2API_GetTime(int arg_time); // this may or may not return arg depending on ghoul2_time cvar
+int G2API_GetTime(int argTime); // this may or may not return arg depending on ghoul2_time cvar
 
 //===================================================================
 //
@@ -251,9 +251,7 @@ struct boneInfo_t
 		animFrameMatrix(),
 		hasAnimFrameMatrix(0), airTime(0)
 	{
-		matrix.matrix[0][0] = matrix.matrix[0][1] = matrix.matrix[0][2] = matrix.matrix[0][3] =
-			matrix.matrix[1][0] = matrix.matrix[1][1] = matrix.matrix[1][2] = matrix.matrix[1][3] =
-			matrix.matrix[2][0] = matrix.matrix[2][1] = matrix.matrix[2][2] = matrix.matrix[2][3] = 0.0f;
+		Com_Memset(&matrix, 0, sizeof(matrix));
 	}
 
 	void sg_export(

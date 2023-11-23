@@ -445,7 +445,7 @@ void SpewDebugStuffToFile(animation_t* bgGlobalAnimations)
 #endif
 
 int CG_CheckAnimFrameForEventType(const animevent_t* anim_events, const int key_frame, const animEventType_t event_type,
-	const unsigned short model_index)
+	const unsigned short modelIndex)
 {
 	for (int i = 0; i < MAX_ANIM_EVENTS; i++)
 	{
@@ -455,7 +455,7 @@ int CG_CheckAnimFrameForEventType(const animevent_t* anim_events, const int key_
 			if (anim_events[i].eventType == event_type)
 			{
 				//and it is of the same type
-				if (anim_events[i].modelOnly == model_index)
+				if (anim_events[i].modelOnly == modelIndex)
 				{
 					//and it is for the same model
 					return i;
@@ -472,7 +472,7 @@ int CG_CheckAnimFrameForEventType(const animevent_t* anim_events, const int key_
 ParseAnimationEvtBlock
 ======================
 */
-static void ParseAnimationEvtBlock(const int gla_index, const unsigned short model_index, const char* aeb_filename,
+static void ParseAnimationEvtBlock(const int gla_index, const unsigned short modelIndex, const char* aeb_filename,
 	animevent_t* anim_events, const animation_t* animations,
 	unsigned char& last_anim_event,
 	const char** text_p, const bool b_is_frame_skipped)
@@ -573,7 +573,7 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 		key_frame += animations[anim_num].firstFrame;
 
 		//see if this frame already has an event of this type on it, if so, overwrite it
-		int curAnimEvent = CG_CheckAnimFrameForEventType(anim_events, key_frame, event_type, model_index);
+		int curAnimEvent = CG_CheckAnimFrameForEventType(anim_events, key_frame, event_type, modelIndex);
 		if (curAnimEvent == -1)
 		{
 			//this anim frame doesn't already have an event of this type on it
@@ -585,7 +585,7 @@ static void ParseAnimationEvtBlock(const int gla_index, const unsigned short mod
 		assert(key_frame >= 0 && key_frame < 65535); //
 		anim_events[curAnimEvent].keyFrame = key_frame;
 		anim_events[curAnimEvent].glaIndex = gla_index;
-		anim_events[curAnimEvent].modelOnly = model_index;
+		anim_events[curAnimEvent].modelOnly = modelIndex;
 		int temp_val;
 
 		//now read out the proper data based on the type
@@ -892,7 +892,7 @@ static void G_ParseAnimationEvtFile(const int gla_index, const char* events_dire
 	const char* text_p = text;
 	fileHandle_t f;
 	char events_path[MAX_QPATH];
-	int model_index = 0;
+	int modelIndex = 0;
 
 	assert(file_index >= 0 && file_index < MAX_ANIM_FILES);
 
@@ -934,7 +934,7 @@ static void G_ParseAnimationEvtFile(const int gla_index, const char* events_dire
 	if (model_specific)
 	{
 		const hstring model_name(events_directory);
-		model_index = model_name.handle();
+		modelIndex = model_name.handle();
 	}
 
 	// read information for batches of sounds (UPPER or LOWER)
@@ -951,13 +951,13 @@ static void G_ParseAnimationEvtFile(const int gla_index, const char* events_dire
 		//these stomp anything set in the include file (if it's an event of the same type on the same frame)!
 		if (!Q_stricmp(token, "UPPEREVENTS")) // A batch of upper events
 		{
-			ParseAnimationEvtBlock(gla_index, model_index, events_path, torso_anim_events, animations,
+			ParseAnimationEvtBlock(gla_index, modelIndex, events_path, torso_anim_events, animations,
 				afileset.torsoAnimEventCount, &text_p, b_is_frame_skipped);
 		}
 
 		else if (!Q_stricmp(token, "LOWEREVENTS")) // A batch of lower events
 		{
-			ParseAnimationEvtBlock(gla_index, model_index, events_path, legs_anim_events, animations,
+			ParseAnimationEvtBlock(gla_index, modelIndex, events_path, legs_anim_events, animations,
 				afileset.legsAnimEventCount, &text_p, b_is_frame_skipped);
 		}
 	}
@@ -973,7 +973,7 @@ models/players/visor/animation.cfg, etc
 
 ======================
 */
-qboolean G_ParseAnimationFile(const int gla_index, const char* skeleton_name, const int file_index)
+qboolean G_ParseAnimationFile(const int gla_index, const char* skeletonName, const int file_index)
 {
 	char text[160000]{};
 	const char* text_p = text;
@@ -982,12 +982,12 @@ qboolean G_ParseAnimationFile(const int gla_index, const char* skeleton_name, co
 
 	// Read In The File To The Text Buffer, Make Sure Everything Is Safe To Continue
 	//-------------------------------------------------------------------------------
-	Com_sprintf(skeleton_path, MAX_QPATH, "models/players/%s/%s.cfg", skeleton_name, skeleton_name);
+	Com_sprintf(skeleton_path, MAX_QPATH, "models/players/%s/%s.cfg", skeletonName, skeletonName);
 	int len = gi.RE_GetAnimationCFG(skeleton_path, text, sizeof text);
 
 	if (len <= 0)
 	{
-		Com_sprintf(skeleton_path, MAX_QPATH, "models/players/%s/animation.cfg", skeleton_name);
+		Com_sprintf(skeleton_path, MAX_QPATH, "models/players/%s/animation.cfg", skeletonName);
 		len = gi.RE_GetAnimationCFG(skeleton_path, text, sizeof text);
 		if (len <= 0)
 		{
@@ -996,7 +996,7 @@ qboolean G_ParseAnimationFile(const int gla_index, const char* skeleton_name, co
 	}
 	if (len >= static_cast<int>(sizeof text - 1))
 	{
-		G_Error("G_ParseAnimationFile: File %s too long\n (%d > %d)", skeleton_name, len, sizeof text - 1);
+		G_Error("G_ParseAnimationFile: File %s too long\n (%d > %d)", skeletonName, len, sizeof text - 1);
 	}
 
 	// Read In Each Token
@@ -1173,7 +1173,7 @@ qboolean G_ParseAnimationFile(const int gla_index, const char* skeleton_name, co
 // the animation event file.
 //
 ////////////////////////////////////////////////////////////////////////
-int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullptr)
+int G_ParseAnimFileSet(const char* skeletonName, const char* model_name = nullptr)
 {
 	int file_index;
 
@@ -1181,7 +1181,7 @@ int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullp
 	//--------------------------------------------------------------
 	for (file_index = 0; file_index < level.numKnownAnimFileSets; file_index++)
 	{
-		if (Q_stricmp(level.knownAnimFileSets[file_index].filename, skeleton_name) == 0)
+		if (Q_stricmp(level.knownAnimFileSets[file_index].filename, skeletonName) == 0)
 		{
 			break;
 		}
@@ -1200,7 +1200,7 @@ int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullp
 		//---------------------------------------------------------
 		file_index = level.numKnownAnimFileSets;
 		level.numKnownAnimFileSets++;
-		strcpy(level.knownAnimFileSets[file_index].filename, skeleton_name);
+		strcpy(level.knownAnimFileSets[file_index].filename, skeletonName);
 
 		level.knownAnimFileSets[file_index].torsoAnimEventCount = 0;
 		level.knownAnimFileSets[file_index].legsAnimEventCount = 0;
@@ -1250,7 +1250,7 @@ int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullp
 
 		// Get The Cinematic GLA Name
 		//----------------------------
-		if (G_StandardHumanoid(skeleton_name))
+		if (G_StandardHumanoid(skeletonName))
 		{
 			const char* map_name = strrchr(level.mapname, '/');
 			if (map_name)
@@ -1261,26 +1261,23 @@ int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullp
 			{
 				map_name = level.mapname;
 			}
-			char skeleton_map_name[MAX_QPATH];
-			Com_sprintf(skeleton_map_name, MAX_QPATH, "_humanoid_%s", map_name);
-			const int normal_gla_index = gi.
-				G2API_PrecacheGhoul2Model(va("models/players/%s/_humanoid.gla", skeleton_name));
+			char skeletonMapName[MAX_QPATH];
+			Com_sprintf(skeletonMapName, MAX_QPATH, "_humanoid_%s", map_name);
+			const int normalGLAIndex = gi.G2API_PrecacheGhoul2Model(va("models/players/%s/_humanoid.gla", skeletonName));
 			//double check this always comes first!
 
 			// Make Sure To Precache The GLAs (both regular and cinematic), And Remember Their Indicies
 			//------------------------------------------------------------------------------------------
 
-			G_ParseAnimationFile(0, skeleton_name, file_index);
-			G_ParseAnimationEvtFile(0, skeleton_name, file_index, normal_gla_index, false/*flag for model specific*/);
+			G_ParseAnimationFile(0, skeletonName, file_index);
+			G_ParseAnimationEvtFile(0, skeletonName, file_index, normalGLAIndex, false);
 
-			const int cine_gla_index = gi.G2API_PrecacheGhoul2Model(
-				va("models/players/%s/%s.gla", skeleton_map_name, skeleton_map_name));
-			if (cine_gla_index)
+			const int cineGLAIndex = gi.G2API_PrecacheGhoul2Model(va("models/players/%s/%s.gla", skeletonMapName, skeletonMapName));
+			if (cineGLAIndex)
 			{
-				assert(cine_gla_index == normal_gla_index + 1);
-				G_ParseAnimationFile(1, skeleton_map_name, file_index);
-				G_ParseAnimationEvtFile(1, skeleton_map_name, file_index, cine_gla_index,
-					false/*flag for model specific*/);
+				assert(cineGLAIndex == normalGLAIndex + 1);
+				G_ParseAnimationFile(1, skeletonMapName, file_index);
+				G_ParseAnimationEvtFile(1, skeletonMapName, file_index, cineGLAIndex, false);
 			}
 		}
 		else
@@ -1290,8 +1287,8 @@ int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullp
 			// Make Sure To Precache The GLAs (both regular and cinematic), And Remember Their Indicies
 			//------------------------------------------------------------------------------------------
 
-			G_ParseAnimationFile(0, skeleton_name, file_index);
-			G_ParseAnimationEvtFile(0, skeleton_name, file_index);
+			G_ParseAnimationFile(0, skeletonName, file_index);
+			G_ParseAnimationEvtFile(0, skeletonName, file_index);
 		}
 	}
 
@@ -1323,9 +1320,9 @@ int G_ParseAnimFileSet(const char* skeleton_name, const char* model_name = nullp
 
 		// Only Do The Event File If The Model Is Not The Same As The Skeleton
 		//---------------------------------------------------------------------
-		if (Q_stricmp(skeleton_name, model_name) != 0)
+		if (Q_stricmp(skeletonName, model_name) != 0)
 		{
-			const int i_gla_index_to_check_for_skip = Q_stricmp(skeleton_name, "_humanoid")
+			const int i_gla_index_to_check_for_skip = Q_stricmp(skeletonName, "_humanoid")
 				? -1
 				: gi.G2API_PrecacheGhoul2Model(
 					"models/players/_humanoid/_humanoid.gla"); // ;-)
@@ -1504,7 +1501,7 @@ void NPC_PrecacheAnimationCFG(const char* npc_type)
 
 extern int NPC_WeaponsForTeam(team_t team, int spawnflags, const char* npc_type);
 
-void NPC_PrecacheWeapons(const team_t player_team, const int spawnflags, const char* np_ctype)
+static void NPC_PrecacheWeapons(const team_t player_team, const int spawnflags, const char* np_ctype)
 {
 	const int weapons = NPC_WeaponsForTeam(player_team, spawnflags, np_ctype);
 
@@ -1573,7 +1570,7 @@ extern void NPC_Saboteur_Precache();
 extern void npc_cultist_destroyer_precache();
 extern void NPC_GalakMech_Precache();
 
-void NPC_Jawa_Precache()
+static void NPC_Jawa_Precache()
 {
 	for (int i = 1; i < 7; i++)
 	{
@@ -1735,7 +1732,7 @@ void CG_NPC_Precache(gentity_t* spawner)
 	char* patch;
 	qboolean md3_model = qfalse;
 	char player_model[MAX_QPATH] = { 0 };
-	char custom_skin[MAX_QPATH];
+	char customSkin[MAX_QPATH];
 
 	if (!Q_stricmp("random", spawner->NPC_type))
 	{
@@ -1743,7 +1740,7 @@ void CG_NPC_Precache(gentity_t* spawner)
 		return;
 	}
 
-	strcpy(custom_skin, "default");
+	strcpy(customSkin, "default");
 
 	p = NPCParms;
 	COM_BeginParseSession();
@@ -1866,7 +1863,7 @@ void CG_NPC_Precache(gentity_t* spawner)
 			{
 				continue;
 			}
-			Q_strncpyz(custom_skin, value, sizeof custom_skin);
+			Q_strncpyz(customSkin, value, sizeof customSkin);
 			continue;
 		}
 
@@ -2076,15 +2073,15 @@ void CG_NPC_Precache(gentity_t* spawner)
 		//precache ghoul2 model
 		gi.G2API_PrecacheGhoul2Model(va("models/players/%s/model.glm", player_model));
 		//precache skin
-		if (strchr(custom_skin, '|'))
+		if (strchr(customSkin, '|'))
 		{
 			//three part skin
-			Com_sprintf(skin_name, sizeof skin_name, "models/players/%s/|%s", player_model, custom_skin);
+			Com_sprintf(skin_name, sizeof skin_name, "models/players/%s/|%s", player_model, customSkin);
 		}
 		else
 		{
 			//standard skin
-			Com_sprintf(skin_name, sizeof skin_name, "models/players/%s/model_%s.skin", player_model, custom_skin);
+			Com_sprintf(skin_name, sizeof skin_name, "models/players/%s/model_%s.skin", player_model, customSkin);
 		}
 		// lets see if it's out there
 		gi.RE_RegisterSkin(skin_name);
@@ -2105,8 +2102,7 @@ void NPC_BuildRandom()
 
 extern void G_MatchPlayerWeapon(gentity_t* ent);
 extern void G_InitPlayerFromCvars(gentity_t* ent);
-extern void g_set_g2_player_model(gentity_t* ent, const char* model_name, const char* custom_skin, const char* surf_off,
-	const char* surf_on);
+extern void g_set_g2_player_model(gentity_t* ent, const char* model_name, const char* customSkin, const char* surf_off, const char* surf_on);
 
 qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 {
@@ -2115,7 +2111,7 @@ qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 	int n;
 	float f;
 	char player_model[MAX_QPATH];
-	char custom_skin[MAX_QPATH];
+	char customSkin[MAX_QPATH];
 	clientInfo_t* ci = &npc->client->clientInfo;
 	renderInfo_t* ri = &npc->client->renderInfo;
 	gNPCstats_t* stats;
@@ -2129,7 +2125,7 @@ qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 		{qfalse, qfalse, qfalse, qfalse, qfalse, qfalse, qfalse, qfalse}
 	};
 
-	strcpy(custom_skin, "default");
+	strcpy(customSkin, "default");
 	if (!npc_name || !npc_name[0])
 	{
 		npc_name = "Player";
@@ -2774,7 +2770,7 @@ qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 				{
 					continue;
 				}
-				Q_strncpyz(custom_skin, value, sizeof custom_skin);
+				Q_strncpyz(customSkin, value, sizeof customSkin);
 				continue;
 			}
 
@@ -4451,7 +4447,7 @@ qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 			if (npc->client->NPC_class == CLASS_VEHICLE)
 			{
 				const int i_veh_index = BG_VehicleGetIndex(npc->NPC_type);
-				strcpy(custom_skin, "default"); // Ignore any custom skin that may have come from the NPC File
+				strcpy(customSkin, "default"); // Ignore any custom skin that may have come from the NPC File
 				Q_strncpyz(player_model, g_vehicleInfo[i_veh_index].model, sizeof player_model);
 				if (g_vehicleInfo[i_veh_index].skin && g_vehicleInfo[i_veh_index].skin[0])
 				{
@@ -4474,7 +4470,7 @@ qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 					//---------------------------------------------------
 					if (force_skin)
 					{
-						Q_strncpyz(custom_skin, npc->soundSet, sizeof custom_skin);
+						Q_strncpyz(customSkin, npc->soundSet, sizeof customSkin);
 					}
 
 					// Otherwise Choose A Random Skin
@@ -4485,7 +4481,7 @@ qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 						{
 							gi.Printf(S_COLOR_RED"WARNING: Unable to use skin (%s)", npc->soundSet);
 						}
-						Q_strncpyz(custom_skin, *skinarray[Q_irand(0, skinarray.size() - 1)], sizeof custom_skin);
+						Q_strncpyz(customSkin, *skinarray[Q_irand(0, skinarray.size() - 1)], sizeof customSkin);
 					}
 					if (npc->soundSet && gi.bIsFromZone(npc->soundSet, TAG_G_ALLOC))
 					{
@@ -4495,7 +4491,7 @@ qboolean NPC_ParseParms(const char* npc_name, gentity_t* npc)
 				}
 			}
 
-			g_set_g2_player_model(npc, player_model, custom_skin, surfOff, surfOn);
+			g_set_g2_player_model(npc, player_model, customSkin, surfOff, surfOn);
 		}
 	}
 	/*

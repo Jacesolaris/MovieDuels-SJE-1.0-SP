@@ -318,10 +318,10 @@ static int G2_GetVertWeights(const mdxmVertex_t* pVert)
 
 static int G2_GetVertBoneIndex(const mdxmVertex_t* pVert, const int iWeightNum)
 {
-	const int i_bone_index = pVert->uiNmWeightsAndBoneIndexes >> iG2_BITS_PER_BONEREF * iWeightNum & (1 <<
+	const int iBoneIndex = pVert->uiNmWeightsAndBoneIndexes >> iG2_BITS_PER_BONEREF * iWeightNum & (1 <<
 		iG2_BITS_PER_BONEREF) - 1;
 
-	return i_bone_index;
+	return iBoneIndex;
 }
 
 static float G2_GetVertBoneWeight(const mdxmVertex_t* pVert, const int iWeightNum, float& fTotalWeight,
@@ -424,7 +424,7 @@ using mdxaSkel_t = struct
 //  then read the int at that location and AND it with 0x00FFFFFF. I use the struct below simply for easy searches
 using mdxaIndex_t = struct
 {
-	int iIndex; // this struct for pointing purposes, need to and with 0x00FFFFFF to be meaningful
+	byte iIndex[3];
 };
 //
 // (note that there's then an alignement-pad here to get the next struct back onto 32-bit alignement)

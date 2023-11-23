@@ -41,7 +41,7 @@ extern void G_CheckCharmed(gentity_t* self);
 extern qboolean Wampa_CheckDropVictim(gentity_t* self, qboolean exclude_me);
 extern qboolean rocket_trooper_player(const gentity_t* self);
 
-extern int G_ShipSurfaceForSurfName(const char* surface_name);
+extern int G_ShipSurfaceForSurfName(const char* surfaceName);
 extern qboolean G_FlyVehicleDestroySurface(gentity_t* veh, int surface);
 extern void G_VehicleSetDamageLocFlags(gentity_t* veh, int impactDir, int deathPoint);
 extern void WP_DeactivateSaber(const gentity_t* self, qboolean clear_length = qfalse);
@@ -1007,7 +1007,7 @@ void G_StartMatrixEffect(const gentity_t* ent, const int me_flags = 0, const int
 	{
 		G_SetOrigin(matrix, ent->currentOrigin);
 		gi.linkentity(matrix);
-		matrix->s.otherEntityNum = ent->s.number;
+		matrix->s.otherentity_num = ent->s.number;
 		matrix->e_clThinkFunc = clThinkF_CG_MatrixEffect;
 		matrix->s.eType = ET_THINKER;
 		matrix->svFlags |= SVF_BROADCAST; // Broadcast to all clients
@@ -1034,7 +1034,7 @@ void G_StartStasisEffect_FORCE_LEVEL_1(const gentity_t* ent, const int me_flags 
 	{
 		G_SetOrigin(stasis, ent->currentOrigin);
 		gi.linkentity(stasis);
-		stasis->s.otherEntityNum = ent->s.number;
+		stasis->s.otherentity_num = ent->s.number;
 		stasis->e_clThinkFunc = clThinkF_CG_StasisEffect;
 		stasis->s.eType = ET_THINKER;
 		stasis->svFlags |= SVF_BROADCAST; // Broadcast to all clients
@@ -1061,7 +1061,7 @@ void G_StartStasisEffect_FORCE_LEVEL_2(const gentity_t* ent, const int me_flags 
 	{
 		G_SetOrigin(stasis, ent->currentOrigin);
 		gi.linkentity(stasis);
-		stasis->s.otherEntityNum = ent->s.number;
+		stasis->s.otherentity_num = ent->s.number;
 		stasis->e_clThinkFunc = clThinkF_CG_StasisEffectLong;
 		stasis->s.eType = ET_THINKER;
 		stasis->svFlags |= SVF_BROADCAST; // Broadcast to all clients
@@ -1103,7 +1103,7 @@ void G_StartNextItemEffect(gentity_t* ent, const int me_flags = 0, const int len
 	{
 		G_SetOrigin(stasis, ent->currentOrigin);
 		gi.linkentity(stasis);
-		stasis->s.otherEntityNum = ent->s.number;
+		stasis->s.otherentity_num = ent->s.number;
 		stasis->e_clThinkFunc = clThinkF_CG_StasisEffect;
 		stasis->s.eType = ET_THINKER;
 		stasis->svFlags |= SVF_BROADCAST; // Broadcast to all clients
@@ -8932,7 +8932,7 @@ void G_Damage(gentity_t* targ, gentity_t* inflictor, gentity_t* attacker, const 
 		vec3_t vec3;
 		// Send off an event to show a shield shell on the player, pointing in the right direction.
 		ev_ent = G_TempEntity(targ->currentOrigin, EV_SHIELD_HIT);
-		ev_ent->s.otherEntityNum = targ->s.number;
+		ev_ent->s.otherentity_num = targ->s.number;
 		ev_ent->s.eventParm = DirToByte(vec3);
 		ev_ent->s.time2 = shield_absorbed;
 	}

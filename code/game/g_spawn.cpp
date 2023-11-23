@@ -537,7 +537,7 @@ void SP_misc_weather_zone(gentity_t* ent);
 void SP_misc_cubemap(gentity_t* ent);
 
 //New spawn functions
-void SP_reference_tag(gentity_t* ent);
+void SP_referenceTag(gentity_t* ent);
 
 void SP_NPC_spawner(gentity_t* self);
 
@@ -793,7 +793,7 @@ spawn_t spawns[] = {
 	{"shooter_grenade", SP_shooter_grenade},
 	{"shooter_plasma", SP_shooter_plasma},
 
-	{"ref_tag", SP_reference_tag},
+	{"ref_tag", SP_referenceTag},
 
 	//new NPC ents
 	{"NPC_spawner", SP_NPC_spawner},

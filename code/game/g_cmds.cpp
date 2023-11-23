@@ -1983,7 +1983,7 @@ void G_SetTauntAnim(gentity_t* ent, const int taunt)
 			}
 			break;
 		case TAUNT_MEDITATE:
-			G_TauntSound(ent, TAUNT_MEDITATE);
+			//G_TauntSound(ent, TAUNT_MEDITATE);
 
 			if (ent->client->ps.weapon != WP_SABER) //SP
 			{
@@ -2588,7 +2588,7 @@ void G_SetsaberdownorAnim(gentity_t* ent)
 	}
 	else
 	{
-		if (IsHoldingReloadableGun(ent)) //SP
+		if (IsHoldingReloadableGun(ent)) //sp
 		{
 			if (ent->reloadTime > 0)
 			{

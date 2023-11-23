@@ -176,7 +176,7 @@ using netchan_t = struct
 	// incoming fragment assembly buffer
 	int fragmentSequence;
 	int fragmentLength;
-	byte fragmentBuffer[MAX_MSGLEN];
+	byte fragment_buffer[MAX_MSGLEN];
 };
 
 void Netchan_Init(int port);
@@ -632,6 +632,7 @@ extern cvar_t* com_kotor;
 extern cvar_t* g_trueguns;
 extern cvar_t* g_spskill;
 extern cvar_t* debugNPCFreeze;
+extern cvar_t* com_rend2;
 #ifndef _WIN32
 extern	cvar_t* com_ansiColor;
 #endif
@@ -683,20 +684,19 @@ void Z_TagFree(const memtag_t eTag);
 int Z_Free(void* pvAddress); //returns bytes freed
 int Z_Size(void* pvAddress);
 void Z_MorphMallocTag(void* pvAddress, const memtag_t eDesiredTag);
-qboolean Z_IsFromZone(const void* pvAddress, const memtag_t eTag); //returns size if true
+qboolean Z_IsFromZone(const void* pvAddress, memtag_t eTag); //returns size if true
 
 #ifdef DEBUG_ZONE_ALLOCS
-
-void* _D_Z_Malloc(int iSize, memtag_t eTag, qboolean bZeroit, const char* psFile, int iLine);
-void* _D_S_Malloc(int iSize, const char* psFile, int iLine);
+void* _D_Z_Malloc(const int iSize, const memtag_t eTag, const qboolean b_zeroit, const char* psFile, const int iLine);
+void* _D_S_Malloc(const int iSize, const char* psFile, const int iLine);
 void  Z_Label(const void* pvAddress, const char* pslabel);
 
-#define Z_Malloc(iSize, eTag, bZeroit)	_D_Z_Malloc ((iSize), (eTag), (bZeroit), __FILE__, __LINE__)
+#define Z_Malloc(iSize, eTag, b_zeroit)	_D_Z_Malloc ((iSize), (eTag), (b_zeroit), __FILE__, __LINE__)
 #define S_Malloc(iSize)	_D_S_Malloc	((iSize), __FILE__, __LINE__)	// NOT 0 filled memory only for small allocations
 
 #else
 
-void* Z_Malloc(const int iSize, const memtag_t eTag, const qboolean bZeroit = qfalse, const int iUnusedAlign = 4);
+void* Z_Malloc(const int iSize, const memtag_t eTag, const qboolean b_zeroit = qfalse, const int unusedAlign = 4);
 // return memory NOT zero-filled by default
 void* S_Malloc(const int iSize); // NOT 0 filled memory only for small allocations
 #define Z_Label(_ptr, _label)
@@ -711,7 +711,6 @@ void Hunk_ClearToMark();
 void Hunk_SetMark();
 // note the opposite default for 'bZeroIt' in Hunk_Alloc to Z_Malloc, since Hunk_Alloc always used to memset(0)...
 //
-inline void* Hunk_Alloc(int size, qboolean bZeroIt = qtrue);
 
 void Com_TouchMemory();
 

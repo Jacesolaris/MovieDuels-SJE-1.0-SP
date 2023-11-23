@@ -37,7 +37,7 @@ Used for cinematics.
 */
 
 // param 'bDirty' should be true 99% of the time
-void RE_StretchRaw(const int x, const int y, const int w, const int h, int cols, int rows, const byte* data, const int i_client, const qboolean b_dirty)
+void RE_StretchRaw(const int x, const int y, const int w, const int h, int cols, int rows, const byte* data, const int client, const qboolean dirty)
 {
 	if (!tr.registered) {
 		return;
@@ -62,14 +62,14 @@ void RE_StretchRaw(const int x, const int y, const int w, const int h, int cols,
 		Com_Error(ERR_DROP, "Draw_StretchRaw: size not a power of 2: %i by %i", cols, rows);
 	}
 
-	GL_Bind(tr.scratchImage[i_client]);
+	GL_Bind(tr.scratchImage[client]);
 
 	// if the scratchImage isn't in the format we want, specify it as a new texture...
 	//
-	if (cols != tr.scratchImage[i_client]->width || rows != tr.scratchImage[i_client]->height)
+	if (cols != tr.scratchImage[client]->width || rows != tr.scratchImage[client]->height)
 	{
-		tr.scratchImage[i_client]->width = cols;
-		tr.scratchImage[i_client]->height = rows;
+		tr.scratchImage[client]->width = cols;
+		tr.scratchImage[client]->height = rows;
 #ifdef TIMEBIND
 		if (r_ignore->integer)
 		{
@@ -94,7 +94,7 @@ void RE_StretchRaw(const int x, const int y, const int w, const int h, int cols,
 	}
 	else
 	{
-		if (b_dirty)	// FIXME: some TA addition or other, not sure why, yet. Should probably be true 99% of the time?
+		if (dirty)	// FIXME: some TA addition or other, not sure why, yet. Should probably be true 99% of the time?
 		{
 			// otherwise, just subimage upload it so that drivers can tell we are going to be changing
 			// it and don't try and do a texture compression
@@ -118,7 +118,7 @@ void RE_StretchRaw(const int x, const int y, const int w, const int h, int cols,
 		}
 	}
 
-	extern void	RB_SetGL2D();
+	extern void	RB_SetGL2D(void);
 	if (!backEnd.projection2D)
 	{
 		RB_SetGL2D();
@@ -137,7 +137,8 @@ void RE_StretchRaw(const int x, const int y, const int w, const int h, int cols,
 	qglEnd();
 }
 
-void RE_UploadCinematic(const int cols, const int rows, const byte* data, const int client, const qboolean dirty) {
+void RE_UploadCinematic(const int cols, const int rows, const byte* data, const int client, const qboolean dirty)
+{
 	GL_Bind(tr.scratchImage[client]);
 
 	// if the scratchImage isn't in the format we want, specify it as a new texture
@@ -202,37 +203,35 @@ void RE_GetScreenShot(byte* buffer, const int w, const int h)
 // this is just a chunk of code from RE_TempRawImage_ReadFromFile() below, subroutinised so I can call it
 //	from the screen dissolve code as well...
 //
-static byte* RE_ReSample(byte* pb_loaded_pic, const int i_loaded_width, const int i_loaded_height,
-	byte* pb_re_sample_buffer, int* pi_width, int* pi_height
-)
+static byte* RE_ReSample(byte* pbLoadedPic, const int iLoadedWidth, const int iLoadedHeight, byte* pb_re_sample_buffer, int* piWidth, int* piHeight)
 {
 	byte* pb_return;
 
 	// if not resampling, just return some values and return...
 	//
-	if (pb_re_sample_buffer == nullptr || i_loaded_width == *pi_width && i_loaded_height == *pi_height)
+	if (pb_re_sample_buffer == nullptr || iLoadedWidth == *piWidth && iLoadedHeight == *piHeight)
 	{
 		// if not resampling, we're done, just return the loaded size...
 		//
-		*pi_width = i_loaded_width;
-		*pi_height = i_loaded_height;
-		pb_return = pb_loaded_pic;
+		*piWidth = iLoadedWidth;
+		*piHeight = iLoadedHeight;
+		pb_return = pbLoadedPic;
 	}
 	else
 	{
 		// resample from pbLoadedPic to pbReSampledBuffer...
 		//
-		const float	f_x_step = static_cast<float>(i_loaded_width) / static_cast<float>(*pi_width);
-		const float	f_y_step = static_cast<float>(i_loaded_height) / static_cast<float>(*pi_height);
+		const float	f_x_step = static_cast<float>(iLoadedWidth) / static_cast<float>(*piWidth);
+		const float	f_y_step = static_cast<float>(iLoadedHeight) / static_cast<float>(*piHeight);
 		const int		i_tot_pixels_per_down_sample = static_cast<int>(ceil(f_x_step)) * static_cast<int>(ceil(f_y_step));
 
 		int g, b;
 
 		byte* pb_dst = pb_re_sample_buffer;
 
-		for (int y = 0; y < *pi_height; y++)
+		for (int y = 0; y < *piHeight; y++)
 		{
-			for (int x = 0; x < *pi_width; x++)
+			for (int x = 0; x < *piWidth; x++)
 			{
 				int r = g = b = 0;
 
@@ -240,9 +239,9 @@ static byte* RE_ReSample(byte* pb_loaded_pic, const int i_loaded_width, const in
 				{
 					for (float xx = static_cast<float>(x) * f_x_step; xx < static_cast<float>(x + 1) * f_x_step; xx += 1)
 					{
-						const byte* pbSrc = pb_loaded_pic + 4 * (static_cast<int>(yy) * i_loaded_width + static_cast<int>(xx));
+						const byte* pbSrc = pbLoadedPic + 4 * (static_cast<int>(yy) * iLoadedWidth + static_cast<int>(xx));
 
-						assert(pbSrc < pb_loaded_pic + i_loaded_width * i_loaded_height * 4);
+						assert(pbSrc < pbLoadedPic + iLoadedWidth * iLoadedHeight * 4);
 
 						r += pbSrc[0];
 						g += pbSrc[1];
@@ -250,7 +249,7 @@ static byte* RE_ReSample(byte* pb_loaded_pic, const int i_loaded_width, const in
 					}
 				}
 
-				assert(pb_dst < pb_re_sample_buffer + *pi_width * *pi_height * 4);
+				assert(pb_dst < pb_re_sample_buffer + *piWidth * *piHeight * 4);
 
 				pb_dst[0] = r / i_tot_pixels_per_down_sample;
 				pb_dst[1] = g / i_tot_pixels_per_down_sample;
@@ -292,47 +291,47 @@ static byte* RE_ReSample(byte* pb_loaded_pic, const int i_loaded_width, const in
 //
 byte* pbLoadedPic = nullptr;
 
-byte* RE_TempRawImage_ReadFromFile(const char* ps_local_filename, int* pi_width, int* pi_height, byte* pb_re_sample_buffer, const qboolean qb_vert_flip)
+byte* RE_TempRawImage_ReadFromFile(const char* psLocalFilename, int* piWidth, int* piHeight, byte* pb_re_sample_buffer, const qboolean qbVertFlip)
 {
 	RE_TempRawImage_CleanUp();	// jic
 
 	byte* pb_return = nullptr;
 
-	if (ps_local_filename && pi_width && pi_height)
+	if (psLocalFilename && piWidth && piHeight)
 	{
-		int	 i_loaded_width, i_loaded_height;
+		int	 iLoadedWidth, iLoadedHeight;
 
-		R_LoadImage(ps_local_filename, &pbLoadedPic, &i_loaded_width, &i_loaded_height);
+		R_LoadImage(psLocalFilename, &pbLoadedPic, &iLoadedWidth, &iLoadedHeight);
 		if (pbLoadedPic)
 		{
-			pb_return = RE_ReSample(pbLoadedPic, i_loaded_width, i_loaded_height,
-				pb_re_sample_buffer, pi_width, pi_height);
+			pb_return = RE_ReSample(pbLoadedPic, iLoadedWidth, iLoadedHeight,
+				pb_re_sample_buffer, piWidth, piHeight);
 		}
 	}
 
-	if (pb_return && qb_vert_flip)
+	if (pb_return && qbVertFlip)
 	{
 		auto p_src_line = reinterpret_cast<unsigned*>(pb_return);
-		unsigned int* p_dst_line = reinterpret_cast<unsigned*>(pb_return) + *pi_height * *pi_width;	// *4 done by compiler (longs)
-		p_dst_line -= *pi_width;	// point at start of last line, not first after buffer
+		unsigned int* p_dst_line = reinterpret_cast<unsigned*>(pb_return) + *piHeight * *piWidth;	// *4 done by compiler (longs)
+		p_dst_line -= *piWidth;	// point at start of last line, not first after buffer
 
-		for (int i_line_count = 0; i_line_count < *pi_height / 2; i_line_count++)
+		for (int i_line_count = 0; i_line_count < *piHeight / 2; i_line_count++)
 		{
-			for (int x = 0; x < *pi_width; x++)
+			for (int x = 0; x < *piWidth; x++)
 			{
 				const unsigned int l = p_src_line[x];
 				p_src_line[x] = p_dst_line[x];
 				p_dst_line[x] = l;
 			}
-			p_src_line += *pi_width;
-			p_dst_line -= *pi_width;
+			p_src_line += *piWidth;
+			p_dst_line -= *piWidth;
 		}
 	}
 
 	return pb_return;
 }
 
-void RE_TempRawImage_CleanUp()
+void RE_TempRawImage_CleanUp(void)
 {
 	if (pbLoadedPic)
 	{
@@ -395,10 +394,7 @@ Dissolve_t Dissolve = { 0 };
 
 // leave the UV stuff in for now as comments in case I ever need to do some sneaky stuff, but for now...
 //
-static void RE_Blit(const float f_x0, const float f_y0, const float f_x1, const float f_y1, const float f_x2, const float f_y2, const float f_x3, const float f_y3,
-	//float fU0, float fV0, float fU1, float fV1, float fU2, float fV2, float fU3, float fV3,
-	image_t* p_image, const int i_gl_state
-)
+static void RE_Blit(const float f_x0, const float f_y0, const float f_x1, const float f_y1, const float f_x2, const float f_y2, const float f_x3, const float f_y3, image_t* p_image, const int iGLState)
 {
 	//
 	// some junk they had at the top of other StretchRaw code...
@@ -407,7 +403,7 @@ static void RE_Blit(const float f_x0, const float f_y0, const float f_x1, const 
 	//	qglFinish();
 
 	GL_Bind(p_image);
-	GL_State(i_gl_state);
+	GL_State(iGLState);
 	GL_Cull(CT_TWO_SIDED);
 
 	qglColor3f(1.0f, 1.0f, 1.0f);
@@ -441,7 +437,7 @@ static void RE_Blit(const float f_x0, const float f_y0, const float f_x1, const 
 	qglEnd();
 }
 
-static void RE_KillDissolve()
+static void RE_KillDissolve(void)
 {
 	Dissolve.iStartTime = 0;
 
@@ -456,7 +452,7 @@ static void RE_KillDissolve()
 // return = qtrue while still processing, for those interested...
 //
 #define iSAFETY_SPRITE_OVERLAP 2	// #pixels to overlap blit region by, in case some drivers leave onscreen seams
-qboolean RE_ProcessDissolve()
+qboolean RE_ProcessDissolve(void)
 {
 	if (Dissolve.iStartTime)
 	{
@@ -482,7 +478,7 @@ qboolean RE_ProcessDissolve()
 
 		if (i_dissolve_percentage <= 100)
 		{
-			extern void	RB_SetGL2D();
+			extern void	RB_SetGL2D(void);
 			RB_SetGL2D();
 
 			//			GLdouble glD;

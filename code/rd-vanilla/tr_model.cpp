@@ -130,7 +130,7 @@ static const byte FakeGLAFile[] =
 // returns qtrue if loaded, and sets the supplied qbool to true if it was from cache (instead of disk)
 //   (which we need to know to avoid LittleLong()ing everything again (well, the Mac needs to know anyway)...
 //
-qboolean RE_RegisterModels_GetDiskFile(const char* psModelFileName, void** ppv_buffer, qboolean* pqb_already_cached)
+static qboolean RE_RegisterModels_GetDiskFile(const char* psModelFileName, void** ppv_buffer, qboolean* pqb_already_cached)
 {
 	char s_model_name[MAX_QPATH];
 

@@ -69,7 +69,7 @@ static int R_CullModel(md3Header_t* header, const trRefEntity_t* ent) {
 	vec3_t		bounds[2]{};
 
 	// compute frame pointers
-	const md3Frame_t* new_frame = reinterpret_cast<md3Frame_t*>(reinterpret_cast<byte*>(header) + header->ofsFrames) + ent->e.frame;
+	const md3Frame_t* newFrame = reinterpret_cast<md3Frame_t*>(reinterpret_cast<byte*>(header) + header->ofsFrames) + ent->e.frame;
 	const md3Frame_t* old_frame = reinterpret_cast<md3Frame_t*>(reinterpret_cast<byte*>(header) + header->ofsFrames) + ent->e.oldframe;
 
 	// cull bounding sphere ONLY if this is not an upscaled entity
@@ -77,7 +77,7 @@ static int R_CullModel(md3Header_t* header, const trRefEntity_t* ent) {
 	{
 		if (ent->e.frame == ent->e.oldframe)
 		{
-			switch (R_CullLocalPointAndRadius(new_frame->localOrigin, new_frame->radius))
+			switch (R_CullLocalPointAndRadius(newFrame->localOrigin, newFrame->radius))
 			{
 			case CULL_OUT:
 				tr.pc.c_sphere_cull_md3_out++;
@@ -97,8 +97,8 @@ static int R_CullModel(md3Header_t* header, const trRefEntity_t* ent) {
 		{
 			int sphere_cull_b;
 
-			const int sphere_cull = R_CullLocalPointAndRadius(new_frame->localOrigin, new_frame->radius);
-			if (new_frame == old_frame) {
+			const int sphere_cull = R_CullLocalPointAndRadius(newFrame->localOrigin, newFrame->radius);
+			if (newFrame == old_frame) {
 				sphere_cull_b = sphere_cull;
 			}
 			else {
@@ -124,8 +124,8 @@ static int R_CullModel(md3Header_t* header, const trRefEntity_t* ent) {
 
 	// calculate a bounding box in the current coordinate system
 	for (int i = 0; i < 3; i++) {
-		bounds[0][i] = old_frame->bounds[0][i] < new_frame->bounds[0][i] ? old_frame->bounds[0][i] : new_frame->bounds[0][i];
-		bounds[1][i] = old_frame->bounds[1][i] > new_frame->bounds[1][i] ? old_frame->bounds[1][i] : new_frame->bounds[1][i];
+		bounds[0][i] = old_frame->bounds[0][i] < newFrame->bounds[0][i] ? old_frame->bounds[0][i] : newFrame->bounds[0][i];
+		bounds[1][i] = old_frame->bounds[1][i] > newFrame->bounds[1][i] ? old_frame->bounds[1][i] : newFrame->bounds[1][i];
 	}
 
 	switch (R_CullLocalBox(bounds))

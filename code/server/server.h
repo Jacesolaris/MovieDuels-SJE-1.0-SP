@@ -266,14 +266,14 @@ int SV_AreaEntities(const vec3_t mins, const vec3_t maxs, gentity_t** elist, int
 // returns the number of pointers filled in
 // The world entity is never returned in this list.
 
-int SV_PointContents(const vec3_t p, int pass_entity_num);
+int SV_PointContents(const vec3_t p, int passEntityNum);
 // returns the CONTENTS_* value from the world and all entities at the given point.
 
 /*
 Ghoul2 Insert Start
 */
 void SV_Trace(trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end,
-	int pass_entity_num, int contentmask, EG2_Collision e_g2_trace_type = G2_NOCOLLIDE, int use_lod = 0);
+	int passEntityNum, int contentmask, EG2_Collision eG2TraceType = G2_NOCOLLIDE, int useLod = 0);
 /*
 Ghoul2 Insert End
 */
@@ -285,7 +285,7 @@ Ghoul2 Insert End
 // if the starting point is in a solid, it will be allowed to move out
 // to an open area
 
-// pass_entity_num is explicitly excluded from clipping checks (normally ENTITYNUM_NONE)
+// passEntityNum is explicitly excluded from clipping checks (normally ENTITYNUM_NONE)
 
 ///////////////////////////////////////////////
 //

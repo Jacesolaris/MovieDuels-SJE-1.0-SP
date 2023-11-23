@@ -679,7 +679,7 @@ private:
 	//
 	SLoopedEffect mLoopedEffectArray[MAX_LOOPED_FX];
 
-	int ScheduleLoopedEffect(int id, int boltInfo, bool is_portal, int i_loop_time, bool is_relative);
+	int ScheduleLoopedEffect(int id, int boltInfo, bool isPortal, int i_loop_time, bool is_relative);
 	void AddLoopedEffects();
 
 	// this makes looking up the index based on the string name much easier
@@ -716,21 +716,21 @@ public:
 	int RegisterEffect(const char* path, bool b_has_correct_path = false); // handles pre-caching
 
 	// Nasty overloaded madness
-	void PlayEffect(int id, vec3_t origin, bool is_portal = false); // uses a default up axis
-	void PlayEffect(int id, vec3_t origin, vec3_t forward, bool is_portal = false);
+	void PlayEffect(int id, vec3_t origin, bool isPortal = false); // uses a default up axis
+	void PlayEffect(int id, vec3_t origin, vec3_t forward, bool isPortal = false);
 	// builds arbitrary perp. right vector, does a cross product to define up
-	void PlayEffect(int id, vec3_t origin, vec3_t axis[3], int boltInfo = -1, int ent_num = -1, bool is_portal = false,
+	void PlayEffect(int id, vec3_t origin, vec3_t axis[3], int boltInfo = -1, int entNum = -1, bool isPortal = false,
 		int i_loop_time = false, bool is_relative = false);
-	void PlayEffect(const char* file, vec3_t origin, bool is_portal = false); // uses a default up axis
-	void PlayEffect(const char* file, vec3_t origin, vec3_t forward, bool is_portal = false);
+	void PlayEffect(const char* file, vec3_t origin, bool isPortal = false); // uses a default up axis
+	void PlayEffect(const char* file, vec3_t origin, vec3_t forward, bool isPortal = false);
 	// builds arbitrary perp. right vector, does a cross product to define up
-	void PlayEffect(const char* file, vec3_t origin, vec3_t axis[3], int boltInfo, int ent_num, bool is_portal = false,
+	void PlayEffect(const char* file, vec3_t origin, vec3_t axis[3], int boltInfo, int entNum, bool isPortal = false,
 		int i_loop_time = false, bool is_relative = false);
 
 	//for muzzle
-	void PlayEffect(const char* file, int client_id, bool is_portal = false);
+	void PlayEffect(const char* file, int client_id, bool isPortal = false);
 
-	void StopEffect(const char* file, int boltInfo, bool is_portal = false);
+	void StopEffect(const char* file, int boltInfo, bool isPortal = false);
 	//find a scheduled Looping effect with these parms and kill it
 
 	void AddScheduledEffects(bool portal);

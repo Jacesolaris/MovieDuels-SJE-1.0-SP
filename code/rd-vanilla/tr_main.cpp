@@ -1163,33 +1163,33 @@ void R_DecomposeSort(const unsigned sort, int* entityNum, shader_t** shader,
 R_SortDrawSurfs
 =================
 */
-void R_SortDrawSurfs(drawSurf_t* draw_surfs, int num_draw_surfs) {
+void R_SortDrawSurfs(drawSurf_t* drawSurfs, int numDrawSurfs) {
 	shader_t* shader;
 	int				fogNum;
 	int				entityNum;
 	int				dlighted;
 
 	// it is possible for some views to not have any surfaces
-	if (num_draw_surfs < 1) {
+	if (numDrawSurfs < 1) {
 		// we still need to add it for hyperspace cases
-		R_AddDrawSurfCmd(draw_surfs, num_draw_surfs);
+		R_AddDrawSurfCmd(drawSurfs, numDrawSurfs);
 		return;
 	}
 
 	// if we overflowed MAX_DRAWSURFS, the drawsurfs
 	// wrapped around in the buffer and we will be missing
 	// the first surfaces, not the last ones
-	if (num_draw_surfs > MAX_DRAWSURFS) {
-		num_draw_surfs = MAX_DRAWSURFS;
+	if (numDrawSurfs > MAX_DRAWSURFS) {
+		numDrawSurfs = MAX_DRAWSURFS;
 	}
 
 	// sort the drawsurfs by sort type, then orientation, then shader
-	R_RadixSort(draw_surfs, num_draw_surfs);
+	R_RadixSort(drawSurfs, numDrawSurfs);
 
 	// check for any pass through drawing, which
 	// may cause another view to be rendered first
-	for (int i = 0; i < num_draw_surfs; i++) {
-		R_DecomposeSort((draw_surfs + i)->sort, &entityNum, &shader, &fogNum, &dlighted);
+	for (int i = 0; i < numDrawSurfs; i++) {
+		R_DecomposeSort((drawSurfs + i)->sort, &entityNum, &shader, &fogNum, &dlighted);
 
 		if (shader->sort > SS_PORTAL)
 		{
@@ -1202,7 +1202,7 @@ void R_SortDrawSurfs(drawSurf_t* draw_surfs, int num_draw_surfs) {
 		}
 
 		// if the mirror was completely clipped away, we may need to check another surface
-		if (R_MirrorViewBySurface(draw_surfs + i, entityNum)) {
+		if (R_MirrorViewBySurface(drawSurfs + i, entityNum)) {
 			// this is a debug option to see exactly what is being mirrored
 			if (r_portalOnly->integer) {
 				return;
@@ -1211,7 +1211,7 @@ void R_SortDrawSurfs(drawSurf_t* draw_surfs, int num_draw_surfs) {
 		}
 	}
 
-	R_AddDrawSurfCmd(draw_surfs, num_draw_surfs);
+	R_AddDrawSurfCmd(drawSurfs, numDrawSurfs);
 }
 
 /*
@@ -1266,6 +1266,7 @@ void R_AddEntitySurfaces() {
 		case RT_LINE:
 		case RT_ELECTRICITY:
 		case RT_SABER_GLOW:
+		case RT_LIGHTNING:
 			// self blood sprites, talk balloons, etc should not be drawn in the primary
 			// view.  We can't just do this check for all entities, because md3
 			// entities may still want to cast shadows from them
@@ -1389,7 +1390,7 @@ R_DebugGraphics
 Visualization aid for movement clipping debugging
 ====================
 */
-void R_DebugGraphics() 
+void R_DebugGraphics()
 {
 	if (!r_debugSurface->integer)
 	{
@@ -1505,12 +1506,12 @@ void R_RenderView(const viewParms_t* parms)
 	// if we overflowed MAX_DRAWSURFS, the drawsurfs
 // wrapped around in the buffer and we will be missing
 // the first surfaces, not the last ones
-	int num_draw_surfs = tr.refdef.numDrawSurfs;
-	if (num_draw_surfs > MAX_DRAWSURFS) {
-		num_draw_surfs = MAX_DRAWSURFS;
+	int numDrawSurfs = tr.refdef.numDrawSurfs;
+	if (numDrawSurfs > MAX_DRAWSURFS) {
+		numDrawSurfs = MAX_DRAWSURFS;
 	}
 
-	R_SortDrawSurfs(tr.refdef.drawSurfs + first_draw_surf, num_draw_surfs - first_draw_surf);
+	R_SortDrawSurfs(tr.refdef.drawSurfs + first_draw_surf, numDrawSurfs - first_draw_surf);
 
 	// draw main system development information (surface outlines, etc)
 	R_DebugGraphics();

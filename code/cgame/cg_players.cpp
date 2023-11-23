@@ -127,7 +127,7 @@ void CG_AddGhoul2Mark(const int type, const float size, vec3_t hitloc, vec3_t hi
 	gore_skin.lifeTime = life_time;
 	gore_skin.firstModel = first_model;
 	gore_skin.current_time = cg.time;
-	gore_skin.ent_num = entnum;
+	gore_skin.entNum = entnum;
 	gore_skin.SSize = size;
 	gore_skin.TSize = size;
 	gore_skin.shader = type;
@@ -180,7 +180,7 @@ qboolean CG_RegisterClientModelname(clientInfo_t* ci, const char* headModelName,
 	const char* legsModelName, const char* legsSkinName);
 
 static void CG_PlayerFootsteps(const centity_t* cent, footstepType_t foot_step_type);
-static void CG_PlayerAnimEvents(int anim_file_index, qboolean torso, int old_frame, int frame, int ent_num);
+static void CG_PlayerAnimEvents(int anim_file_index, qboolean torso, int old_frame, int frame, int entNum);
 extern void BG_G2SetBoneAngles(const centity_t* cent, int bone_index, const vec3_t angles, int flags,
 	Eorientations up, Eorientations left, Eorientations forward, qhandle_t* model_list);
 extern qboolean pm_saber_in_special_attack(int anim);
@@ -761,9 +761,9 @@ Sets cg.snap, cg.oldFrame, and cg.backlerp
 cg.time should be between oldFrameTime and frameTime after exit
 ===============
 */
-static qboolean CG_RunLerpFrame(clientInfo_t* ci, lerpFrame_t* lf, const int new_animation, const int ent_num)
+static qboolean CG_RunLerpFrame(clientInfo_t* ci, lerpFrame_t* lf, const int new_animation, const int entNum)
 {
-	qboolean new_frame = qfalse;
+	qboolean newFrame = qfalse;
 
 	// see if the animation sequence is switching
 	//FIXME: allow multiple-frame overlapped lerping between sequences? - Possibly last 3 of last seq and first 3 of next seq?
@@ -785,7 +785,7 @@ static qboolean CG_RunLerpFrame(clientInfo_t* ci, lerpFrame_t* lf, const int new
 		int anim_frame_time = abs(anim->frameLerp);
 
 		//special hack for player to ensure quick weapon change
-		if (ent_num == 0)
+		if (entNum == 0)
 		{
 			if (lf->animationNumber == TORSO_DROPWEAP1 || lf->animationNumber == TORSO_RAISEWEAP1)
 			{
@@ -847,7 +847,7 @@ static qboolean CG_RunLerpFrame(clientInfo_t* ci, lerpFrame_t* lf, const int new
 			lf->frameTime = cg.time;
 		}
 
-		new_frame = qtrue;
+		newFrame = qtrue;
 	}
 
 	if (lf->frameTime > cg.time + 200)
@@ -869,7 +869,7 @@ static qboolean CG_RunLerpFrame(clientInfo_t* ci, lerpFrame_t* lf, const int new
 		lf->backlerp = 1.0 - static_cast<float>(cg.time - lf->oldFrameTime) / (lf->frameTime - lf->oldFrameTime);
 	}
 
-	return new_frame;
+	return newFrame;
 }
 
 /*
@@ -1086,19 +1086,19 @@ static void CG_PlayerAnimEventDo(centity_t* cent, animevent_t* anim_event)
 				}
 				else if (Q_stricmp("scepter_beam", anim_event->stringData) == 0)
 				{
-					int model_index = cent->gent->weaponModel[1];
-					if (model_index <= 0)
+					int modelIndex = cent->gent->weaponModel[1];
+					if (modelIndex <= 0)
 					{
-						model_index = cent->gent->cinematicModel;
+						modelIndex = cent->gent->cinematicModel;
 					}
-					if (model_index > 0)
+					if (modelIndex > 0)
 					{
 						//we have a cinematic model
-						const int bolt_index = gi.G2API_AddBolt(&cent->gent->ghoul2[model_index], "*flash");
+						const int bolt_index = gi.G2API_AddBolt(&cent->gent->ghoul2[modelIndex], "*flash");
 						if (bolt_index > -1)
 						{
 							//cinematic model has a flash bolt
-							CG_PlayEffectBolted("scepter/beam.efx", model_index, bolt_index,
+							CG_PlayEffectBolted("scepter/beam.efx", modelIndex, bolt_index,
 								cent->currentState.client_num, cent->lerpOrigin,
 								anim_event->eventData[AED_EFFECT_PROBABILITY], qtrue);
 						}
@@ -1200,7 +1200,7 @@ static void CG_PlayerAnimEventDo(centity_t* cent, animevent_t* anim_event)
 }
 
 static void CG_PlayerAnimEvents(const int anim_file_index, const qboolean torso, const int old_frame, const int frame,
-	const int ent_num)
+	const int entNum)
 {
 	int first_frame = 0, lastFrame = 0;
 	qboolean do_event = qfalse;
@@ -1210,9 +1210,9 @@ static void CG_PlayerAnimEvents(const int anim_file_index, const qboolean torso,
 	animevent_t* anim_events;
 	int gla_index = -1;
 
-	if (g_entities[ent_num].ghoul2.size())
+	if (g_entities[entNum].ghoul2.size())
 	{
-		gla_index = gi.G2API_GetAnimIndex(&g_entities[ent_num].ghoul2[0]);
+		gla_index = gi.G2API_GetAnimIndex(&g_entities[entNum].ghoul2[0]);
 	}
 
 	if (torso)
@@ -1230,14 +1230,14 @@ static void CG_PlayerAnimEvents(const int anim_file_index, const qboolean torso,
 		if (torso)
 		{
 			//more precise, slower
-			old_anim = PM_TorsoAnimForFrame(&g_entities[ent_num], old_frame);
-			anim = PM_TorsoAnimForFrame(&g_entities[ent_num], frame);
+			old_anim = PM_TorsoAnimForFrame(&g_entities[entNum], old_frame);
+			anim = PM_TorsoAnimForFrame(&g_entities[entNum], frame);
 		}
 		else
 		{
 			//more precise, slower
-			old_anim = PM_LegsAnimForFrame(&g_entities[ent_num], old_frame);
-			anim = PM_LegsAnimForFrame(&g_entities[ent_num], frame);
+			old_anim = PM_LegsAnimForFrame(&g_entities[entNum], old_frame);
+			anim = PM_LegsAnimForFrame(&g_entities[entNum], frame);
 		}
 
 		if (anim != old_anim)
@@ -1262,7 +1262,7 @@ static void CG_PlayerAnimEvents(const int anim_file_index, const qboolean torso,
 		}
 	}
 
-	const hstring my_model = g_entities[ent_num].NPC_type; //apparently NPC_type is always the same as the model name???
+	const hstring my_model = g_entities[entNum].NPC_type; //apparently NPC_type is always the same as the model name???
 
 	// Check for anim event
 	for (int i = 0; i < MAX_ANIM_EVENTS; ++i)
@@ -1426,7 +1426,7 @@ static void CG_PlayerAnimEvents(const int anim_file_index, const qboolean torso,
 				// do event
 				if (do_event)
 				{
-					CG_PlayerAnimEventDo(&cg_entities[ent_num], &anim_events[i]);
+					CG_PlayerAnimEventDo(&cg_entities[entNum], &anim_events[i]);
 				}
 			} // end if event matches
 		} // end if model matches
@@ -2182,7 +2182,7 @@ static void CG_ATSTLegsYaw(centity_t* cent, vec3_t trailing_legs_angles)
 }
 
 extern qboolean G_ClassHasBadBones(int npc_class);
-extern void G_BoneOrientationsForClass(int npc_class, const char* bone_name, Eorientations* o_up, Eorientations* o_rt,
+extern void G_BoneOrientationsForClass(int npc_class, const char* boneName, Eorientations* o_up, Eorientations* o_rt,
 	Eorientations* o_fwd);
 extern qboolean PM_FlippingAnim(int anim);
 extern qboolean PM_SpinningSaberAnim(int anim);
@@ -4727,7 +4727,7 @@ void CG_ForcePushBlur(const vec3_t org, const qboolean dark_side)
 }
 
 //-------------------------------------------
-void CG_GraspBlur(const vec3_t org)
+static void CG_GraspBlur(const vec3_t org)
 {
 	localEntity_t* ex = CG_AllocLocalEntity();
 	ex->leType = LE_PUFF;
@@ -4763,7 +4763,7 @@ void CG_GraspBlur(const vec3_t org)
 	ex->refEntity.customShader = cgi_R_RegisterShader("gfx/effects/forcePush");
 }
 
-void CG_ForceDeadlySightBlur(const vec3_t org)
+static void CG_ForceDeadlySightBlur(const vec3_t org)
 {
 	localEntity_t* ex = CG_AllocLocalEntity();
 	ex->leType = LE_PUFF;
@@ -5172,9 +5172,9 @@ CG_AddForceSightShell
 Adds the special effect
 ===============
 */
-extern void CG_AddHealthBarEnt(int ent_num);
-extern void CG_AddBlockPointBarEnt(int ent_num);
-extern void CG_AddFatiguePointBarEnt(int ent_num);
+extern void CG_AddHealthBarEnt(int entNum);
+extern void CG_AddBlockPointBarEnt(int entNum);
+extern void CG_AddFatiguePointBarEnt(int entNum);
 
 void CG_AddForceSightShell(refEntity_t* ent, const centity_t* cent)
 {
@@ -5921,12 +5921,12 @@ void CG_AddRefEntityWithPowerups(refEntity_t* ent, int powerups, centity_t* cent
 		theFxScheduler.PlayEffect(cgs.effects.forceInvincibility, cent->lerpOrigin);
 	}
 
-	if (cg_SerenityJediEngineMode.integer == 2 
+	if (cg_SerenityJediEngineMode.integer == 2
 		&& cent->gent->client->ps.forcePower > 80
 		&& cent->gent->health > 1
 		&& powerups & 1 << PW_MEDITATE && !in_camera)
 	{
-		theFxScheduler.PlayEffect(cgs.effects.forceInvincibility, cent->lerpOrigin); 
+		theFxScheduler.PlayEffect(cgs.effects.forceInvincibility, cent->lerpOrigin);
 		cgi_R_AddLightToScene(cent->lerpOrigin, 60 + (rand() & 20), 0.9f, 0.9f, 0.9f); //white
 	}
 
@@ -6336,7 +6336,7 @@ void CG_PlayerShieldHit(const int entitynum, vec3_t angles, const int amount)
 	cent->shieldHitTime = cg.time + 250;
 }
 
-void CG_PlayerShieldRecharging(const int entitynum)
+static void CG_PlayerShieldRecharging(const int entitynum)
 {
 	if (entitynum < 0 || entitynum >= MAX_GENTITIES)
 	{
@@ -6347,7 +6347,7 @@ void CG_PlayerShieldRecharging(const int entitynum)
 	cent->shieldRechargeTime = cg.time + 1000;
 }
 
-void CG_DrawPlayerShield(const centity_t* cent, vec3_t origin)
+static void CG_DrawPlayerShield(const centity_t* cent, vec3_t origin)
 {
 	refEntity_t ent;
 
@@ -6382,7 +6382,7 @@ void CG_DrawPlayerShield(const centity_t* cent, vec3_t origin)
 	cgi_R_AddRefEntityToScene(&ent);
 }
 
-void CG_PlayerHitFX(centity_t* cent)
+static void CG_PlayerHitFX(centity_t* cent)
 {
 	// only do the below fx if the cent in question is...uh...me, and it's first person.
 	if (cent->currentState.client_num == cg.snap->ps.client_num || cg.renderingThirdPerson)
@@ -7159,7 +7159,7 @@ static void CG_DoSaberLight(const saberInfo_t* saber)
 }
 
 //Movie Sabers
-void CG_DoEp1Saber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
+static void CG_DoEp1Saber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
 	float length_max, float radius, saber_colors_t
 	color, int rfx, qboolean do_light)
 {
@@ -7717,7 +7717,7 @@ void CG_DoEp1Saber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t t
 	}
 }
 
-void CG_DoEp2Saber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
+static void CG_DoEp2Saber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
 	float length_max, float radius, saber_colors_t
 	color, int rfx, qboolean do_light)
 {
@@ -8276,7 +8276,7 @@ void CG_DoEp2Saber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t t
 	}
 }
 
-void CG_DoEp3Saber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
+static void CG_DoEp3Saber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
 	float length_max, float radius, saber_colors_t
 	color, int rfx, qboolean do_light)
 {
@@ -8836,7 +8836,7 @@ void CG_DoEp3Saber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t t
 	}
 }
 
-void CG_DoSFXSaber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
+static void CG_DoSFXSaber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
 	float length_max, float radius, saber_colors_t
 	color, int rfx, qboolean do_light)
 {
@@ -9387,7 +9387,7 @@ void CG_DoSFXSaber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t t
 	}
 }
 
-void CG_DoOTSaber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
+static void CG_DoOTSaber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
 	float length_max, float radius, saber_colors_t
 	color, int rfx, qboolean do_light)
 {
@@ -9969,7 +9969,7 @@ void CG_DoOTSaber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t tr
 	}
 }
 
-void CG_DoRotJSaber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
+static void CG_DoRotJSaber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
 	float length_max, float radius, saber_colors_t
 	color, int rfx, qboolean do_light)
 {
@@ -10520,7 +10520,7 @@ void CG_DoRotJSaber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t 
 	}
 }
 
-void CG_DoTFASaber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
+static void CG_DoTFASaber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
 	float length_max, float radius, saber_colors_t
 	color, int rfx, qboolean do_light)
 {
@@ -11492,7 +11492,7 @@ static void CG_DoSaber(vec3_t origin, vec3_t dir, float length, float length_max
 	}
 }
 
-void CG_DoUnstableSaber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
+static void CG_DoUnstableSaber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
 	float length_max, float radius, saber_colors_t color, int rfx, qboolean do_light)
 {
 	vec3_t dif, mid, blade_dir, end_dir, trail_dir, base_dir;
@@ -12299,7 +12299,7 @@ static void CG_DoSaberUnstable(vec3_t origin, vec3_t dir, float length, float le
 	}
 }
 
-void CG_DoRebelsSaber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
+static void CG_DoRebelsSaber(centity_t* cent, vec3_t blade_muz, vec3_t blade_tip, vec3_t trail_tip, vec3_t trail_muz,
 	float length_max, float radius, saber_colors_t
 	color, int rfx, qboolean do_light)
 {
@@ -12948,7 +12948,7 @@ static void CG_CreateSaberMarks(vec3_t start, vec3_t end, vec3_t normal)
 
 extern void FX_AddPrimitive(CEffect** effect, int kill_time);
 //-------------------------------------------------------
-void CG_CheckSaberInWater(const centity_t* cent, const centity_t* scent, const int saber_num, const int model_index,
+void CG_CheckSaberInWater(const centity_t* cent, const centity_t* scent, const int saber_num, const int modelIndex,
 	vec3_t origin, vec3_t angles)
 {
 	gclient_t* client = cent->gent->client;
@@ -12957,11 +12957,11 @@ void CG_CheckSaberInWater(const centity_t* cent, const centity_t* scent, const i
 		return;
 	}
 	if (!scent ||
-		model_index == -1 ||
-		scent->gent->ghoul2.size() <= model_index ||
-		scent->gent->ghoul2[model_index].mBltlist.size() <= 0 ||
+		modelIndex == -1 ||
+		scent->gent->ghoul2.size() <= modelIndex ||
+		scent->gent->ghoul2[modelIndex].mBltlist.size() <= 0 ||
 		//using a camera puts away your saber so you have no bolts
-		scent->gent->ghoul2[model_index].mModelindex == -1)
+		scent->gent->ghoul2[modelIndex].mModelindex == -1)
 	{
 		return;
 	}
@@ -12977,7 +12977,7 @@ void CG_CheckSaberInWater(const centity_t* cent, const centity_t* scent, const i
 		mdxaBone_t bolt_matrix;
 
 		// figure out where the actual model muzzle is
-		gi.G2API_GetBoltMatrix(scent->gent->ghoul2, model_index, 0, &bolt_matrix, angles, origin, cg.time,
+		gi.G2API_GetBoltMatrix(scent->gent->ghoul2, modelIndex, 0, &bolt_matrix, angles, origin, cg.time,
 			cgs.model_draw,
 			scent->currentState.modelScale);
 		// work the matrix axis stuff into the original axis and origins used.
@@ -12995,7 +12995,7 @@ void CG_CheckSaberInWater(const centity_t* cent, const centity_t* scent, const i
 	client->ps.saberEventFlags &= ~SEF_INWATER;
 }
 
-static void CG_AddSaberBladeGo(centity_t* cent, centity_t* scent, const int renderfx, const int model_index,
+static void CG_AddSaberBladeGo(centity_t* cent, centity_t* scent, const int renderfx, const int modelIndex,
 	vec3_t origin, vec3_t angles, const int saber_num, const int blade_num)
 {
 	vec3_t org, end, axis[3] = { {0, 0, 0}, {0, 0, 0}, {0, 0, 0} };
@@ -13020,9 +13020,9 @@ static void CG_AddSaberBladeGo(centity_t* cent, centity_t* scent, const int rend
 	if (true)
 	{
 		if (!scent ||
-			model_index == -1 ||
-			scent->gent->ghoul2.size() <= model_index ||
-			scent->gent->ghoul2[model_index].mModelindex == -1)
+			modelIndex == -1 ||
+			scent->gent->ghoul2.size() <= modelIndex ||
+			scent->gent->ghoul2[modelIndex].mModelindex == -1)
 		{
 			return;
 		}
@@ -13030,13 +13030,13 @@ static void CG_AddSaberBladeGo(centity_t* cent, centity_t* scent, const int rend
 
 		//New way, multiple blade tags:
 		const char* tag_name = va("*blade%d", blade_num + 1);
-		int bolt = gi.G2API_AddBolt(&scent->gent->ghoul2[model_index], tag_name);
+		int bolt = gi.G2API_AddBolt(&scent->gent->ghoul2[modelIndex], tag_name);
 
 		if (bolt == -1)
 		{
 			tag_hack = qtrue; //use the hacked switch statement below to position and orient the blades
 			//hmm, just fall back to the most basic tag (this will also make it work with pre-JKA saber models
-			bolt = gi.G2API_AddBolt(&scent->gent->ghoul2[model_index], "*flash");
+			bolt = gi.G2API_AddBolt(&scent->gent->ghoul2[modelIndex], "*flash");
 			if (bolt == -1)
 			{
 				//no tag_flash either?!!
@@ -13048,17 +13048,17 @@ static void CG_AddSaberBladeGo(centity_t* cent, centity_t* scent, const int rend
 		if (!WP_SaberBladeUseSecondBladeStyle(&cent->gent->client->ps.saber[saber_num], blade_num)
 			&& cent->gent->client->ps.saber[saber_num].bladeEffect)
 		{
-			CG_PlayEffectIDBolted(cent->gent->client->ps.saber[saber_num].bladeEffect, model_index, bolt,
+			CG_PlayEffectIDBolted(cent->gent->client->ps.saber[saber_num].bladeEffect, modelIndex, bolt,
 				scent->currentState.client_num, scent->lerpOrigin, -1, qfalse);
 		}
 		else if (WP_SaberBladeUseSecondBladeStyle(&cent->gent->client->ps.saber[saber_num], blade_num)
 			&& cent->gent->client->ps.saber[saber_num].bladeEffect2)
 		{
-			CG_PlayEffectIDBolted(cent->gent->client->ps.saber[saber_num].bladeEffect2, model_index, bolt,
+			CG_PlayEffectIDBolted(cent->gent->client->ps.saber[saber_num].bladeEffect2, modelIndex, bolt,
 				scent->currentState.client_num, scent->lerpOrigin, -1, qfalse);
 		}
 		//get the bolt_matrix
-		gi.G2API_GetBoltMatrix(scent->gent->ghoul2, model_index, bolt, &bolt_matrix, angles, origin, cg.time,
+		gi.G2API_GetBoltMatrix(scent->gent->ghoul2, modelIndex, bolt, &bolt_matrix, angles, origin, cg.time,
 			cgs.model_draw, scent->currentState.modelScale);
 
 		// work the matrix axis stuff into the original axis and origins used.
@@ -14170,7 +14170,7 @@ static void CG_AddSaberBladeGo(centity_t* cent, centity_t* scent, const int rend
 	}
 }
 
-void CG_AddSaberBlade(centity_t* cent, centity_t* scent, const int renderfx, const int model_index, vec3_t origin,
+void CG_AddSaberBlade(centity_t* cent, centity_t* scent, const int renderfx, const int modelIndex, vec3_t origin,
 	vec3_t angles)
 {
 	//FIXME: if this is a dropped saber, it could be possible that it's the second saber?
@@ -14178,7 +14178,7 @@ void CG_AddSaberBlade(centity_t* cent, centity_t* scent, const int renderfx, con
 	{
 		for (int i = 0; i < cent->gent->client->ps.saber[0].numBlades; i++)
 		{
-			CG_AddSaberBladeGo(cent, scent, renderfx, model_index, origin, angles, 0, i);
+			CG_AddSaberBladeGo(cent, scent, renderfx, modelIndex, origin, angles, 0, i);
 		}
 		if (cent->gent->client->ps.saber[0].numBlades > 2)
 		{
@@ -14266,7 +14266,7 @@ float GetSelfTorsoAnimPoint()
  ===============
  */
 
-void SmoothTrueView(vec3_t eye_angles)
+static void SmoothTrueView(vec3_t eye_angles)
 {
 	const float leg_anim_point = GetSelfLegAnimPoint();
 	const float torso_anim_point = GetSelfTorsoAnimPoint();
@@ -16510,7 +16510,7 @@ void CG_Player(centity_t* cent)
 
 		VectorCopy(cent->lerpOrigin, legs.origin);
 
-		//Scale applied to a ref_ent will apply to any models attached to it...
+		//Scale applied to a refEnt will apply to any models attached to it...
 		//This seems to copy the scale to every piece attached, kinda cool, but doesn't
 		//allow the body to be scaled up without scaling a bolt on or whatnot...
 		//Only apply scale if it's not 100% scale...

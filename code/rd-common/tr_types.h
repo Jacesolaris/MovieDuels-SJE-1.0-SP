@@ -101,7 +101,7 @@ using polyVert_t = struct
 
 using poly_t = struct poly_s
 {
-	qhandle_t h_shader;
+	qhandle_t hShader;
 	int numVerts;
 	polyVert_t* verts;
 };
@@ -121,6 +121,8 @@ using refEntityType_t = enum
 	RT_PORTALSURFACE,
 	// doesn't draw anything, just info for portals
 	RT_CLOUDS,
+	RT_LIGHTNING,
+	RT_ENT_CHAIN,
 
 	RT_MAX_REF_ENTITY_TYPE
 };
@@ -222,7 +224,8 @@ using textureCompression_t = enum
 {
 	TC_NONE,
 	TC_S3TC,
-	TC_S3TC_DXT
+	TC_S3TC_DXT,
+	TC_S3TC_ARB
 };
 
 using glconfig_t = struct glconfig_s

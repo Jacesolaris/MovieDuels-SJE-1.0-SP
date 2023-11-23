@@ -1594,7 +1594,7 @@ void RE_Font_DrawString(int ox, int oy, const char* psText, const float* rgba, c
 	float				fox, foy, fx, fy;
 	int					colour, offset;
 	const glyphInfo_t* pLetter;
-	qhandle_t			h_shader;
+	qhandle_t			hShader;
 
 	assert(psText);
 
@@ -1700,7 +1700,7 @@ void RE_Font_DrawString(int ox, int oy, const char* psText, const float* rgba, c
 			break;
 
 		default:
-			pLetter = curfont->GetLetter(uiLetter, &h_shader);			// Description of pLetter
+			pLetter = curfont->GetLetter(uiLetter, &hShader);			// Description of pLetter
 			if (!pLetter->width)
 			{
 				pLetter = curfont->GetLetter('.');
@@ -1726,7 +1726,7 @@ void RE_Font_DrawString(int ox, int oy, const char* psText, const float* rgba, c
 					pLetter->s2,					// float s2
 					pLetter->t2,					// float t2
 					//lastcolour.c,
-					h_shader							// qhandle_t h_shader
+					hShader							// qhandle_t hShader
 				);
 
 				fx += fAdvancePixels;
@@ -1738,7 +1738,7 @@ void RE_Font_DrawString(int ox, int oy, const char* psText, const float* rgba, c
 #else
 	static qboolean gbInShadow = qfalse;	// MUST default to this
 	const glyphInfo_t* pLetter;
-	qhandle_t			h_shader;
+	qhandle_t			hShader;
 
 	assert(psText);
 
@@ -1879,7 +1879,7 @@ void RE_Font_DrawString(int ox, int oy, const char* psText, const float* rgba, c
 			}
 			//purposely falls thrugh
 		default:
-			pLetter = curfont->GetLetter(uiLetter, &h_shader);			// Description of pLetter
+			pLetter = curfont->GetLetter(uiLetter, &hShader);			// Description of pLetter
 			if (!pLetter->width)
 			{
 				pLetter = curfont->GetLetter('.');
@@ -1915,7 +1915,7 @@ void RE_Font_DrawString(int ox, int oy, const char* psText, const float* rgba, c
 					pLetter->s2,					// float s2
 					pLetter->t2,					// float t2
 					//lastcolour.c,
-					h_shader							// qhandle_t h_shader
+					hShader							// qhandle_t hShader
 				);
 
 				fx += fAdvancePixels;

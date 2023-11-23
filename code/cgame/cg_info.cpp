@@ -33,6 +33,7 @@ static constexpr int objectiveTextBoxWidth = 500; // Width (in pixels) of text b
 static constexpr int objectiveTextBoxHeight = 300; // Height (in pixels) of text box
 static constexpr short missionYpos = 79;
 extern vmCvar_t cg_com_kotor;
+extern vmCvar_t cg_com_rend2;
 
 const char* showLoadPowersName[] =
 {
@@ -394,13 +395,20 @@ static void CG_LoadBar()
 	// Draw right cap
 	CG_DrawPic(tickleft + tickwidth * cg.loadLCARSStage, ticktop, capwidth, tickheight, cgs.media.loadTickCap);
 
-	/*constexpr int x = (640 - LOADBAR_CLIP_WIDTH) / 2;
-
-	if (cg.loadLCARSStage >= 4)
+	if (cg.loadLCARSStage >= 3)
 	{
+		if (cg.loadLCARSStage <= 6)
+		{
+			if (cg_com_rend2.integer == 1) //rend2 is on
+			{
+				cgi_R_Font_DrawString(40, 2, va("Warning: When using Quality mode, longer loading times can be expected."), colorTable[CT_WHITE], cgs.media.qhFontSmall, -1, 1.0f);
+			}
+		}
+		constexpr int x = (640 - LOADBAR_CLIP_WIDTH) / 2;
 		constexpr int y = 50;
-		CG_DrawPic(x, y, LOADBAR_CLIP_WIDTH, LOADBAR_CLIP_HEIGHT, cgs.media.load_SerenitySaberSystems);
-	}*/
+
+		//CG_DrawPic(x, y, LOADBAR_CLIP_WIDTH, LOADBAR_CLIP_HEIGHT, cgs.media.load_SerenitySaberSystems);
+	}
 }
 
 int CG_WeaponCheck(int weapon_index);
@@ -820,7 +828,7 @@ static void LoadTips()
 	if (SCREENTIP_NEXT_UPDATE_TIME < time)
 	{
 		cgi_Cvar_Set("ui_tipsbriefing", va("@LOADTIPS_TIP%d", index));
-		SCREENTIP_NEXT_UPDATE_TIME = time + 3200;
+		SCREENTIP_NEXT_UPDATE_TIME = time + 3500;
 	}
 }
 
@@ -881,6 +889,7 @@ void CG_DrawInformation()
 
 	qhandle_t levelshot = cgi_R_RegisterShaderNoMip(va("levelshots/%s", s));
 	qhandle_t Loadshot = cgi_R_RegisterShaderNoMip("menu/art/loadshot");
+	qhandle_t Loadshot2 = cgi_R_RegisterShaderNoMip("menu/art/loadshot2");
 
 	if (!levelshot)
 	{
@@ -889,6 +898,10 @@ void CG_DrawInformation()
 	if (!Loadshot)
 	{
 		Loadshot = cgi_R_RegisterShaderNoMip(cg_GetCurrentLevelshot1(s));
+	}
+	if (!Loadshot2)
+	{
+		Loadshot2 = cgi_R_RegisterShaderNoMip(cg_GetCurrentLevelshot1(s));
 	}
 
 	if (g_eSavedGameJustLoaded != eFULL
@@ -905,11 +918,17 @@ void CG_DrawInformation()
 			|| strcmp(s, "kejim_post") == 0)) //special case for first map!
 	{
 		constexpr char text[1024] = { 0 };
+		if (cg.loadLCARSStage <= 4 && cg_com_rend2.integer == 1)
+		{
+			CG_DrawPic(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Loadshot2);
+		}
+		else
+		{
+			CG_DrawPic(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Loadshot);
 
-		CG_DrawPic(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Loadshot);
-
-		const int w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontMedium, 1.0f);
-		cgi_R_Font_DrawString(320 - w / 2, 140, text, colorTable[CT_ICON_BLUE], cgs.media.qhFontMedium, -1, 1.0f);
+			const int w = cgi_R_Font_StrLenPixels(text, cgs.media.qhFontMedium, 1.0f);
+			cgi_R_Font_DrawString(320 - w / 2, 140, text, colorTable[CT_ICON_BLUE], cgs.media.qhFontMedium, -1, 1.0f);
+		}
 	}
 	else
 	{

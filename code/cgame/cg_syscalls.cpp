@@ -196,11 +196,11 @@ void cgi_CM_TransformedBoxTrace(trace_t* results, const vec3_t start, const vec3
 
 int cgi_CM_MarkFragments(const int numPoints, const vec3_t* points,
 	const vec3_t projection,
-	const int maxPoints, vec3_t pointBuffer,
-	const int maxFragments, markFragment_t* fragmentBuffer)
+	const int max_points, vec3_t point_buffer,
+	const int max_fragments, markFragment_t* fragment_buffer)
 {
-	return Q_syscall(CG_CM_MARKFRAGMENTS, numPoints, points, projection, maxPoints, pointBuffer, maxFragments,
-		fragmentBuffer);
+	return Q_syscall(CG_CM_MARKFRAGMENTS, numPoints, points, projection, max_points, point_buffer, max_fragments,
+		fragment_buffer);
 }
 
 void cgi_CM_SnapPVS(vec3_t origin, byte* buffer)
@@ -378,9 +378,9 @@ void cgi_R_GetLighting(const vec3_t origin, vec3_t ambientLight, vec3_t directed
 	Q_syscall(CG_R_GETLIGHTING, origin, ambientLight, directedLight, ligthDir);
 }
 
-void cgi_R_AddPolyToScene(const qhandle_t h_shader, const int numVerts, const polyVert_t* verts)
+void cgi_R_AddPolyToScene(const qhandle_t hShader, const int numVerts, const polyVert_t* verts)
 {
-	Q_syscall(CG_R_ADDPOLYTOSCENE, h_shader, numVerts, verts);
+	Q_syscall(CG_R_ADDPOLYTOSCENE, hShader, numVerts, verts);
 }
 
 void cgi_R_AddLightToScene(const vec3_t org, const float intensity, const float r, const float g, const float b)
@@ -399,10 +399,10 @@ void cgi_R_SetColor(const float* rgba)
 }
 
 void cgi_R_DrawStretchPic(const float x, const float y, const float w, const float h,
-	const float s1, const float t1, const float s2, const float t2, const qhandle_t h_shader)
+	const float s1, const float t1, const float s2, const float t2, const qhandle_t hShader)
 {
 	Q_syscall(CG_R_DRAWSTRETCHPIC, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1),
-		PASSFLOAT(s2), PASSFLOAT(t2), h_shader);
+		PASSFLOAT(s2), PASSFLOAT(t2), hShader);
 }
 
 void cgi_R_ModelBounds(const qhandle_t model, vec3_t mins, vec3_t maxs)
@@ -418,18 +418,18 @@ void cgi_R_LerpTag(orientation_t* tag, const qhandle_t mod, const int startFrame
 
 void cgi_R_DrawRotatePic(const float x, const float y, const float w, const float h,
 	const float s1, const float t1, const float s2, const float t2, const float a,
-	const qhandle_t h_shader, const float aspectCorrection)
+	const qhandle_t hShader, const float aspectCorrection)
 {
 	Q_syscall(CG_R_DRAWROTATEPIC, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1),
-		PASSFLOAT(s2), PASSFLOAT(t2), PASSFLOAT(a), h_shader, PASSFLOAT(aspectCorrection));
+		PASSFLOAT(s2), PASSFLOAT(t2), PASSFLOAT(a), hShader, PASSFLOAT(aspectCorrection));
 }
 
 void cgi_R_DrawRotatePic2(const float x, const float y, const float w, const float h,
 	const float s1, const float t1, const float s2, const float t2, const float a,
-	const qhandle_t h_shader, const float aspectCorrection)
+	const qhandle_t hShader, const float aspectCorrection)
 {
 	Q_syscall(CG_R_DRAWROTATEPIC2, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(w), PASSFLOAT(h), PASSFLOAT(s1), PASSFLOAT(t1),
-		PASSFLOAT(s2), PASSFLOAT(t2), PASSFLOAT(a), h_shader, PASSFLOAT(aspectCorrection));
+		PASSFLOAT(s2), PASSFLOAT(t2), PASSFLOAT(a), hShader, PASSFLOAT(aspectCorrection));
 }
 
 //linear fogging, with settable range -rww
@@ -533,7 +533,7 @@ void cgi_R_GetBModelVerts(const int bmodelIndex, vec3_t* verts, vec3_t normal)
 	Q_syscall(CG_R_GET_BMODEL_VERTS, bmodelIndex, verts, normal);
 }
 
-void cgi_RE_WorldEffectCommand(const char* command)
+void cgi_R_WorldEffectCommand(const char* command)
 {
 	Q_syscall(CG_R_WORLD_EFFECT_COMMAND, command);
 }

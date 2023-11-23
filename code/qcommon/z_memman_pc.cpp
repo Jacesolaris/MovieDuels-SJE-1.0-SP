@@ -237,7 +237,7 @@ char* _D_Z_Filename_WithoutPath(const char* ps_filename)
 extern refexport_t re;
 
 #ifdef DEBUG_ZONE_ALLOCS
-void* _D_Z_Malloc(int iSize, memtag_t eTag, qboolean bZeroit, const char* psFile, int iLine)
+void* _D_Z_Malloc(const int iSize, const memtag_t eTag, const qboolean bZeroit, const char* psFile, const int iLine)
 #else
 void* Z_Malloc(const int iSize, const memtag_t eTag, const qboolean bZeroit, const int unusedAlign)
 #endif
@@ -253,7 +253,7 @@ void* Z_Malloc(const int iSize, const memtag_t eTag, const qboolean bZeroit, con
 	// Add in tracking info and round to a longword...  (ignore longword aligning now we're not using contiguous blocks)
 	//
 	//	int iRealSize = (iSize + sizeof(zoneHeader_t) + sizeof(zoneTail_t) + 3) & 0xfffffffc;
-	const int iRealSize = (iSize + sizeof(zoneHeader_t) + sizeof(zoneTail_t));
+	const int iRealSize = iSize + sizeof(zoneHeader_t) + sizeof(zoneTail_t);
 
 	// Allocate a chunk...
 	//
@@ -609,6 +609,10 @@ int Z_MemSize(const memtag_t eTag)
 //
 void Z_TagFree(const memtag_t eTag)
 {
+	//#ifdef _DEBUG
+	//	int iZoneBlocks = TheZone.Stats.iCount;
+	//#endif
+
 	zoneHeader_t* pMemory = TheZone.Header.pNext;
 	while (pMemory)
 	{
@@ -622,7 +626,7 @@ void Z_TagFree(const memtag_t eTag)
 }
 
 #ifdef DEBUG_ZONE_ALLOCS
-void* _D_S_Malloc(int iSize, const char* psFile, int iLine)
+void* _D_S_Malloc(const int iSize, const char* psFile, const int iLine)
 {
 	return _D_Z_Malloc(iSize, TAG_SMALL, qfalse, psFile, iLine);
 }
@@ -773,7 +777,7 @@ static void Z_TagDebug_f(void)
 	}
 	else
 	{
-		Com_Printf("Usage: 'zone_tagdebug [#snap] <tag>', e.g. TAG_GHOUL2, TAG_ALL (careful!)\n");
+		Com_Printf("Usage: 'zoneTagdebug [#snap] <tag>', e.g. TAG_GHOUL2, TAG_ALL (careful!)\n");
 		return;
 	}
 
@@ -867,7 +871,7 @@ void Com_ShutdownZoneMemory()
 #endif
 
 #ifdef DEBUG_ZONE_ALLOCS
-	Cmd_RemoveCommand("zone_tagdebug");
+	Cmd_RemoveCommand("zoneTagdebug");
 	Cmd_RemoveCommand("zone_snapshot");
 #endif
 
@@ -911,7 +915,7 @@ void Com_InitZoneMemoryVars()
 #endif
 
 #ifdef DEBUG_ZONE_ALLOCS
-	Cmd_AddCommand("zone_tagdebug", Z_TagDebug_f);
+	Cmd_AddCommand("zoneTagdebug", Z_TagDebug_f);
 	Cmd_AddCommand("zone_snapshot", Z_Snapshot_f);
 #endif
 }
@@ -957,6 +961,8 @@ void Com_TouchMemory()
 {
 	Z_Validate();
 
+	//start = Sys_Milliseconds();
+
 	int sum = 0;
 	int totalTouched = 0;
 
@@ -972,4 +978,8 @@ void Com_TouchMemory()
 		totalTouched += pMemory->iSize;
 		pMemory = pMemory->pNext;
 	}
+
+	//end = Sys_Milliseconds();
+
+	//Com_Printf( "Com_TouchMemory: %i bytes, %i msec\n", totalTouched, end - start );
 }
