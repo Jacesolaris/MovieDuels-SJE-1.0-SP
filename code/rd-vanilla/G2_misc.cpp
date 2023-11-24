@@ -64,9 +64,9 @@ static std::map<std::pair<int, int>, int> GoreTagsTemp; // this is a surface ind
 // temporarily during the generation phase so we reuse gore tags per LOD
 int goreModelIndex;
 
-static cvar_t* cg_g2MarksAllModels = NULL;
+static cvar_t* cg_g2MarksAllModels = nullptr;
 
-GoreTextureCoordinates* FindGoreRecord(int tag);
+GoreTextureCoordinates* FindGoreRecord(const int tag);
 static inline void DestroyGoreTexCoordinates(int tag)
 {
 	GoreTextureCoordinates* gTC = FindGoreRecord(tag);
@@ -127,7 +127,7 @@ void ResetGoreTag()
 	CurrentTagUpper += GORE_TAG_UPPER;
 }
 
-GoreTextureCoordinates* FindGoreRecord(int tag)
+GoreTextureCoordinates* FindGoreRecord(const int tag)
 {
 	std::map<int, GoreTextureCoordinates>::iterator i = GoreRecords.find(tag);
 	if (i != GoreRecords.end())
@@ -137,12 +137,12 @@ GoreTextureCoordinates* FindGoreRecord(int tag)
 	return 0;
 }
 
-static void* G2_GetGoreRecord(int tag)
+static void* G2_GetGoreRecord(const int tag)
 {
 	return FindGoreRecord(tag);
 }
 
-void DeleteGoreRecord(int tag)
+void DeleteGoreRecord(const int tag)
 {
 	DestroyGoreTexCoordinates(tag);
 	GoreRecords.erase(tag);
@@ -151,7 +151,7 @@ void DeleteGoreRecord(int tag)
 static int CurrentGoreSet = 1; // this is a UUID for gore sets
 static std::map<int, CGoreSet*> GoreSets; // map from uuid to goreset
 
-CGoreSet* FindGoreSet(int goreSetTag)
+CGoreSet* FindGoreSet(const int goreSetTag)
 {
 	std::map<int, CGoreSet*>::iterator f = GoreSets.find(goreSetTag);
 	if (f != GoreSets.end())
@@ -566,20 +566,20 @@ void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frameNum, vec3_t scale, 
 void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frameNum, vec3_t scale, CMiniHeap* G2VertSpace, int useLod)
 #endif
 {
-	int				i, lod;
+	int lod;
 	vec3_t			correctScale;
 
 #if !defined(JK2_MODE) || defined(_G2_GORE)
 	qboolean		firstModelOnly = qfalse;
 #endif // !JK2_MODE || _G2_GORE
 
-#ifndef JK2_MODE
-	if (cg_g2MarksAllModels == NULL)
+#ifndef _G2_GORE
+	if (cg_g2MarksAllModels == nullptr)
 	{
 		cg_g2MarksAllModels = ri.Cvar_Get("cg_g2MarksAllModels", "0", 0);
 	}
 
-	if (cg_g2MarksAllModels == NULL
+	if (cg_g2MarksAllModels == nullptr
 		|| !cg_g2MarksAllModels->integer)
 	{
 		firstModelOnly = qtrue;
@@ -610,7 +610,7 @@ void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frameNum, vec3_t scale, 
 	}
 
 	// walk each possible model for this entity and try rendering it out
-	for (i = 0; i < ghoul2.size(); i++)
+	for (int i = 0; i < ghoul2.size(); i++)
 	{
 		CGhoul2Info& g = ghoul2[i];
 		// don't bother with models that we don't care about.
@@ -631,7 +631,7 @@ void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frameNum, vec3_t scale, 
 			assert(g.currentModel);
 			if (lod >= g.currentModel->numLods)
 			{
-				g.mTransformedVertsArray = 0;
+				g.mTransformedVertsArray = nullptr;
 				if (firstModelOnly)
 				{
 					// we don't really need to do multiple models for gore.
@@ -648,13 +648,13 @@ void G2_TransformModel(CGhoul2Info_v& ghoul2, const int frameNum, vec3_t scale, 
 		}
 
 		// give us space for the transformed vertex array to be put in
-		g.mTransformedVertsArray = (intptr_t*)G2VertSpace->MiniHeapAlloc(g.currentModel->mdxm->numSurfaces * sizeof(intptr_t));
+		g.mTransformedVertsArray = reinterpret_cast<intptr_t*>(G2VertSpace->MiniHeapAlloc(g.currentModel->mdxm->numSurfaces * sizeof(intptr_t)));
 		if (!g.mTransformedVertsArray)
 		{
 			Com_Error(ERR_DROP, "Ran out of transform space for Ghoul2 Models. Adjust G2_MINIHEAP_SIZE in sv_init.cpp.\n");
 		}
 
-		memset(g.mTransformedVertsArray, 0, (g.currentModel->mdxm->numSurfaces * sizeof(intptr_t)));
+		memset(g.mTransformedVertsArray, 0, g.currentModel->mdxm->numSurfaces * sizeof(intptr_t));
 
 		G2_FindOverrideSurface(-1, g.mSlist); //reset the quick surface override lookup;
 		// recursively call the model surface transform
@@ -1549,7 +1549,7 @@ void G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, CColl
 void G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, CCollisionRecord* collRecMap, int entNum, EG2_Collision eG2TraceType, int useLod, float fRadius)
 #endif
 {
-	int				i, lod;
+	int lod;
 	skin_t* skin;
 	shader_t* cust_shader;
 #if !defined(JK2_MODE) || defined(_G2_GORE)
@@ -1557,13 +1557,13 @@ void G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, CColl
 #endif // !JK2_MODE || _G2_GORE
 	int				firstModel = 0;
 
-#ifndef JK2_MODE
-	if (cg_g2MarksAllModels == NULL)
+#ifndef _G2_GORE
+	if (cg_g2MarksAllModels == nullptr)
 	{
 		cg_g2MarksAllModels = ri.Cvar_Get("cg_g2MarksAllModels", "0", 0);
 	}
 
-	if (cg_g2MarksAllModels == NULL
+	if (cg_g2MarksAllModels == nullptr
 		|| !cg_g2MarksAllModels->integer)
 	{
 		firstModelOnly = qtrue;
@@ -1580,7 +1580,7 @@ void G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, CColl
 #endif
 
 	// walk each possible model for this entity and try tracing against it
-	for (i = firstModel; i < ghoul2.size(); i++)
+	for (int i = firstModel; i < ghoul2.size(); i++)
 	{
 		CGhoul2Info& g = ghoul2[i];
 #ifdef _G2_GORE
@@ -1609,7 +1609,7 @@ void G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, CColl
 		}
 		else
 		{
-			cust_shader = NULL;
+			cust_shader = nullptr;
 		}
 
 		// figure out the custom skin thing
@@ -1619,7 +1619,7 @@ void G2_TraceModels(CGhoul2Info_v& ghoul2, vec3_t rayStart, vec3_t rayEnd, CColl
 		}
 		else
 		{
-			skin = NULL;
+			skin = nullptr;
 		}
 
 		lod = G2_DecideTraceLod(g, useLod);
