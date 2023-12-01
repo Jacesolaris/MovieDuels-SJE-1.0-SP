@@ -808,6 +808,7 @@ void IT_LoadWeatherParms(void)
 			|| strcmp(s, "md_ep4_intro") == 0
 			|| strcmp(s, "secbase") == 0
 			|| strcmp(s, "level0") == 0
+			|| strcmp(s, "JKG_ImperialBase") == 0
 			|| strcmp(s, "kejim_post") == 0)) // dont add weather on these maps when rend2 is on.
 	{
 		return;

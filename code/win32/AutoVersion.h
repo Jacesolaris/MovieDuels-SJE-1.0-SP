@@ -31,9 +31,9 @@ This file is part of Jedi Academy.
 
 #define VERSION_MAJOR_RELEASE		23
 #define VERSION_MINOR_RELEASE		11
-#define VERSION_INTERNAL_BUILD		24
+#define VERSION_INTERNAL_BUILD		01
 
-#define VERSION_STRING				"Year-23,Month-11,Day-24,BuildNum-12"
-#define VERSION_STRING_DOTTED		"Year-23,Month-11,Day-24,BuildNum-12" // build date
+#define VERSION_STRING				"Year-23,Month-12,Day-01,BuildNum-01"
+#define VERSION_STRING_DOTTED		"Year-23,Month-12,Day-01,BuildNum-01" // build date
 
 #endif // __AUTO_VERSION_HEADER
