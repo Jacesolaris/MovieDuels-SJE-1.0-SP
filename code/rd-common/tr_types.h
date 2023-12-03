@@ -36,7 +36,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define	REFENTITYNUM_WORLD	((1<<REFENTITYNUM_BITS) - 1)
 
 // renderfx flags
-#define	RF_MORELIGHT		0x00001	// allways have some light (viewmodel, some items)
+#define	RF_MINLIGHT		0x00001	// allways have some light (viewmodel, some items)
 #define	RF_THIRD_PERSON		0x00002	// don't draw through eyes, only mirrors (player bodies, chat sprites)
 #define	RF_FIRST_PERSON		0x00004	// only draw through eyes (view weapon, damage blood blob)
 #define	RF_DEPTHHACK		0x00008	// for view weapon Z crunching

@@ -5188,7 +5188,7 @@ void CG_AddForceSightShell(refEntity_t* ent, const centity_t* cent)
 	}
 	ent->renderfx &= ~RF_RGB_TINT;
 	// See through walls.
-	ent->renderfx |= RF_MORELIGHT | RF_NODEPTH;
+	ent->renderfx |= RF_MINLIGHT | RF_NODEPTH;
 
 	if (cent->currentState.eFlags & EF_FORCE_VISIBLE
 		|| cent->currentState.eType == ET_PLAYER && cent->gent && cent->gent->message)
@@ -14811,12 +14811,12 @@ void CG_Player(centity_t* cent)
 
 		if (cent->gent->NPC && cent->gent->NPC->scriptFlags & SCF_MORELIGHT)
 		{
-			ent.renderfx |= RF_MORELIGHT; //bigger than normal min light
+			ent.renderfx |= RF_MINLIGHT; //bigger than normal min light
 		}
 
 		if (cent->gent->client && cent->gent->flags & FL_MORELIGHPLAYER)
 		{
-			ent.renderfx |= RF_MORELIGHT; //bigger than normal min light
+			ent.renderfx |= RF_MINLIGHT; //bigger than normal min light
 		}
 
 		CG_RegisterWeapon(cent->currentState.weapon);
@@ -16475,12 +16475,12 @@ void CG_Player(centity_t* cent)
 		renderfx |= RF_LIGHTING_ORIGIN; // use the same origin for all
 		if (cent->gent->NPC && cent->gent->NPC->scriptFlags & SCF_MORELIGHT)
 		{
-			renderfx |= RF_MORELIGHT; //bigger than normal min light
+			renderfx |= RF_MINLIGHT; //bigger than normal min light
 		}
 
 		if (cent->gent->client && cent->gent->flags & FL_MORELIGHPLAYER)
 		{
-			renderfx |= RF_MORELIGHT; //bigger than normal min light
+			renderfx |= RF_MINLIGHT; //bigger than normal min light
 		}
 
 		if (cent->gent && cent->gent->client)
