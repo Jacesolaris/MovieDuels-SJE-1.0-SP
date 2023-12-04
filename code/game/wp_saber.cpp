@@ -816,7 +816,7 @@ void WP_SaberAddG2SaberModels(gentity_t* ent, const int specific_saber_num)
 	}
 }
 
-qboolean GalenHolster(const gentity_t* ent)
+static qboolean GalenHolster(const gentity_t* ent)
 {
 	if (ent->client->ps.saber[0].type == SABER_STAFF
 		&& (!Q_stricmp("md_galen", ent->NPC_type) ||
@@ -845,7 +845,7 @@ qboolean SaberStaffWeapon(const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean SaberCanNotHolster(const gentity_t* ent)
+static qboolean SaberCanNotHolster(const gentity_t* ent)
 {
 	if (ent->client->ps.saber[0].type == SABER_DAGGER ||
 		ent->client->ps.saber[0].type == SABER_STAFF_SFX ||
@@ -878,7 +878,7 @@ qboolean DarthMaulHolster(const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean SecondSisterHolster(const gentity_t* ent)
+static qboolean SecondSisterHolster(const gentity_t* ent)
 {
 	if (!Q_stricmp("md_2ndsister", ent->NPC_type))
 	{
@@ -887,7 +887,7 @@ qboolean SecondSisterHolster(const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean NinthSisterHolster(const gentity_t* ent)
+static qboolean NinthSisterHolster(const gentity_t* ent)
 {
 	if (!Q_stricmp("md_9thsister", ent->NPC_type))
 	{
@@ -896,7 +896,7 @@ qboolean NinthSisterHolster(const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean FifthBrotherHolster(const gentity_t* ent)
+static qboolean FifthBrotherHolster(const gentity_t* ent)
 {
 	if (!Q_stricmp("md_5thbrother", ent->NPC_type))
 	{
@@ -905,7 +905,7 @@ qboolean FifthBrotherHolster(const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean GamorreanHolster(const gentity_t* ent)
+static qboolean GamorreanHolster(const gentity_t* ent)
 {
 	if (!Q_stricmp("gamorrean", ent->NPC_type))
 	{
@@ -914,7 +914,7 @@ qboolean GamorreanHolster(const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean RoyalguardHolster(const gentity_t* ent)
+static qboolean RoyalguardHolster(const gentity_t* ent)
 {
 	if (!Q_stricmp("md_royalguard", ent->NPC_type))
 	{
@@ -923,7 +923,7 @@ qboolean RoyalguardHolster(const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean SeventhSisterHolster(const gentity_t* ent)
+static qboolean SeventhSisterHolster(const gentity_t* ent)
 {
 	if (!Q_stricmp("md_7thsister", ent->NPC_type))
 	{
@@ -932,7 +932,7 @@ qboolean SeventhSisterHolster(const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean EighthBrotherHolster(const gentity_t* ent)
+static qboolean EighthBrotherHolster(const gentity_t* ent)
 {
 	if (!Q_stricmp("md_8thbrother", ent->NPC_type))
 	{
@@ -941,7 +941,7 @@ qboolean EighthBrotherHolster(const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean InquisitorHolster(const gentity_t* ent)
+static qboolean InquisitorHolster(const gentity_t* ent)
 {
 	if (!Q_stricmp("md_inquisitor", ent->NPC_type))
 	{
@@ -950,7 +950,7 @@ qboolean InquisitorHolster(const gentity_t* ent)
 	return qfalse;
 }
 
-qboolean CalKestisHolster(const gentity_t* ent)
+static qboolean CalKestisHolster(const gentity_t* ent)
 {
 	if (!Q_stricmp("cal_kestis", ent->NPC_type) ||
 		!Q_stricmp("cal_kestis_cape", ent->NPC_type) ||
@@ -1506,9 +1506,7 @@ void G_Throw(gentity_t* targ, const vec3_t new_dir, const float push)
 	{
 		VectorAdd(targ->client->ps.velocity, kvel, targ->client->ps.velocity);
 	}
-	else if (targ->s.pos.trType != TR_STATIONARY
-		&& targ->s.pos.trType != TR_NONLINEAR_STOP
-		&& targ->s.pos.trType != TR_LINEAR_STOP)
+	else if (targ->s.pos.trType != TR_STATIONARY && targ->s.pos.trType != TR_NONLINEAR_STOP && targ->s.pos.trType != TR_LINEAR_STOP)
 	{
 		VectorAdd(targ->s.pos.trDelta, kvel, targ->s.pos.trDelta);
 		VectorCopy(targ->currentOrigin, targ->s.pos.trBase);
@@ -1592,9 +1590,7 @@ void G_Kick_Throw(gentity_t* targ, const vec3_t new_dir, const float push)
 	{
 		VectorAdd(targ->client->ps.velocity, kvel, targ->client->ps.velocity);
 	}
-	else if (targ->s.pos.trType != TR_STATIONARY
-		&& targ->s.pos.trType != TR_NONLINEAR_STOP
-		&& targ->s.pos.trType != TR_LINEAR_STOP)
+	else if (targ->s.pos.trType != TR_STATIONARY && targ->s.pos.trType != TR_NONLINEAR_STOP && targ->s.pos.trType != TR_LINEAR_STOP)
 	{
 		VectorAdd(targ->s.pos.trDelta, kvel, targ->s.pos.trDelta);
 		VectorCopy(targ->currentOrigin, targ->s.pos.trBase);
@@ -1620,7 +1616,7 @@ void G_Kick_Throw(gentity_t* targ, const vec3_t new_dir, const float push)
 	}
 }
 
-int WP_SetSaberModel(gclient_t* client, const class_t npc_class)
+static int WP_SetSaberModel(gclient_t* client, const class_t npc_class)
 {
 	//FIXME: read from NPCs.cfg
 	if (client)
@@ -1811,7 +1807,7 @@ void WP_SaberSwingSound(const gentity_t* ent, const int saber_num, const swingTy
 	}
 }
 
-void WP_SaberHitSound(const gentity_t* ent, const int saber_num, const int blade_num)
+static void WP_SaberHitSound(const gentity_t* ent, const int saber_num, const int blade_num)
 {
 	const qboolean saber_in_stab_down = PM_StabDownAnim(ent->client->ps.torsoAnim);
 	const qboolean saber_in_special = PM_SaberInKillAttack(ent->client->ps.torsoAnim);
@@ -1973,7 +1969,7 @@ void WP_SaberHitSound(const gentity_t* ent, const int saber_num, const int blade
 	}
 }
 
-void WP_SaberBlockSound(const gentity_t* ent, const int saber_num, const int blade_num)
+static void WP_SaberBlockSound(const gentity_t* ent, const int saber_num, const int blade_num)
 {
 	if (!ent || !ent->client)
 	{
@@ -2005,7 +2001,7 @@ void WP_SaberBlockSound(const gentity_t* ent, const int saber_num, const int bla
 	}
 }
 
-void WP_SaberBounceOnWallSound(const gentity_t* ent, const int saber_num, const int blade_num)
+static void WP_SaberBounceOnWallSound(const gentity_t* ent, const int saber_num, const int blade_num)
 {
 	if (!ent || !ent->client)
 	{
@@ -2047,7 +2043,7 @@ void WP_SaberBounceOnWallSound(const gentity_t* ent, const int saber_num, const 
 	}
 }
 
-void WP_SaberBounceSound(const gentity_t* ent, const gentity_t* play_on_ent, const int saber_num, const int blade_num)
+static void WP_SaberBounceSound(const gentity_t* ent, const gentity_t* play_on_ent, const int saber_num, const int blade_num)
 {
 	if (!ent || !ent->client)
 	{
@@ -2374,7 +2370,7 @@ int WPDEBUG_SaberColor(const saber_colors_t saber_color)
 
 extern int PM_SaberDeflectionForQuad(int quad);
 
-qboolean WP_GetSaberDeflectionAngle(const gentity_t* attacker, const gentity_t* defender)
+static qboolean WP_GetSaberDeflectionAngle(const gentity_t* attacker, const gentity_t* defender)
 {
 	vec3_t temp, att_saber_base, att_start_pos, saber_mid_next, att_hit_dir, att_hit_pos, def_blade_dir;
 
@@ -2598,7 +2594,7 @@ extern void PM_SaberStartTransAnim(int saber_anim_level, int anim, float* anim_s
 	int fatigued);
 extern float pm_get_time_scale_mod(const gentity_t* gent);
 
-int G_GetAttackDamageMD(const gentity_t* self, const int min_dmg, const int max_dmg, const float mult_point)
+static int G_GetAttackDamageMD(const gentity_t* self, const int min_dmg, const int max_dmg, const float mult_point)
 {
 	int total_damage = max_dmg;
 	float attack_anim_length = PM_AnimLength(self->client->clientInfo.animFileIndex,
@@ -2647,7 +2643,7 @@ extern float hitLocHealthPercentage[];
 extern qboolean BG_SaberInTransitionDamageMove(const playerState_t* ps);
 extern cvar_t* g_dismemberProbabilities;
 
-qboolean WP_SaberApplyDamageJKA(gentity_t* ent, const float base_damage, const int base_d_flags,
+static qboolean WP_SaberApplyDamageJKA(gentity_t* ent, const float base_damage, const int base_d_flags,
 	const qboolean broken_parry, const int saber_num, const int blade_num,
 	const qboolean thrown_saber)
 {
@@ -3066,7 +3062,7 @@ qboolean WP_SaberApplyDamageJKA(gentity_t* ent, const float base_damage, const i
 	return did_damage;
 }
 
-qboolean WP_SaberApplyDamageMD(gentity_t* ent, const float base_damage, const int base_d_flags,
+static qboolean WP_SaberApplyDamageMD(gentity_t* ent, const float base_damage, const int base_d_flags,
 	const qboolean broken_parry, const int saber_num, const int blade_num,
 	const qboolean thrown_saber)
 {
@@ -3823,7 +3819,7 @@ qboolean WP_SaberApplyDamageMD(gentity_t* ent, const float base_damage, const in
 	return did_damage;
 }
 
-void WP_SaberDamageAdd(const float tr_dmg, const int tr_victim_entity_num, vec3_t tr_dmg_dir, vec3_t tr_dmg_blade_vec,
+static void WP_SaberDamageAdd(const float tr_dmg, const int tr_victim_entity_num, vec3_t tr_dmg_dir, vec3_t tr_dmg_blade_vec,
 	vec3_t tr_dmg_normal,
 	vec3_t tr_dmg_spot, const float dmg, const float fraction, const int tr_hit_loc,
 	const qboolean tr_dismember,
@@ -3914,7 +3910,7 @@ FIXME: test the intersection to see if the sabers really did intersect (weren't 
 */
 extern qboolean tri_tri_intersect(vec3_t V0, vec3_t V1, vec3_t V2, vec3_t U0, vec3_t U1, vec3_t U2);
 
-qboolean WP_SabersIntersect(const gentity_t* ent1, const int ent1_saber_num, const int ent1_blade_num,
+static qboolean WP_SabersIntersect(const gentity_t* ent1, const int ent1_saber_num, const int ent1_blade_num,
 	const gentity_t* ent2, const qboolean check_dir)
 {
 	if (!ent1 || !ent2)
@@ -4033,7 +4029,7 @@ qboolean WP_SabersIntersect(const gentity_t* ent1, const int ent1_saber_num, con
 	return qfalse;
 }
 
-float WP_SabersDistance(const gentity_t* ent1, const gentity_t* ent2)
+static float WP_SabersDistance(const gentity_t* ent1, const gentity_t* ent2)
 {
 	vec3_t saber_base_next1, saber_tip_next1, saber_point1;
 	vec3_t saber_base_next2, saber_tip_next2, saber_point2;
@@ -4075,7 +4071,7 @@ float WP_SabersDistance(const gentity_t* ent1, const gentity_t* ent2)
 	return sabers_dist;
 }
 
-qboolean wp_sabers_intersection(const gentity_t* ent1, const gentity_t* ent2, vec3_t intersect)
+static qboolean wp_sabers_intersection(const gentity_t* ent1, const gentity_t* ent2, vec3_t intersect)
 {
 	float best_line_seg_length = Q3_INFINITE;
 
@@ -4151,7 +4147,7 @@ const char* hit_saber_cut_AMD = "saber/saber_cut_AMD";
 const char* hit_saber_cut_droid = "saber/saber_cut_droid";
 const char* hit_saber_touch_droid = "saber/saber_touch_droid";
 
-qboolean WP_SaberDamageEffects(trace_t* tr, const float length, const float dmg, vec3_t dmg_dir, vec3_t blade_vec,
+static qboolean WP_SaberDamageEffects(trace_t* tr, const float length, const float dmg, vec3_t dmg_dir, vec3_t blade_vec,
 	const int enemy_team, const saberType_t saber_type, const saberInfo_t* saber,
 	const int blade_num)
 {
@@ -4553,7 +4549,7 @@ qboolean WP_SaberDamageEffects(trace_t* tr, const float length, const float dmg,
 	return static_cast<qboolean>(num_hit_ents > 0);
 }
 
-void WP_SaberBlockEffect(const gentity_t* attacker, const int saber_num, const int blade_num, vec3_t position,
+static void WP_SaberBlockEffect(const gentity_t* attacker, const int saber_num, const int blade_num, vec3_t position,
 	vec3_t normal, const qboolean cut_not_block)
 {
 	const saberInfo_t* saber = nullptr;
@@ -4669,7 +4665,7 @@ void WP_SaberBlockEffect(const gentity_t* attacker, const int saber_num, const i
 	}
 }
 
-void WP_SaberMBlockEffect(const gentity_t* blocker, const int saber_num, const int blade_num, vec3_t position,
+static void WP_SaberMBlockEffect(const gentity_t* blocker, const int saber_num, const int blade_num, vec3_t position,
 	vec3_t normal,
 	const qboolean cut_not_block)
 {
@@ -4730,7 +4726,7 @@ void WP_SaberMBlockEffect(const gentity_t* blocker, const int saber_num, const i
 	}
 }
 
-void WP_SaberKnockSound(const gentity_t* ent, const int saber_num, const int blade_num)
+static void WP_SaberKnockSound(const gentity_t* ent, const int saber_num, const int blade_num)
 {
 	if (!ent || !ent->client)
 	{
@@ -4762,7 +4758,7 @@ void WP_SaberKnockSound(const gentity_t* ent, const int saber_num, const int bla
 	}
 }
 
-void WP_SaberKnockaway(const gentity_t* attacker, trace_t* tr)
+static void WP_SaberKnockaway(const gentity_t* attacker, trace_t* tr)
 {
 	WP_SaberDrop(attacker, &g_entities[attacker->client->ps.saberEntityNum]);
 
@@ -4824,7 +4820,7 @@ constexpr auto SABER_RADIUS_DAMAGE_DIST = 2;
 constexpr auto SABER_COLLISION_DIST = 6;
 extern qboolean InFront(vec3_t spot, vec3_t from, vec3_t fromAngles, float threshHold = 0.0f);
 
-qboolean WP_SaberDamageForTrace(const int ignore, vec3_t start, vec3_t end, float dmg, vec3_t blade_dir,
+static qboolean WP_SaberDamageForTrace(const int ignore, vec3_t start, vec3_t end, float dmg, vec3_t blade_dir,
 	const qboolean no_ghoul, const saberType_t saber_type, const qboolean extrapolate,
 	const int saber_num, const int blade_num)
 {
@@ -6700,7 +6696,7 @@ qboolean WP_SaberFatiguedParry(gentity_t* victim, gentity_t* attacker, const int
 	return qfalse;
 }
 
-qboolean WP_BrokenParryKnockDown(gentity_t* victim)
+static qboolean WP_BrokenParryKnockDown(gentity_t* victim)
 {
 	if (!victim || !victim->client)
 	{
@@ -7087,7 +7083,7 @@ int G_CostForSpecialMove(const int cost, const qboolean kata_move)
 
 extern qboolean G_EntIsBreakable(int entityNum, const gentity_t* breaker);
 
-void WP_SaberRadiusDamage(gentity_t* ent, vec3_t point, const float radius, const int damage, const float knock_back)
+static void WP_SaberRadiusDamage(gentity_t* ent, vec3_t point, const float radius, const int damage, const float knock_back)
 {
 	if (!ent || !ent->client)
 	{
@@ -7198,7 +7194,7 @@ void WP_SaberDamageTrace( gentity_t *ent, int saber_num, int blade_num )
 */
 constexpr auto MAX_SABER_SWING_INC = 0.33f;
 
-void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
+static void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 {
 	vec3_t mp1, mp2, md1, md2, base_old, base_new, end_old, end_new;
 	float base_damage;
@@ -8363,12 +8359,6 @@ void WP_SaberDamageTrace(gentity_t* ent, int saber_num, int blade_num)
 					ent->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
 				}
 			}
-			/*
-			if ( hitOwner && hitOwner->client->ps.saberEventFlags & SEF_BLOCKED )
-			{
-				hitOwner->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
-			}
-			*/
 		}
 
 		if (saberHitFraction < 1.0f || collision_resolved)
@@ -8597,7 +8587,7 @@ void sab_beh_animate_heavy_slow_bounce_attacker(gentity_t* attacker)
 	G_StaggerAttacker(attacker);
 }
 
-void SabBeh_AnimateHeavySlowBounce(gentity_t* self, gentity_t* inflictor)
+static void SabBeh_AnimateHeavySlowBounce(gentity_t* self, gentity_t* inflictor)
 {
 	self->client->ps.userInt3 |= 1 << FLAG_SLOWBOUNCE;
 	self->client->ps.userInt3 |= 1 << FLAG_OLDSLOWBOUNCE;
@@ -8628,7 +8618,7 @@ void SabBeh_AnimateSmallBounce(const gentity_t* self)
 	self->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
 }
 
-int SabBeh_AnimateMassiveDualSlowBounce(const int anim)
+static int SabBeh_AnimateMassiveDualSlowBounce(const int anim)
 {
 	switch (anim)
 	{
@@ -8649,7 +8639,7 @@ int SabBeh_AnimateMassiveDualSlowBounce(const int anim)
 	return anim;
 }
 
-int SabBeh_AnimateMassiveStaffSlowBounce(const int anim)
+static int SabBeh_AnimateMassiveStaffSlowBounce(const int anim)
 {
 	switch (anim)
 	{
@@ -10369,7 +10359,7 @@ void wp_saber_damage_trace_amd(gentity_t* ent, int saber_num, int blade_num)
 	}
 }
 
-void WP_SaberDamageTrace_MD(gentity_t* ent, int saber_num, int blade_num)
+static void WP_SaberDamageTrace_MD(gentity_t* ent, int saber_num, int blade_num)
 {
 	vec3_t mp1;
 	vec3_t mp2;
@@ -12345,7 +12335,7 @@ void WP_SaberInFlightReflectCheck(gentity_t* self)
 	}
 }
 
-qboolean WP_SaberValidateEnemy(gentity_t* self, gentity_t* enemy)
+static qboolean WP_SaberValidateEnemy(gentity_t* self, gentity_t* enemy)
 {
 	if (!enemy)
 	{
@@ -12400,7 +12390,7 @@ qboolean WP_SaberValidateEnemy(gentity_t* self, gentity_t* enemy)
 	return qtrue;
 }
 
-float WP_SaberRateEnemy(const gentity_t* enemy, vec3_t center, vec3_t forward, const float radius)
+static float WP_SaberRateEnemy(const gentity_t* enemy, vec3_t center, vec3_t forward, const float radius)
 {
 	vec3_t dir;
 
@@ -12410,13 +12400,13 @@ float WP_SaberRateEnemy(const gentity_t* enemy, vec3_t center, vec3_t forward, c
 	return rating;
 }
 
-gentity_t* WP_SaberFindEnemy(gentity_t* self, const gentity_t* saber)
+static gentity_t* WP_SaberFindEnemy(gentity_t* self, const gentity_t* saber)
 {
 	//FIXME: should be a more intelligent way of doing this, like auto aim?
 	//closest, most in front... did damage to... took damage from?  How do we know who the player is focusing on?
 	gentity_t* best_ent = nullptr;
 	gentity_t* entity_list[MAX_GENTITIES];
-	vec3_t center, mins, maxs, fwdangles, forward;
+	vec3_t center, mins{}, maxs{}, fwdangles{}, forward;
 	constexpr float radius = 400;
 	float best_rating = 0.0f;
 
@@ -12508,7 +12498,7 @@ gentity_t* WP_SaberFindEnemy(gentity_t* self, const gentity_t* saber)
 	return best_ent;
 }
 
-void WP_RunSaber(gentity_t* self, gentity_t* saber)
+static void WP_RunSaber(gentity_t* self, gentity_t* saber)
 {
 	vec3_t origin, old_org;
 	trace_t tr;
@@ -12677,7 +12667,7 @@ void WP_RunSaber(gentity_t* self, gentity_t* saber)
 	}
 }
 
-qboolean WP_SaberLaunch(gentity_t* self, gentity_t* saber, const qboolean thrown, const qboolean no_fail = qfalse)
+static qboolean WP_SaberLaunch(gentity_t* self, gentity_t* saber, const qboolean thrown, const qboolean no_fail = qfalse)
 {
 	//FIXME: probably need a debounce time
 	constexpr vec3_t saber_mins = { -3.0f, -3.0f, -3.0f };
@@ -12919,7 +12909,7 @@ qboolean WP_SaberLose(gentity_t* self, vec3_t throw_dir)
 	return qtrue;
 }
 
-void WP_SaberKnockedOutOfHand(const gentity_t* self, gentity_t* saber)
+static void WP_SaberKnockedOutOfHand(const gentity_t* self, gentity_t* saber)
 {
 	//clear the enemy
 	saber->enemy = nullptr;
@@ -13227,7 +13217,7 @@ void WP_SaberDrop(const gentity_t* self, gentity_t* saber)
 	}
 }
 
-void WP_SaberPull(const gentity_t* self, gentity_t* saber)
+static void WP_SaberPull(const gentity_t* self, gentity_t* saber)
 {
 	const qboolean active_blocking = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCKANDATTACK ? qtrue : qfalse;
 	const qboolean is_holding_block_button = self->client->ps.ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
@@ -13260,7 +13250,7 @@ void WP_SaberPull(const gentity_t* self, gentity_t* saber)
 	}
 }
 
-void WP_SaberGrab(const gentity_t* self, gentity_t* saber)
+static void WP_SaberGrab(const gentity_t* self, gentity_t* saber)
 {
 	if (self->flags & FL_NO_SABER_RETURN)
 	{
@@ -13292,7 +13282,7 @@ const char* saberColorStringForColor[SABER_PURPLE + 1] =
 };
 
 // Check if we are throwing it, launch it if needed, update position if needed.
-void WP_SaberThrow(gentity_t* self, const usercmd_t* ucmd)
+static void WP_SaberThrow(gentity_t* self, const usercmd_t* ucmd)
 {
 	vec3_t saber_diff;
 	trace_t tr;
@@ -13696,7 +13686,7 @@ void WP_SaberThrow(gentity_t* self, const usercmd_t* ucmd)
 //SABER BLOCKING============================================================================
 //SABER BLOCKING============================================================================
 
-qboolean Manual_Hand_Block_Lightning(const gentity_t* defender)
+static qboolean Manual_Hand_Block_Lightning(const gentity_t* defender)
 {
 	if (defender->health <= 1
 		|| defender->client->ps.forcePower <= BLOCKPOINTS_FATIGUE
@@ -13723,7 +13713,7 @@ qboolean Manual_Hand_Block_Lightning(const gentity_t* defender)
 	return qtrue;
 }
 
-qboolean Manual_Hand_Block_Lightning_NPC(const gentity_t* attacker, const gentity_t* defender, int attackPower)
+static qboolean Manual_Hand_Block_Lightning_NPC(const gentity_t* attacker, const gentity_t* defender, int attackPower)
 {
 	int Ability_difference;		//the difference in skill between the defender's defend power and the attacker's attack power.
 
@@ -13766,7 +13756,7 @@ qboolean Manual_Hand_Block_Lightning_NPC(const gentity_t* attacker, const gentit
 	return qtrue;
 }
 
-qboolean Manual_Forceblocking(const gentity_t* defender) //Is this dude blocking or not?
+static qboolean Manual_Forceblocking(const gentity_t* defender) //Is this dude blocking or not?
 {
 	if (defender->health <= 1)
 	{
@@ -14709,7 +14699,7 @@ int BasicWeaponBlockCosts[NUM_MODS] =
 	//NUM_MODS,
 };
 
-int BasicSaberBlockCost(const int attacker_style)
+static int BasicSaberBlockCost(const int attacker_style)
 {
 	//returns the basic saber block cost of blocking an attack from the given saber style.
 	switch (attacker_style)
@@ -14733,7 +14723,7 @@ int BasicSaberBlockCost(const int attacker_style)
 	}
 }
 
-qboolean IsMoving(const gentity_t* ent)
+static qboolean IsMoving(const gentity_t* ent)
 {
 	if (!ent || !ent->client)
 		return qfalse;
@@ -19785,7 +19775,7 @@ void wp_saber_start_missile_block_check_md(gentity_t* self, const usercmd_t* ucm
 //GENERAL SABER============================================================================
 //GENERAL SABER============================================================================
 
-void WP_SetSaberMove(const gentity_t* self, const short blocked)
+static void WP_SetSaberMove(const gentity_t* self, const short blocked)
 {
 	self->client->ps.saberBlocked = blocked;
 }
@@ -20678,7 +20668,7 @@ void WP_KnockdownTurret(gentity_t* pas)
 	pas->forcePushTime = level.time + 600; // let the push effect last for 600 ms
 }
 
-void WP_ForceThrowHazardTrooper(gentity_t* self, gentity_t* trooper, const qboolean pull)
+static void WP_ForceThrowHazardTrooper(gentity_t* self, gentity_t* trooper, const qboolean pull)
 {
 	if (!self || !self->client)
 	{
@@ -20893,7 +20883,7 @@ extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, con
 	qboolean force_knockdown);
 extern qboolean jedi_stop_knockdown(gentity_t* self, const vec3_t push_dir);
 
-void WP_ForceKnockdown(gentity_t* self, gentity_t* pusher, const qboolean pull, qboolean strong_knockdown,
+static void WP_ForceKnockdown(gentity_t* self, gentity_t* pusher, const qboolean pull, qboolean strong_knockdown,
 	const qboolean break_saber_lock)
 {
 	if (!self || !self->client || !pusher || !pusher->client)
@@ -21636,7 +21626,7 @@ static qboolean ShouldPlayerResistForceThrow(const gentity_t* player, gentity_t*
 	return qfalse;
 }
 
-void RepulseDamage(gentity_t* self, gentity_t* enemy, vec3_t location, const int damage_level)
+static void RepulseDamage(gentity_t* self, gentity_t* enemy, vec3_t location, const int damage_level)
 {
 	switch (damage_level)
 	{
@@ -21683,7 +21673,7 @@ void RepulseDamage(gentity_t* self, gentity_t* enemy, vec3_t location, const int
 	}
 }
 
-qboolean IsAllowedToUseForcePowers(const gentity_t* self)
+static qboolean IsAllowedToUseForcePowers(const gentity_t* self)
 {
 	if (self->s.number >= MAX_CLIENTS && !G_ControlledByPlayer(self) //npc only
 		&& self->client->ps.weapon == WP_SABER //hes got a saber
@@ -21708,7 +21698,7 @@ qboolean IsAllowedToUseForcePowers(const gentity_t* self)
 	return qtrue;
 }
 
-void PushDamage(gentity_t* self, gentity_t* enemy, vec3_t location, const int damage_level)
+static void PushDamage(gentity_t* self, gentity_t* enemy, vec3_t location, const int damage_level)
 {
 	switch (damage_level)
 	{
@@ -27617,7 +27607,7 @@ void ForceRepulse(gentity_t* self, qboolean pull, qboolean fake)
 	}
 }
 
-void ForceRepulseDamage(gentity_t* self, gentity_t* enemy, vec3_t location, const int damage_level)
+static void ForceRepulseDamage(gentity_t* self, gentity_t* enemy, vec3_t location, const int damage_level)
 {
 	switch (damage_level)
 	{
@@ -27635,7 +27625,7 @@ void ForceRepulseDamage(gentity_t* self, gentity_t* enemy, vec3_t location, cons
 	}
 }
 
-void ForceRepulseThrow(gentity_t* self, int charge_time)
+static void ForceRepulseThrow(gentity_t* self, int charge_time)
 {
 	//shove things around you away
 	qboolean fake = qfalse;
@@ -28439,7 +28429,7 @@ void ForceRepulseThrow(gentity_t* self, int charge_time)
 	}
 }
 
-void WP_DebounceForceDeactivateTime(const gentity_t* self)
+static void WP_DebounceForceDeactivateTime(const gentity_t* self)
 {
 	if (self && self->client)
 	{
@@ -28529,7 +28519,7 @@ void ForceDeadlySight(gentity_t* self)
 			self->currentOrigin, 3000, qtrue);
 	}
 
-	//CG_PlayEffectBolted("misc/breath.efx", self->playerModel, self->headBolt, self->s.number, self->currentOrigin);
+	CG_PlayEffectBolted("misc/breath.efx", self->playerModel, self->headBolt, self->s.number, self->currentOrigin);
 
 	self->client->ps.forcePowerDebounce[FP_DEADLYSIGHT] = level.time + self->client->ps.torsoAnimTimer + 5000;
 }
@@ -28616,7 +28606,7 @@ int IsPressingDestructButton(const gentity_t* self)
 	return qfalse;
 }
 
-void ForceDashAnim(gentity_t* self)
+static void ForceDashAnim(gentity_t* self)
 {
 	constexpr int set_anim_override = SETANIM_AFLAG_PACE;
 
@@ -28638,7 +28628,7 @@ void ForceDashAnim(gentity_t* self)
 	}
 }
 
-void ForceDashAnimDash(gentity_t* self)
+static void ForceDashAnimDash(gentity_t* self)
 {
 	constexpr int set_anim_override = SETANIM_AFLAG_PACE;
 
@@ -28662,7 +28652,7 @@ void ForceDashAnimDash(gentity_t* self)
 
 extern qboolean PM_InSlopeAnim(int anim);
 
-void ForceSpeedDash(gentity_t* self)
+static void ForceSpeedDash(gentity_t* self)
 {
 	if (self->health <= 0)
 	{
@@ -28833,7 +28823,7 @@ void player_Burn(const gentity_t* self)
 	TIMER_Set(self, "BurnDebounce", 1000);
 }
 
-void WP_StartForceHealEffects(const gentity_t* self)
+static void WP_StartForceHealEffects(const gentity_t* self)
 {
 	if (self->ghoul2.size())
 	{
@@ -28856,7 +28846,7 @@ void WP_StopForceHealEffects(const gentity_t* self)
 	}
 }
 
-int FP_MaxForceHeal(const gentity_t* self)
+static int FP_MaxForceHeal(const gentity_t* self)
 {
 	if (self->s.number >= MAX_CLIENTS)
 	{
@@ -28874,7 +28864,7 @@ int FP_MaxForceHeal(const gentity_t* self)
 	}
 }
 
-int FP_ForceHealInterval(const gentity_t* self)
+static int FP_ForceHealInterval(const gentity_t* self)
 {
 	return self->client->ps.forcePowerLevel[FP_HEAL] > FORCE_LEVEL_2 ? 50 : FORCE_HEAL_INTERVAL;
 }
@@ -28963,7 +28953,7 @@ void ForceHeal(gentity_t* self)
 extern void NPC_PlayConfusionSound(gentity_t* self);
 extern void npc_jedi_play_confusion_sound(const gentity_t* self);
 
-qboolean WP_CheckBreakControl(gentity_t* self)
+static qboolean WP_CheckBreakControl(gentity_t* self)
 {
 	if (!self)
 	{
@@ -29180,8 +29170,7 @@ void ForceTelepathy(gentity_t* self)
 					trace_ent->client->enemyTeam = trace_ent->client->playerTeam;
 					trace_ent->client->playerTeam = save_team;
 					//FIXME: need a *charmed* timer on this...?  Or do TEAM_PLAYERS assume that "confusion" means they should switch to team_enemy when done?
-					trace_ent->NPC->charmedTime = level.time + mindTrickTime[self->client->ps.forcePowerLevel[
-						FP_TELEPATHY]];
+					trace_ent->NPC->charmedTime = level.time + mindTrickTime[self->client->ps.forcePowerLevel[FP_TELEPATHY]];
 
 					if (trace_ent->ghoul2.size() && trace_ent->headBolt != -1)
 					{
@@ -30208,7 +30197,7 @@ qboolean CanBeFeared(const gentity_t* self, const gentity_t* trace_ent)
 	return qtrue;
 }
 
-qboolean ThisGuyIsAGunner(const gentity_t* self)
+static qboolean ThisGuyIsAGunner(const gentity_t* self)
 {
 	switch (self->s.weapon)
 	{
@@ -30258,7 +30247,7 @@ extern qboolean LogAccuracyHit(const gentity_t* target, const gentity_t* attacke
 extern void G_Slapdown(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength, qboolean break_saber_lock);
 extern int G_GetHitLocFromTrace(trace_t* trace, int mod);
 
-void force_shootstrike(gentity_t* self)
+static void force_shootstrike(gentity_t* self)
 {
 	trace_t tr;
 	vec3_t end, forward, right, up, dir;
@@ -31335,7 +31324,7 @@ void ForceLightning(gentity_t* self)
 extern void G_KnockOver(gentity_t* self, gentity_t* attacker, const vec3_t push_dir, float strength,
 	qboolean break_saber_lock);
 
-void ForceLightningDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, const float dist, const float dot,
+static void ForceLightningDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, const float dist, const float dot,
 	vec3_t impact_point)
 {
 	qboolean lightning_blocked = qfalse;
@@ -32081,7 +32070,7 @@ void ForceLightningDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, con
 	}
 }
 
-void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, const float dist, const float dot,
+static void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, const float dist, const float dot,
 	vec3_t impact_point)
 {
 	qboolean lightning_blocked = qfalse;
@@ -32933,7 +32922,7 @@ void ForceLightningDamage_AMD(gentity_t* self, gentity_t* trace_ent, vec3_t dir,
 	}
 }
 
-void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, const float dist, const float dot,
+static void ForceLightningDamage_MD(gentity_t* self, gentity_t* trace_ent, vec3_t dir, const float dist, const float dot,
 	vec3_t impact_point)
 {
 	qboolean lightning_blocked = qfalse;
@@ -34282,7 +34271,7 @@ qboolean ForceDrain2(gentity_t* self)
 	return qtrue;
 }
 
-void ForceDrain(gentity_t* self, const qboolean tried_drain2)
+static void ForceDrain(gentity_t* self, const qboolean tried_drain2)
 {
 	if (self->health <= 0)
 	{
@@ -34334,7 +34323,7 @@ void ForceDrain(gentity_t* self, const qboolean tried_drain2)
 	WP_ForcePowerStart(self, FP_DRAIN, 0);
 }
 
-qboolean FP_ForceDrainableEnt(const gentity_t* victim)
+static qboolean FP_ForceDrainableEnt(const gentity_t* victim)
 {
 	if (!victim || !victim->client)
 	{
@@ -34399,7 +34388,7 @@ qboolean FP_ForceDrainGrippableEnt(const gentity_t* victim)
 
 qboolean Jedi_DrainReaction(gentity_t* self);
 
-void ForceDrainDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, vec3_t impact_point)
+static void ForceDrainDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, vec3_t impact_point)
 {
 	if (trace_ent->flags & FL_NOTARGET || trace_ent->noclip)
 	{
@@ -34521,7 +34510,7 @@ void ForceDrainDamage(gentity_t* self, gentity_t* trace_ent, vec3_t dir, vec3_t 
 	}
 }
 
-qboolean WP_CheckForceDraineeStopMe(gentity_t* self, gentity_t* drainee)
+static qboolean WP_CheckForceDraineeStopMe(gentity_t* self, gentity_t* drainee)
 {
 	if (drainee->NPC
 		&& drainee->client
@@ -34557,7 +34546,7 @@ qboolean WP_CheckForceDraineeStopMe(gentity_t* self, gentity_t* drainee)
 	return qfalse;
 }
 
-void ForceShootDrain(gentity_t* self)
+static void ForceShootDrain(gentity_t* self)
 {
 	trace_t tr;
 	int num_drained = 0;
@@ -34801,7 +34790,7 @@ void ForceShootDrain(gentity_t* self)
 	}
 }
 
-void ForceDrainEnt(gentity_t* self, gentity_t* drain_ent)
+static void ForceDrainEnt(gentity_t* self, gentity_t* drain_ent)
 {
 	if (self->health <= 0)
 	{
@@ -35495,7 +35484,7 @@ constexpr auto DESTRUCTION_SIZE = 3;
 
 gentity_t* create_missile(vec3_t org, vec3_t dir, float vel, int life, gentity_t* owner, qboolean alt_fire = qfalse);
 //---------------------------------------------------------
-void WP_FireDestruction(gentity_t* ent, const int force_level)
+static void WP_FireDestruction(gentity_t* ent, const int force_level)
 //---------------------------------------------------------
 {
 	vec3_t start, forward;
@@ -35713,7 +35702,7 @@ qboolean PlayerAffectedByStasis()
 
 extern void PM_SetTorsoAnimTimer(gentity_t* ent, int* torso_anim_timer, int time);
 
-void forcestasis_anim(gentity_t* self)
+static void forcestasis_anim(gentity_t* self)
 {
 	int anim;
 
@@ -35808,7 +35797,7 @@ void forcestasis_anim(gentity_t* self)
 	self->client->ps.forcePowerDebounce[FP_STASIS] = level.time + self->client->ps.torsoAnimTimer + 500;
 }
 
-void ForceStasisWide(const gentity_t* self, gentity_t* trace_ent)
+static void ForceStasisWide(const gentity_t* self, gentity_t* trace_ent)
 {
 	float current_frame, anim_speed;
 	int junk;
@@ -41164,7 +41153,7 @@ void AnimateStun(gentity_t* self, gentity_t* inflictor)
 	npc_check_speak(self);
 }
 
-void player_StopFreeze(gentity_t* self)
+static void player_StopFreeze(gentity_t* self)
 {
 	if (self && self->client)
 	{

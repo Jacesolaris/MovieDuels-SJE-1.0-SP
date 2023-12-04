@@ -3264,7 +3264,7 @@ static void Q3_SetWatchTarget(const int entID, const char* name)
 	self->NPC->watchTarget = watchTarget;
 }
 
-void Q3_SetLoopSound(const int entID, const char* name)
+static void Q3_SetLoopSound(const int entID, const char* name)
 {
 	sfxHandle_t index;
 	gentity_t* self = &g_entities[entID];
@@ -3294,7 +3294,7 @@ void Q3_SetLoopSound(const int entID, const char* name)
 	}
 }
 
-void Q3_SetICARUSFreeze(int entID, const char* name, const qboolean freeze)
+static void Q3_SetICARUSFreeze(int entID, const char* name, const qboolean freeze)
 {
 	gentity_t* self = G_Find(nullptr, FOFS(targetname), name);
 	if (!self)
