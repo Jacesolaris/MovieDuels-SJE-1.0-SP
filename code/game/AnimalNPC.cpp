@@ -490,119 +490,13 @@ void AnimalProcessOri(Vehicle_t* p_veh)
 
 #ifdef QAGAME //back to our game-only functions
 // This function makes sure that the vehicle is properly animated.
-/*
-static void AnimalTailSwipe(Vehicle_t* p_veh, gentity_t *parent, gentity_t *pilot)
-{
-	trace_t	trace;
-	vec3_t angles;
-	vec3_t vRoot, vTail;
-	vec3_t	lMins, lMaxs;
-	mdxaBone_t	bolt_matrix;
-	int iRootBone;
-	int iRootTail;
 
-	VectorSet(angles, 0, parent->currentAngles[YAW], 0);
-	VectorSet(lMins, parent->mins[0]-1, parent->mins[1]-1, 0);
-	VectorSet(lMaxs, parent->maxs[0]+1, parent->maxs[1]+1, 1);
-#ifdef _JK2MP
-	iRootBone = trap_G2API_AddBolt( parent->ghoul2, 0, "tail_01" );
-	iRootTail = trap_G2API_AddBolt( parent->ghoul2, 0, "tail_04" );
-
-	// Get the positions of the root of the tail and the tail end of it.
-	trap_G2API_GetBoltMatrix( parent->ghoul2, 0, iRootBone,
-				&bolt_matrix, angles, parent->currentOrigin, level.time,
-				NULL, parent->modelScale );
-	BG_GiveMeVectorFromMatrix( &bolt_matrix, ORIGIN, vRoot );
-
-	trap_G2API_GetBoltMatrix( parent->ghoul2, 0, iRootTail,
-				&bolt_matrix, angles, parent->currentOrigin, level.time,
-				NULL, parent->modelScale );
-	BG_GiveMeVectorFromMatrix( &bolt_matrix, ORIGIN, vTail );
-#else
-	iRootBone = gi.G2API_GetBoneIndex( &parent->ghoul2[parent->playerModel], "tail_01", qtrue );
-	iRootTail = gi.G2API_GetBoneIndex( &parent->ghoul2[parent->playerModel], "tail_04", qtrue );
-
-	// Get the positions of the root of the tail and the tail end of it.
-	gi.G2API_GetBoltMatrix( parent->ghoul2, parent->playerModel, iRootBone,
-				&bolt_matrix, angles, parent->currentOrigin, (cg.time?cg.time:level.time),
-				NULL, parent->s.modelScale );
-	gi.G2API_GiveMeVectorFromMatrix( bolt_matrix, ORIGIN, vRoot );
-
-	gi.G2API_GetBoltMatrix( parent->ghoul2, parent->playerModel, iRootTail,
-				&bolt_matrix, angles, parent->currentOrigin, (cg.time?cg.time:level.time),
-				NULL, parent->s.modelScale );
-	gi.G2API_GiveMeVectorFromMatrix( bolt_matrix, ORIGIN, vTail );
-#endif
-
-	// Trace from the root of the tail to the very end.
-	G_VehicleTrace( &trace, vRoot, lMins, lMaxs, vTail, parent->s.number, MASK_NPCSOLID );
-	if ( trace.fraction < 1.0f )
-	{
-		if ( ENTITYNUM_NONE != trace.entityNum && g_entities[trace.entityNum].client &&
-#ifndef _JK2MP //no rancor in jk2mp (at least not currently)
-			g_entities[trace.entityNum].client->NPC_class != CLASS_RANCOR &&
-#else //and in mp want to check inuse
-			g_entities[trace.entityNum].inuse &&
-#endif
-			g_entities[trace.entityNum].client->NPC_class != CLASS_VEHICLE )
-		{
-			vec3_t push_dir;
-			vec3_t angs;
-			int iDamage = 10;
-			// Get the direction we're facing.
-			VectorCopy( parent->client->ps.viewangles, angs );
-			// Add some fudge.
-			angs[YAW] += Q_flrand( 5, 15 );
-			angs[PITCH] = Q_flrand( -20, -10 );
-			AngleVectors( angs, push_dir, NULL, NULL );
-			// Reverse direction.
-			push_dir[YAW] = -push_dir[YAW];
-
-			// Smack this ho down.
-#ifdef _JK2MP
-			G_Sound( &g_entities[trace.entityNum], CHAN_AUTO, G_SoundIndex( "sound/chars/rancor/swipehit.wav" ) );
-#else
-			G_Sound( &g_entities[trace.entityNum], G_SoundIndex( "sound/chars/rancor/swipehit.wav" ) );
-#endif
-			G_Throw( &g_entities[trace.entityNum], push_dir, 50 );
-
-			if ( g_entities[trace.entityNum].health > 0 )
-			{
-				// Knock down and dish out some hurt.
-				gentity_t *hit = &g_entities[trace.entityNum];
-#ifdef _JK2MP
-				if (BG_KnockDownable(&hit->client->ps))
-				{
-					hit->client->ps.forceHandExtend = HANDEXTEND_KNOCKDOWN;
-					hit->client->ps.forceHandExtendTime = pm->cmd.serverTime + 1100;
-					hit->client->ps.forceDodgeAnim = 0; //this toggles between 1 and 0, when it's 1 we should play the get up anim
-
-					hit->client->ps.otherKiller = pilot->s.number;
-					hit->client->ps.otherKillerTime = level.time + 5000;
-					hit->client->ps.otherKillerDebounceTime = level.time + 100;
-
-					hit->client->ps.velocity[0] = push_dir[0]*80;
-					hit->client->ps.velocity[1] = push_dir[1]*80;
-					hit->client->ps.velocity[2] = 100;
-				}
-#else
-				G_Knockdown( hit, parent, push_dir, 300, qtrue );
-#endif
-				G_Damage( hit, parent, parent, NULL, NULL, iDamage, DAMAGE_NO_KNOCKBACK | DAMAGE_IGNORE_TEAM, MOD_MELEE );
-				//G_PlayEffect( p_veh->m_pVehicleInfo->explodeFX, parent->currentOrigin );
-			}// Not Dead
-		}// Not Rancor & In USe
-	}// Trace Hit Anything?
-}
-*/
 static void AnimateVehicle(Vehicle_t* p_veh)
 {
 	animNumber_t Anim = BOTH_VT_IDLE;
 	int iFlags = SETANIM_FLAG_NORMAL, iBlend = 300;
 	auto pilot = p_veh->m_pPilot;
 	auto parent = p_veh->m_pParentEntity;
-	//playerState_t *	pilotPS;
-	//playerState_t *	parent_ps;
 	float fSpeedPercToMax;
 
 #ifdef _JK2MP
@@ -1057,42 +951,12 @@ void G_SetAnimalVehicleFunctions(vehicleInfo_t* pVehInfo)
 	//	pVehInfo->Inhabited					=		Inhabited;
 }
 
-// Following is only in game, not in namespace
-#ifdef _JK2MP
-#include "../namespace_end.h"
-#endif
-
-#ifdef QAGAME
-extern void G_AllocateVehicleObject(Vehicle_t** p_veh);
-#endif
-
-#ifdef _JK2MP
-#include "../namespace_begin.h"
-#endif
-
 // Create/Allocate a new Animal Vehicle (initializing it as well).
 //this is a BG function too in MP so don't un-bg-compatibilify it -rww
 void G_CreateAnimalNPC(Vehicle_t** p_veh, const char* str_animal_type)
 {
-	// Allocate the Vehicle.
-#ifdef _JK2MP
-#ifdef QAGAME
-	//these will remain on entities on the client once allocated because the pointer is
-	//never stomped. on the server, however, when an ent is freed, the entity struct is
-	//memset to 0, so this memory would be lost..
-	G_AllocateVehicleObject(p_veh);
-#else
-	if (!*p_veh)
-	{ //only allocate a new one if we really have to
-		(*p_veh) = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
-	}
-#endif
-	memset(*p_veh, 0, sizeof(Vehicle_t));
+	*p_veh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
 	(*p_veh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(str_animal_type)];
-#else
-	* p_veh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
-	(*p_veh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(str_animal_type)];
-#endif
 }
 
 #ifdef _JK2MP

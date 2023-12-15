@@ -1814,7 +1814,7 @@ CIN_ResampleCinematic
 Resample cinematic to 256x256 and store in buf2
 ==================
 */
-void CIN_ResampleCinematic(const int handle, int* buf2)
+static void CIN_ResampleCinematic(const int handle, int* buf2)
 {
 	int ix, iy;
 
@@ -1899,7 +1899,6 @@ void CIN_DrawCinematic(const int handle)
 	if (cinTable[handle].dirty && (cinTable[handle].CIN_WIDTH != cinTable[handle].drawX || cinTable[handle].CIN_HEIGHT
 		!= cinTable[handle].drawY))
 	{
-		//buf2 = (int *)Hunk_AllocateTempMemory( 256*256*4 );
 		const auto buf2 = static_cast<int*>(Z_Malloc(256 * 256 * 4, TAG_TEMP_WORKSPACE, qfalse));
 
 		CIN_ResampleCinematic(handle, buf2);

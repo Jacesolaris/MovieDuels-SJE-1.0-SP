@@ -189,7 +189,7 @@ extern qboolean PM_SaberInTransitionAny(int move);
 extern int PM_GetTurnAnim(const gentity_t* gent, int anim);
 extern int PM_AnimLength(int index, animNumber_t anim);
 extern qboolean PM_InRoll(const playerState_t* ps);
-extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 extern qboolean PM_SuperBreakWinAnim(int anim);
 extern qboolean BG_SaberInPartialDamageMove(gentity_t* self);
 extern qboolean BG_SaberInTransitionDamageMove(const playerState_t* ps);

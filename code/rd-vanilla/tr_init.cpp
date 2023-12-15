@@ -245,7 +245,7 @@ void RE_SetLightStyle(int style, int color);
 
 static void R_Splash()
 {
-	image_t* p_image = R_FindImageFile("menu/splash", qfalse, qfalse, qfalse, GL_CLAMP);
+	image_t* pImage = R_FindImageFile("menu/splash", qfalse, qfalse, qfalse, GL_CLAMP);
 
 	/*image_t* pImage;
 	int splashPick = rand() % 5;
@@ -272,7 +272,7 @@ static void R_Splash()
 		break;
 	}*/
 
-	if (!p_image)
+	if (!pImage)
 	{
 		// Can't find the splash image so just clear to black
 		qglClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -283,7 +283,7 @@ static void R_Splash()
 		extern void	RB_SetGL2D(void);
 		RB_SetGL2D();
 
-		GL_Bind(p_image);
+		GL_Bind(pImage);
 		GL_State(GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO);
 
 		constexpr int width = 640;

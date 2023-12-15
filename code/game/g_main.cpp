@@ -2171,16 +2171,9 @@ qboolean G_RagDoll(gentity_t* ent, vec3_t forcedAngles)
 				VectorCopy(grabEnt->client->renderInfo.handRPoint, bOrg);
 
 				//Get our hand's location
-				//trap_G2API_GetBoltMatrix(cent->ghoul2, 0, 0, &matrix, cent->turAngles, cent->lerpOrigin,
-				//	cg.time, cgs.gameModels, cent->modelScale);
-				//BG_GiveMeVectorFromMatrix(&matrix, ORIGIN, thisHand);
 				VectorCopy(ent->client->renderInfo.handRPoint, thisHand);
 
 				//Get the position of the thoracic bone for hinting its velocity later on
-				//thorBolt = trap_G2API_AddBolt(cent->ghoul2, 0, "thoracic");
-				//trap_G2API_GetBoltMatrix(cent->ghoul2, 0, thorBolt, &matrix, cent->turAngles, cent->lerpOrigin,
-				//	cg.time, cgs.gameModels, cent->modelScale);
-				//BG_GiveMeVectorFromMatrix(&matrix, ORIGIN, thorPoint);
 				VectorCopy(ent->client->renderInfo.torsoPoint, thorPoint);
 
 				VectorSubtract(bOrg, thisHand, hands);

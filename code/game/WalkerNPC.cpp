@@ -122,9 +122,9 @@ static bool Update( Vehicle_t *p_veh, const usercmd_t *pUcmd )
 */
 
 // Board this Vehicle (get on). The first entity to board an empty vehicle becomes the Pilot.
-static bool Board(Vehicle_t* p_veh, bgEntity_t* p_ent)
+static bool Board(Vehicle_t* p_veh, bgEntity_t* pEnt)
 {
-	if (!g_vehicleInfo[VEHICLE_BASE].Board(p_veh, p_ent))
+	if (!g_vehicleInfo[VEHICLE_BASE].Board(p_veh, pEnt))
 		return false;
 
 	// Set the board wait time (they won't be able to do anything, including getting off, for this amount of time).
@@ -254,11 +254,6 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 	/********************************************************************************/
 }
 
-#ifdef _JK2MP
-extern void FighterYawAdjust(Vehicle_t* p_veh, playerState_t* rider_ps, playerState_t* parent_ps); //FighterNPC.c
-extern void FighterPitchAdjust(Vehicle_t* p_veh, playerState_t* rider_ps, playerState_t* parent_ps); //FighterNPC.c
-#endif
-
 //MP RULE - ALL PROCESSORIENTCOMMANDS FUNCTIONS MUST BE BG-COMPATIBLE!!!
 //If you really need to violate this rule for SP, then use ifdefs.
 //By BG-compatible, I mean no use of game-specific data - ONLY use
@@ -275,47 +270,22 @@ static void ProcessOrientCommands(Vehicle_t* p_veh)
 	bgEntity_t* parent = p_veh->m_pParentEntity;
 	playerState_t* parent_ps, * rider_ps;
 
-#ifdef _JK2MP
-	bgEntity_t* rider = nullptr;
-	if (parent->s.owner != ENTITYNUM_NONE)
-	{
-		rider = PM_BGEntForNum(parent->s.owner); //&g_entities[parent->r.ownerNum];
-	}
-#else
 	gentity_t* rider = parent->owner;
-#endif
 
-#ifdef _JK2MP
-	if (!rider)
-#else
 	if (!rider || !rider->client)
-#endif
 	{
 		rider = parent;
 	}
-
-#ifdef _JK2MP
-	parent_ps = parent->playerState;
-	rider_ps = rider->playerState;
-#else
 	parent_ps = &parent->client->ps;
 	rider_ps = &rider->client->ps;
-#endif
 
 	//speed = VectorLength( parent_ps->velocity );
 
 	// If the player is the rider...
 	if (rider->s.number < MAX_CLIENTS)
 	{
-		//FIXME: use the vehicle's turning stat in this calc
-#ifdef _JK2MP
-		FighterYawAdjust(p_veh, rider_ps, parent_ps);
-		//FighterPitchAdjust(p_veh, rider_ps, parent_ps);
-		p_veh->m_vOrientation[PITCH] = rider_ps->viewangles[PITCH];
-#else
 		p_veh->m_vOrientation[YAW] = rider_ps->viewangles[YAW];
 		p_veh->m_vOrientation[PITCH] = rider_ps->viewangles[PITCH];
-#endif
 	}
 	else
 	{
@@ -327,19 +297,13 @@ static void ProcessOrientCommands(Vehicle_t* p_veh)
 			//FIXME: or ramp up to max turnSpeed?
 			turnSpeed = 0.0f;
 		}
-#ifdef _JK2MP
-		if (rider->s.eType == ET_NPC)
-#else
+
 		if (!rider || rider->NPC)
-#endif
 		{
 			//help NPCs out some
 			turnSpeed *= 2.0f;
-#ifdef _JK2MP
-			if (parent_ps->speed >= 200.0f)
-#else
+
 			if (parent->client->ps.speed >= 200.0f)
-#endif
 			{
 				turnSpeed += turnSpeed * parent_ps->speed / 200.0f * 0.05f;
 			}
@@ -472,79 +436,24 @@ static void AnimateVehicle(Vehicle_t* p_veh)
 //and lagged
 #endif //QAGAME
 
-#ifndef QAGAME
-void AttachRidersGeneric(Vehicle_t* p_veh);
-#endif
-
 //on the client this function will only set up the process command funcs
 void G_SetWalkerVehicleFunctions(vehicleInfo_t* pVehInfo)
 {
 #ifdef QAGAME
 	pVehInfo->AnimateVehicle = AnimateVehicle;
-	//	pVehInfo->AnimateRiders				=		AnimateRiders;
-	//	pVehInfo->ValidateBoard				=		ValidateBoard;
-	//	pVehInfo->SetParent					=		SetParent;
-	//	pVehInfo->SetPilot					=		SetPilot;
-	//	pVehInfo->AddPassenger				=		AddPassenger;
-	//	pVehInfo->Animate					=		Animate;
 	pVehInfo->Board = Board;
-	//	pVehInfo->Eject						=		Eject;
-	//	pVehInfo->EjectAll					=		EjectAll;
-	//	pVehInfo->StartDeathDelay			=		StartDeathDelay;
-	//	pVehInfo->DeathUpdate				=		DeathUpdate;
 	pVehInfo->RegisterAssets = RegisterAssets;
-	//	pVehInfo->Initialize				=		Initialize;
-	//	pVehInfo->Update					=		Update;
-	//	pVehInfo->UpdateRider				=		UpdateRider;
 #endif //QAGAME
 	pVehInfo->ProcessMoveCommands = ProcessMoveCommands;
 	pVehInfo->ProcessOrientCommands = ProcessOrientCommands;
-
-#ifndef QAGAME //cgame prediction attachment func
-	pVehInfo->AttachRiders = AttachRidersGeneric;
-#endif
-	//	pVehInfo->AttachRiders				=		AttachRiders;
-	//	pVehInfo->Ghost						=		Ghost;
-	//	pVehInfo->UnGhost					=		UnGhost;
-	//	pVehInfo->Inhabited					=		Inhabited;
 }
-
-// Following is only in game, not in namespace
-#ifdef _JK2MP
-#include "../namespace_end.h"
-#endif
-
-#ifdef QAGAME
-extern void G_AllocateVehicleObject(Vehicle_t** p_veh);
-#endif
-
-#ifdef _JK2MP
-#include "../namespace_begin.h"
-#endif
 
 // Create/Allocate a new Animal Vehicle (initializing it as well).
 //this is a BG function too in MP so don't un-bg-compatibilify it -rww
 void G_CreateWalkerNPC(Vehicle_t** p_veh, const char* str_animal_type)
 {
-	// Allocate the Vehicle.
-#ifdef _JK2MP
-#ifdef QAGAME
-	//these will remain on entities on the client once allocated because the pointer is
-	//never stomped. on the server, however, when an ent is freed, the entity struct is
-	//memset to 0, so this memory would be lost..
-	G_AllocateVehicleObject(p_veh);
-#else
-	if (!*p_veh)
-	{ //only allocate a new one if we really have to
-		(*p_veh) = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
-	}
-#endif
-	memset(*p_veh, 0, sizeof(Vehicle_t));
+	*p_veh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
 	(*p_veh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(str_animal_type)];
-#else
-	* p_veh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
-	(*p_veh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(str_animal_type)];
-#endif
 }
 
 #ifdef _JK2MP

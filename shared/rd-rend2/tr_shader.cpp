@@ -2412,7 +2412,7 @@ static void ParseSkyParms(const char** text) {
 ParseSort
 =================
 */
-void ParseSort(const char** text) {
+static void ParseSort(const char** text) {
 	char* token;
 
 	token = COM_ParseExt(text, qfalse);
@@ -2478,7 +2478,7 @@ const char* materialNames[MATERIAL_LAST] =
 	MATERIALS
 };
 
-void ParseMaterial(const char** text)
+static void ParseMaterial(const char** text)
 {
 	char* token;
 	int		i;
@@ -3913,7 +3913,7 @@ static void VertexLightingCollapse(void) {
 	}
 }
 
-int FindFirstLightmapStage(const shaderStage_t* stages, int numStages)
+static int FindFirstLightmapStage(const shaderStage_t* stages, int numStages)
 {
 	for (int i = 0; i < numStages; i++)
 	{
@@ -3927,7 +3927,7 @@ int FindFirstLightmapStage(const shaderStage_t* stages, int numStages)
 	return numStages;
 }
 
-int GetNumStylesInShader(const shader_t* shader)
+static int GetNumStylesInShader(const shader_t* shader)
 {
 	for (int i = 0; i < MAXLIGHTMAPS; i++)
 	{
@@ -4243,6 +4243,9 @@ static shader_t* FinishShader(void) {
 
 			if (!pStage->active)
 				continue;
+
+			if (pStage->stateBits & (GLS_DSTBLEND_BITS | GLS_SRCBLEND_BITS))
+				break;
 
 			if (pStage->alphaTestType == ALPHA_TEST_NONE)
 				shader.useSimpleDepthShader = qtrue;
@@ -4649,7 +4652,7 @@ shader_t* R_FindServerShader(const char* name, const int* lightmapIndex, const b
 	return FinishShader();
 }
 
-qhandle_t RE_RegisterShaderFromImage(const char* name, const int* lightmapIndex, const byte* styles, image_t* image, qboolean mip_raw_image) {
+static qhandle_t RE_RegisterShaderFromImage(const char* name, const int* lightmapIndex, const byte* styles, image_t* image, qboolean mip_raw_image) {
 	int			hash;
 	shader_t* sh;
 

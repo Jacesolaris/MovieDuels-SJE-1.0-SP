@@ -99,14 +99,6 @@ extern void PM_SetAnim(const pmove_t* pm, int set_anim_parts, int anim, int set_
 extern int PM_AnimLength(int index, animNumber_t anim);
 #endif
 
-#ifdef _JK2MP
-
-#include "../namespace_begin.h"
-
-extern void BG_SetAnim(playerState_t* ps, animation_t* animations, int setAnimParts, int anim, int setAnimFlags, int blend_time);
-extern int BG_GetTime(void);
-#endif
-
 //Alright, actually, most of this file is shared between game and cgame for MP.
 //I would like to keep it this way, so when modifying for SP please keep in
 //mind the bgEntity restrictions imposed. -rww
@@ -661,7 +653,7 @@ static void ProcessMoveCommands(Vehicle_t* p_veh)
 #ifdef _JK2MP //temp hack til mp speeder controls are sorted -rww
 extern void AnimalProcessOri(Vehicle_t* p_veh);
 #endif
-void ProcessOrientCommands(Vehicle_t* p_veh)
+static void ProcessOrientCommands(Vehicle_t* p_veh)
 {
 	/********************************************************************************/
 	/*	BEGIN	Here is where make sure the vehicle is properly oriented.	BEGIN	*/
@@ -768,7 +760,7 @@ extern void PM_SetAnim(const pmove_t* pm, int set_anim_parts, int anim, int set_
 extern int PM_AnimLength(int index, animNumber_t anim);
 
 // This function makes sure that the vehicle is properly animated.
-void AnimateVehicle(Vehicle_t* p_veh)
+static void AnimateVehicle(Vehicle_t* p_veh)
 {
 }
 
@@ -781,15 +773,14 @@ extern void CG_ChangeWeapon(int num);
 #endif
 
 #ifndef _JK2MP
-extern void G_StartMatrixEffect(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f,
-	int spin_time = 0);
+extern void G_StartMatrixEffect(const gentity_t* ent, int me_flags = 0, int length = 1000, float time_scale = 0.0f, int spin_time = 0);
 #endif
 
 //NOTE NOTE NOTE NOTE NOTE NOTE
 //I want to keep this function BG too, because it's fairly generic already, and it
 //would be nice to have proper prediction of animations. -rww
 // This function makes sure that the rider's in this vehicle are properly animated.
-void AnimateRiders(Vehicle_t* p_veh)
+static void AnimateRiders(Vehicle_t* p_veh)
 {
 	animNumber_t Anim = BOTH_VS_IDLE;
 	int iFlags, iBlend = 300;
@@ -830,10 +821,6 @@ void AnimateRiders(Vehicle_t* p_veh)
 
 			// Set the delay time (which happens to be the time it takes for the animation to complete).
 			// NOTE: Here I made it so the delay is actually 40% (0.4f) of the animation time.
-#ifdef _JK2MP
-			iAnimLen = BG_AnimLength(p_veh->m_pPilot->localAnimIndex, Anim) * 0.4f;
-			p_veh->m_iBoarding = BG_GetTime() + iAnimLen;
-#else
 			if (p_veh->m_iBoarding == BOTH_VS_MOUNTJUMP_L)
 			{
 				i_anim_len = PM_AnimLength(p_veh->m_pPilot->client->clientInfo.animFileIndex, Anim);
@@ -858,13 +845,8 @@ void AnimateRiders(Vehicle_t* p_veh)
 			{
 				p_veh->m_iBoarding = level.time + i_anim_len;
 			}
-#endif
 			// Set the animation, which won't be interrupted until it's completed.
 			iFlags = SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD;
-
-#ifdef _JK2MP
-			BG_SetAnim(p_veh->m_pPilot->playerState, bgAllAnims[p_veh->m_pPilot->localAnimIndex].anims, SETANIM_BOTH, Anim, iFlags, iBlend);
-#else
 			NPC_SetAnim(p_veh->m_pPilot, SETANIM_BOTH, Anim, iFlags, iBlend);
 
 			if (p_veh->m_pOldPilot)
@@ -872,7 +854,6 @@ void AnimateRiders(Vehicle_t* p_veh)
 				PM_AnimLength(p_veh->m_pPilot->client->clientInfo.animFileIndex, BOTH_VS_MOUNTTHROWEE);
 				NPC_SetAnim(p_veh->m_pOldPilot, SETANIM_BOTH, BOTH_VS_MOUNTTHROWEE, iFlags, iBlend);
 			}
-#endif
 		}
 
 #ifndef _JK2MP
@@ -1243,97 +1224,27 @@ void AnimateRiders(Vehicle_t* p_veh)
 			}
 		} // No Special Moves
 	} // Going backwards?
-
-#ifdef _JK2MP
-	iFlags &= ~SETANIM_FLAG_OVERRIDE;
-	if (p_veh->m_pPilot->playerState->torsoAnim == Anim)
-	{
-		p_veh->m_pPilot->playerState->torsoTimer = BG_AnimLength(p_veh->m_pPilot->localAnimIndex, Anim);
-	}
-	if (p_veh->m_pPilot->playerState->legsAnim == Anim)
-	{
-		p_veh->m_pPilot->playerState->legsTimer = BG_AnimLength(p_veh->m_pPilot->localAnimIndex, Anim);
-	}
-	BG_SetAnim(p_veh->m_pPilot->playerState, bgAllAnims[p_veh->m_pPilot->localAnimIndex].anims,
-		SETANIM_BOTH, Anim, iFlags | SETANIM_FLAG_HOLD, iBlend);
-#else
 	NPC_SetAnim(p_veh->m_pPilot, SETANIM_BOTH, Anim, iFlags, iBlend);
-#endif
 }
-
-#ifndef QAGAME
-void AttachRidersGeneric(Vehicle_t* p_veh);
-#endif
 
 void G_SetSpeederVehicleFunctions(vehicleInfo_t* pVehInfo)
 {
 #ifdef QAGAME
 	pVehInfo->AnimateVehicle = AnimateVehicle;
 	pVehInfo->AnimateRiders = AnimateRiders;
-	//	pVehInfo->ValidateBoard				=		ValidateBoard;
-	//	pVehInfo->SetParent					=		SetParent;
-	//	pVehInfo->SetPilot					=		SetPilot;
-	//	pVehInfo->AddPassenger				=		AddPassenger;
-	//	pVehInfo->Animate					=		Animate;
-	//	pVehInfo->Board						=		Board;
-	//	pVehInfo->Eject						=		Eject;
-	//	pVehInfo->EjectAll					=		EjectAll;
-	//	pVehInfo->StartDeathDelay			=		StartDeathDelay;
-	//	pVehInfo->DeathUpdate				=		DeathUpdate;
-	//	pVehInfo->RegisterAssets			=		RegisterAssets;
-	//	pVehInfo->Initialize				=		Initialize;
 	pVehInfo->Update = Update;
-	//	pVehInfo->UpdateRider				=		UpdateRider;
 #endif
 
 	//shared
 	pVehInfo->ProcessMoveCommands = ProcessMoveCommands;
 	pVehInfo->ProcessOrientCommands = ProcessOrientCommands;
-
-#ifndef QAGAME //cgame prediction attachment func
-	pVehInfo->AttachRiders = AttachRidersGeneric;
-#endif
-	//	pVehInfo->AttachRiders				=		AttachRiders;
-	//	pVehInfo->Ghost						=		Ghost;
-	//	pVehInfo->UnGhost					=		UnGhost;
-	//	pVehInfo->Inhabited					=		Inhabited;
 }
-
-// Following is only in game, not in namespace
-#ifdef _JK2MP
-#include "../namespace_end.h"
-#endif
-
-#ifdef QAGAME
-extern void G_AllocateVehicleObject(Vehicle_t** p_veh);
-#endif
-
-#ifdef _JK2MP
-#include "../namespace_begin.h"
-#endif
 
 // Create/Allocate a new Animal Vehicle (initializing it as well).
 void G_CreateSpeederNPC(Vehicle_t** p_veh, const char* strType)
 {
-#ifdef _JK2MP
-#ifdef QAGAME
-	//these will remain on entities on the client once allocated because the pointer is
-	//never stomped. on the server, however, when an ent is freed, the entity struct is
-	//memset to 0, so this memory would be lost..
-	G_AllocateVehicleObject(p_veh);
-#else
-	if (!*p_veh)
-	{ //only allocate a new one if we really have to
-		(*p_veh) = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
-	}
-#endif
-	memset(*p_veh, 0, sizeof(Vehicle_t));
+	*p_veh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
 	(*p_veh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(strType)];
-#else
-	// Allocate the Vehicle.
-	* p_veh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
-	(*p_veh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(strType)];
-#endif
 }
 
 #ifdef _JK2MP

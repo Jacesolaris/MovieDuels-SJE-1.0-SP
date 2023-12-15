@@ -218,7 +218,7 @@ Initializes a window structure ( windowDef_t ) with defaults
 
 ==================
 */
-void Window_Init(Window* w)
+static void Window_Init(Window* w)
 {
 	memset(w, 0, sizeof(windowDef_t));
 	w->borderSize = 1;
@@ -231,7 +231,7 @@ void Window_Init(Window* w)
 PC_SourceError
 =================
 */
-void PC_SourceError(int handle, char* format, ...)
+static void PC_SourceError(int handle, char* format, ...)
 {
 	char filename[128]{};
 	va_list argptr;
@@ -271,7 +271,7 @@ qboolean PC_ParseStringMem(const char** out)
 PC_ParseRect
 =================
 */
-qboolean PC_ParseRect(rectDef_t* r)
+static qboolean PC_ParseRect(rectDef_t* r)
 {
 	if (!PC_ParseFloat(&r->x))
 	{
@@ -2199,7 +2199,7 @@ qboolean Script_SetColor(itemDef_t* item, const char** args)
 Script_Open
 =================
 */
-qboolean Script_Open(itemDef_t* item, const char** args)
+static qboolean Script_Open(itemDef_t* item, const char** args)
 {
 	const char* name;
 	if (String_Parse(args, &name))
@@ -2210,7 +2210,7 @@ qboolean Script_Open(itemDef_t* item, const char** args)
 	return qtrue;
 }
 
-qboolean Script_OpenGoToMenu(itemDef_t* item, const char** args)
+static qboolean Script_OpenGoToMenu(itemDef_t* item, const char** args)
 {
 	Menus_OpenByName(GoToMenu); // Give warning
 	return qtrue;
@@ -2221,7 +2221,7 @@ qboolean Script_OpenGoToMenu(itemDef_t* item, const char** args)
 Script_Close
 =================
 */
-qboolean Script_Close(itemDef_t* item, const char** args)
+static qboolean Script_Close(itemDef_t* item, const char** args)
 {
 	const char* name;
 	if (String_Parse(args, &name))

@@ -394,7 +394,7 @@ Dissolve_t Dissolve = { 0 };
 
 // leave the UV stuff in for now as comments in case I ever need to do some sneaky stuff, but for now...
 //
-static void RE_Blit(const float f_x0, const float f_y0, const float f_x1, const float f_y1, const float f_x2, const float f_y2, const float f_x3, const float f_y3, image_t* p_image, const int iGLState)
+static void RE_Blit(const float fX0, const float fY0, const float fX1, const float fY1, const float fX2, const float fY2, const float fX3, const float fY3, image_t* pImage, const int iGLState)
 {
 	//
 	// some junk they had at the top of other StretchRaw code...
@@ -402,7 +402,7 @@ static void RE_Blit(const float f_x0, const float f_y0, const float f_x1, const 
 	R_IssuePendingRenderCommands();
 	//	qglFinish();
 
-	GL_Bind(p_image);
+	GL_Bind(pImage);
 	GL_State(iGLState);
 	GL_Cull(CT_TWO_SIDED);
 
@@ -414,25 +414,25 @@ static void RE_Blit(const float f_x0, const float f_y0, const float f_x1, const 
 		//
 //		qglTexCoord2f( fU0 / (float)pImage->width,  fV0 / (float)pImage->height );
 		qglTexCoord2f(0, 0);
-		qglVertex2f(f_x0, f_y0);
+		qglVertex2f(fX0, fY0);
 
 		// TR...
 		//
 //		qglTexCoord2f( fU1 / (float)pImage->width,  fV1 / (float)pImage->height );
 		qglTexCoord2f(1, 0);
-		qglVertex2f(f_x1, f_y1);
+		qglVertex2f(fX1, fY1);
 
 		// BR...
 		//
 //		qglTexCoord2f( fU2 / (float)pImage->width,  fV2 / (float)pImage->height );
 		qglTexCoord2f(1, 1);
-		qglVertex2f(f_x2, f_y2);
+		qglVertex2f(fX2, fY2);
 
 		// BL...
 		//
 //		qglTexCoord2f( fU3 / (float)pImage->width,  fV3 / (float)pImage->height );
 		qglTexCoord2f(0, 1);
-		qglVertex2f(f_x3, f_y3);
+		qglVertex2f(fX3, fY3);
 	}
 	qglEnd();
 }

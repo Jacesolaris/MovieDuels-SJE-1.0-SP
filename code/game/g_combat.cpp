@@ -71,7 +71,7 @@ extern qboolean Boba_StopKnockdown(gentity_t* self, const gentity_t* pusher, con
 extern qboolean jedi_stop_knockdown(gentity_t* self, const vec3_t push_dir);
 extern void jedi_play_blocked_push_sound(const gentity_t* self);
 
-extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 extern void G_StartRoll(gentity_t* ent, int anim);
 extern void WP_ForcePowerStart(gentity_t* self, forcePowers_t force_power, int override_amt);
 extern int killPlayerTimer;

@@ -1459,7 +1459,6 @@ static void RB_IterateStagesGeneric(shaderCommands_t* input, const VertexArraysP
 			if (backEnd.currentEntity->e.renderfx & RF_FORCE_ENT_ALPHA)
 			{
 				stateBits = GLS_SRCBLEND_SRC_ALPHA | GLS_DSTBLEND_ONE_MINUS_SRC_ALPHA;
-#ifndef REND2_SP
 				if (backEnd.currentEntity->e.renderfx & RF_ALPHA_DEPTH)
 				{
 					// depth write, so faces through the model will be stomped
@@ -1468,9 +1467,7 @@ static void RB_IterateStagesGeneric(shaderCommands_t* input, const VertexArraysP
 					// standard alpha surfs.
 					stateBits |= GLS_DEPTHMASK_TRUE;
 				}
-#endif
 			}
-#ifdef REND2_SP
 			if (backEnd.currentEntity->e.renderfx & RF_ALPHA_FADE)
 			{
 				if (backEnd.currentEntity->e.shaderRGBA[3] < 255)
@@ -1479,7 +1476,6 @@ static void RB_IterateStagesGeneric(shaderCommands_t* input, const VertexArraysP
 					forceAlphaGen = AGEN_ENTITY;
 				}
 			}
-#endif
 		}
 
 		if (backEnd.viewParms.flags & VPF_POINTSHADOW)

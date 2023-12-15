@@ -263,7 +263,7 @@ static int PowerOf2(int iArg)
 Dissolve_t Dissolve = { 0 };
 #define fDISSOLVE_SECONDS 0.75f
 
-static void RE_Blit(float fX0, float fY0, float fX1, float fY1, float fX2, float fY2, float fX3, float fY3, image_t* pImage, int iGLState, bool atest)
+static void RE_Blit(const float fX0, const float fY0, const float fX1, const float fY1, const float fX2, const float fY2, const float fX3, const float fY3, image_t* pImage, const int iGLState, const bool atest)
 {
 	//
 	// some junk they had at the top of other StretchRaw code...

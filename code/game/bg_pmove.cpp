@@ -223,7 +223,7 @@ extern void DoImpact(gentity_t* self, gentity_t* other, qboolean damageSelf, con
 constexpr auto PHASER_RECHARGE_TIME = 100;
 extern saber_moveName_t transitionMove[Q_NUM_QUADS][Q_NUM_QUADS];
 
-extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 
 static Vehicle_t* PM_RidingVehicle()
 {
@@ -10968,7 +10968,7 @@ static void PM_Footsteps()
 				{
 					if (pm->cmd.buttons & BUTTON_BLOCK && pm->ps->sprintFuel > 15)
 					{
-						PM_SetAnim(pm, SETANIM_LEGS, BOTH_SPRINT, set_anim_flags);
+						PM_SetAnim(pm, SETANIM_LEGS, BOTH_SPRINT_SINGLE_LIGHTSABER, set_anim_flags);
 
 						if (!(pm->ps->PlayerEffectFlags & 1 << PEF_SPRINTING))
 						{
@@ -14158,8 +14158,7 @@ void PM_Setsaber_move(saber_moveName_t new_move)
 	int parts = SETANIM_TORSO;
 	qboolean manual_blocking = qfalse;
 
-	const qboolean is_holding_block_button = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;
-	//Holding Block Button
+	//const qboolean is_holding_block_button = pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK ? qtrue : qfalse;	//Holding Block Button
 
 	if (new_move < LS_NONE || new_move >= LS_MOVE_MAX)
 	{
@@ -14274,7 +14273,7 @@ void PM_Setsaber_move(saber_moveName_t new_move)
 					//saber staff with more than first blade active
 					|| pm->ps->saber[0].type == SABER_ARC))
 			{
-				if (is_holding_block_button)
+				if (pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK)
 				{
 					if (pm->ps->saber_anim_level == SS_DUAL)
 					{
@@ -14318,7 +14317,7 @@ void PM_Setsaber_move(saber_moveName_t new_move)
 		}
 		else if (pm->ps->saber[0].readyAnim != -1)
 		{
-			if (is_holding_block_button)
+			if (pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK)
 			{
 				if (pm->ps->saber_anim_level == SS_DUAL)
 				{
@@ -14361,7 +14360,7 @@ void PM_Setsaber_move(saber_moveName_t new_move)
 		}
 		else if (pm->ps->dualSabers && pm->ps->saber[1].readyAnim != -1)
 		{
-			if (is_holding_block_button)
+			if (pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK)
 			{
 				if (pm->ps->saber_anim_level == SS_DUAL)
 				{
@@ -14408,7 +14407,7 @@ void PM_Setsaber_move(saber_moveName_t new_move)
 					|| pm->ps->saber[0].blade[1].active)
 					|| pm->ps->saber[0].type == SABER_ARC)))
 		{
-			if (is_holding_block_button)
+			if (pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK)
 			{
 				if (pm->ps->saber_anim_level == SS_DUAL)
 				{
@@ -14451,7 +14450,7 @@ void PM_Setsaber_move(saber_moveName_t new_move)
 		}
 		else
 		{
-			if (is_holding_block_button)
+			if (pm->ps->ManualBlockingFlags & 1 << HOLDINGBLOCK)
 			{
 				if (pm->ps->saber_anim_level == SS_DUAL)
 				{

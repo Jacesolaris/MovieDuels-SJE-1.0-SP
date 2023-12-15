@@ -66,7 +66,7 @@ extern void ItemUse_UseCloak(gentity_t* ent);
 extern void RemoveBarrier(gentity_t* ent);
 extern void ItemUse_Barrier(gentity_t* ent);
 extern void ItemUse_Grapple(gentity_t* ent);
-extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 extern qboolean Bokatan_Dual_Clone_Pistol(const gentity_t* self);
 extern qboolean Mandalorian_Repeater(const gentity_t* self);
 extern qboolean Armorer_clone_pistol(const gentity_t* self);

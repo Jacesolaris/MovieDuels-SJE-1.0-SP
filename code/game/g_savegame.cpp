@@ -1010,24 +1010,24 @@ static void ReadGEntities(const qboolean qbAutosave)
 		//
 		gentity_t entity;
 		gentity_t* pEntOriginal = &entity;
-		gentity_t* p_ent = &g_entities[iEntIndex];
-		*pEntOriginal = *p_ent; // struct copy, so we can refer to original
+		gentity_t* pEnt = &g_entities[iEntIndex];
+		*pEntOriginal = *pEnt; // struct copy, so we can refer to original
 
 		pEntOriginal->ghoul2.kill();
-		gi.unlinkentity(p_ent);
-		Quake3Game()->FreeEntity(p_ent);
+		gi.unlinkentity(pEnt);
+		Quake3Game()->FreeEntity(pEnt);
 
 		//
 		// sneaky:  destroy the ghoul2 object within this struct before binary-loading over the top of it...
 		//
-		gi.G2API_LoadSaveCodeDestructGhoul2Info(p_ent->ghoul2);
-		p_ent->ghoul2.kill();
-		EvaluateFields(savefields_gEntity, p_ent, reinterpret_cast<byte*>(pEntOriginal), INT_ID('G', 'E', 'N', 'T'));
-		p_ent->ghoul2.kill();
+		gi.G2API_LoadSaveCodeDestructGhoul2Info(pEnt->ghoul2);
+		pEnt->ghoul2.kill();
+		EvaluateFields(savefields_gEntity, pEnt, reinterpret_cast<byte*>(pEntOriginal), INT_ID('G', 'E', 'N', 'T'));
+		pEnt->ghoul2.kill();
 
 		// now for any fiddly bits...
 		//
-		if (p_ent->NPC) // will be qtrue/qfalse
+		if (pEnt->NPC) // will be qtrue/qfalse
 		{
 			gNPC_t tempNPC;
 
@@ -1040,22 +1040,22 @@ static void ReadGEntities(const qboolean qbAutosave)
 			{
 				// pinch this G_Alloc handle...
 				//
-				p_ent->NPC = pEntOriginal->NPC;
+				pEnt->NPC = pEntOriginal->NPC;
 			}
 			else
 			{
 				// original didn't have one (hmmm...), so make a new one...
 				//
 				//assert(0);	// I want to know about this, though not in release
-				p_ent->NPC = static_cast<gNPC_t*>(G_Alloc(sizeof * p_ent->NPC));
+				pEnt->NPC = static_cast<gNPC_t*>(G_Alloc(sizeof * pEnt->NPC));
 			}
 
 			// copy over the one we've just loaded...
 			//
-			*p_ent->NPC = tempNPC;
+			*pEnt->NPC = tempNPC;
 		}
 
-		if (p_ent->client == reinterpret_cast<gclient_t*>(-2)) // one of Mike G's NPC clients?
+		if (pEnt->client == reinterpret_cast<gclient_t*>(-2)) // one of Mike G's NPC clients?
 		{
 			gclient_t tempGClient;
 
@@ -1068,29 +1068,29 @@ static void ReadGEntities(const qboolean qbAutosave)
 			{
 				// pinch this G_Alloc handle...
 				//
-				p_ent->client = pEntOriginal->client;
+				pEnt->client = pEntOriginal->client;
 			}
 			else
 			{
 				// original didn't have one (hmmm...) so make a new one...
 				//
-				p_ent->client = static_cast<gclient_t*>(G_Alloc(sizeof * p_ent->client));
+				pEnt->client = static_cast<gclient_t*>(G_Alloc(sizeof * pEnt->client));
 			}
 
 			// copy over the one we've just loaded....
 			//
-			*p_ent->client = tempGClient; // struct copy
+			*pEnt->client = tempGClient; // struct copy
 
-			if (p_ent->s.number)
+			if (pEnt->s.number)
 			{
 				//not player
-				G_ReloadSaberData(p_ent);
+				G_ReloadSaberData(pEnt);
 			}
 		}
 
 		// Some Icarus thing... (probably)
 		//
-		if (p_ent->parms) // will be qtrue/qfalse
+		if (pEnt->parms) // will be qtrue/qfalse
 		{
 			parms_t tempParms;
 
@@ -1104,26 +1104,29 @@ static void ReadGEntities(const qboolean qbAutosave)
 			{
 				// pinch this G_Alloc handle...
 				//
-				p_ent->parms = pEntOriginal->parms;
+				pEnt->parms = pEntOriginal->parms;
 			}
 			else
 			{
 				// original didn't have one, so make a new one...
 				//
-				p_ent->parms = static_cast<parms_t*>(G_Alloc(sizeof * p_ent->parms));
+				pEnt->parms = static_cast<parms_t*>(G_Alloc(sizeof * pEnt->parms));
 			}
 
 			// copy over the one we've just loaded...
 			//
-			*p_ent->parms = tempParms; // struct copy
+			*pEnt->parms = tempParms; // struct copy
 		}
 
-		if (p_ent->m_pVehicle) // will be qtrue/qfalse
+		if (pEnt->m_pVehicle) // will be qtrue/qfalse
 		{
 			Vehicle_t tempVehicle;
 
-			EvaluateFields(savefields_gVHIC, &tempVehicle, reinterpret_cast<byte*>(pEntOriginal->m_pVehicle),
-				INT_ID('V', 'H', 'I', 'C'));
+			// initialize the vehicle cache g_vehicleInfo
+			// Calling this function fixes the vehicle crashing issue
+			BG_VehicleGetIndex(pEnt->NPC_type);
+
+			EvaluateFields(savefields_gVHIC, &tempVehicle, reinterpret_cast<byte*>(pEntOriginal->m_pVehicle),INT_ID('V', 'H', 'I', 'C'));
 
 			// so can we pinch the original's one or do we have to alloc a new one?...
 			//
@@ -1131,18 +1134,18 @@ static void ReadGEntities(const qboolean qbAutosave)
 			{
 				// pinch this G_Alloc handle...
 				//
-				p_ent->m_pVehicle = pEntOriginal->m_pVehicle;
+				pEnt->m_pVehicle = pEntOriginal->m_pVehicle;
 			}
 			else
 			{
 				// original didn't have one, so make a new one...
 				//
-				p_ent->m_pVehicle = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qfalse));
+				pEnt->m_pVehicle = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qfalse));
 			}
 
 			// copy over the one we've just loaded...
 			//
-			*p_ent->m_pVehicle = tempVehicle; // struct copy
+			*pEnt->m_pVehicle = tempVehicle; // struct copy
 		}
 
 		// the scary ghoul2 stuff...  (fingers crossed)
@@ -1151,12 +1154,12 @@ static void ReadGEntities(const qboolean qbAutosave)
 			saved_game.read_chunk(
 				INT_ID('G', 'H', 'L', '2'));
 
-			gi.G2API_LoadGhoul2Models(p_ent->ghoul2, nullptr);
+			gi.G2API_LoadGhoul2Models(pEnt->ghoul2, nullptr);
 		}
 
 		//		gi.unlinkentity (pEntOriginal);
 		//		ICARUS_FreeEnt( pEntOriginal );
-		//		*pEntOriginal = *p_ent;	// struct copy
+		//		*pEntOriginal = *pEnt;	// struct copy
 		//		qboolean qbLinked = pEntOriginal->linked;
 		//		pEntOriginal->linked = qfalse;
 		//		if (qbLinked)
@@ -1166,27 +1169,27 @@ static void ReadGEntities(const qboolean qbAutosave)
 
 		// because the sytem stores sfx_t handles directly instead of the set, we have to reget the set's sfx_t...
 		//
-		if (p_ent->s.eType == ET_MOVER && p_ent->s.loopSound > 0)
+		if (pEnt->s.eType == ET_MOVER && pEnt->s.loopSound > 0)
 		{
-			if (VALIDSTRING(p_ent->soundSet))
+			if (VALIDSTRING(pEnt->soundSet))
 			{
 				extern int BMS_MID; // from g_mover
-				p_ent->s.loopSound = CAS_GetBModelSound(p_ent->soundSet, BMS_MID);
-				if (p_ent->s.loopSound == -1)
+				pEnt->s.loopSound = CAS_GetBModelSound(pEnt->soundSet, BMS_MID);
+				if (pEnt->s.loopSound == -1)
 				{
-					p_ent->s.loopSound = 0;
+					pEnt->s.loopSound = 0;
 				}
 			}
 		}
 
 		// NPCs and other ents store waypoints that aren't valid after a load
-		p_ent->waypoint = 0;
+		pEnt->waypoint = 0;
 
-		const qboolean qbLinked = p_ent->linked;
-		p_ent->linked = qfalse;
+		const qboolean qbLinked = pEnt->linked;
+		pEnt->linked = qfalse;
 		if (qbLinked)
 		{
-			gi.linkentity(p_ent);
+			gi.linkentity(pEnt);
 		}
 	}
 

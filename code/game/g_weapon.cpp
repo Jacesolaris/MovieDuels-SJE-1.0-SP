@@ -139,7 +139,7 @@ void WP_TraceSetStart(const gentity_t* ent, vec3_t start)
 	}
 }
 
-extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 //-----------------------------------------------------------------------------
 gentity_t* create_missile(vec3_t org, vec3_t dir, const float vel, const int life, gentity_t* owner,
 	const qboolean alt_fire)
@@ -1491,7 +1491,7 @@ void G_AddBlasterAttackChainCount(const gentity_t* ent, int amount)
 	}
 }
 
-extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 extern qboolean PM_ReloadAnim(int anim);
 extern qboolean PM_WeponRestAnim(int anim);
 extern qboolean PM_CrouchAnim(int anim);

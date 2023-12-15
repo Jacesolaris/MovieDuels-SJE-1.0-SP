@@ -36,7 +36,7 @@ extern vmCvar_t cg_debugFatigueBars;
 extern vmCvar_t cg_saberinfo;
 extern vmCvar_t cg_com_kotor;
 
-extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 extern qboolean G_ControlledByPlayer(const gentity_t* self);
 
 void CG_DrawSJEIconBackground();

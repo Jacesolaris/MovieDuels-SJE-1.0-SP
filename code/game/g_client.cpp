@@ -361,7 +361,7 @@ SelectRandomDeathmatchSpawnPoint
 go to a random point that doesn't telefrag
 ================
 */
-gentity_t* SelectRandomDeathmatchSpawnPoint()
+static gentity_t* SelectRandomDeathmatchSpawnPoint()
 {
 	gentity_t* spots[MAX_SPAWN_POINTS]{};
 

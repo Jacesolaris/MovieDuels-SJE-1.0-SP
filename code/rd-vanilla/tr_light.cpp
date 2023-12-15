@@ -138,7 +138,7 @@ static void R_SetupEntityLightingGrid(trRefEntity_t* ent) {
 	float			totalFactor;
 	unsigned short* startGridPos;
 
-	if (r_fullbright->integer || tr.refdef.rdflags & RDF_doLAGoggles)
+	if (r_fullbright->integer || r_ambientScale->integer == -1 || tr.refdef.rdflags & RDF_doLAGoggles)
 	{
 		ent->ambientLight[0] = ent->ambientLight[1] = ent->ambientLight[2] = 255.0;
 		ent->directedLight[0] = ent->directedLight[1] = ent->directedLight[2] = 255.0;

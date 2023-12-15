@@ -127,24 +127,25 @@ R_SetupEntityLightingGrid
 
 =================
 */
-static void R_SetupEntityLightingGrid(trRefEntity_t* ent, world_t* world) {
+static void R_SetupEntityLightingGrid(trRefEntity_t* ent, world_t* world)
+{
 	vec3_t	lightOrigin;
-	int		pos[3];
+	int		pos[3]{};
 	int		i, j;
-	float	frac[3];
-	int		gridStep[3];
+	float	frac[3]{};
+	int		gridStep[3]{};
 	vec3_t	direction;
 	float	totalFactor;
 	uint32_t startGridPos;
-#ifdef REND2_SP
-	if (r_fullbright->integer || tr.refdef.doLAGoggles)
+
+	if (r_fullbright->integer || r_ambientScale->integer == -1 || tr.refdef.doLAGoggles)
 	{
 		ent->ambientLight[0] = ent->ambientLight[1] = ent->ambientLight[2] = 255.0f;
 		ent->directedLight[0] = ent->directedLight[1] = ent->directedLight[2] = 255.0f;
 		VectorCopy(tr.sunDirection, ent->lightDir);
 		return;
 	}
-#endif
+
 	if (ent->e.renderfx & RF_LIGHTING_ORIGIN) {
 		// seperate lightOrigins are needed so an object that is
 		// sinking into the ground can still be lit, and so
@@ -188,7 +189,7 @@ static void R_SetupEntityLightingGrid(trRefEntity_t* ent, world_t* world) {
 		mgrid_t* data;
 		uint32_t gridPos;
 		int		lat, lng;
-		vec3_t	normal;
+		vec3_t	normal{};
 
 #if idppc
 		float d0, d1, d2, d3, d4, d5;

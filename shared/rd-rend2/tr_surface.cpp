@@ -63,7 +63,7 @@ void RB_CheckOverflow(const int verts, const int indexes)
 	RB_BeginSurface(tess.shader, tess.fogNum, tess.cubemapIndex);
 }
 
-void RB_CheckVBOandIBO(VBO_t* vbo, IBO_t* ibo)
+static void RB_CheckVBOandIBO(VBO_t* vbo, IBO_t* ibo)
 {
 	if (vbo != glState.currentVBO ||
 		ibo != glState.currentIBO ||
@@ -226,7 +226,7 @@ void RB_InstantQuad2(vec4_t quadVerts[4], vec2_t texCoords[4])
 
 void RB_InstantQuad(vec4_t quadVerts[4])
 {
-	vec2_t texCoords[4];
+	vec2_t texCoords[4]{};
 
 	VectorSet2(texCoords[0], 0.0f, 0.0f);
 	VectorSet2(texCoords[1], 1.0f, 0.0f);
@@ -254,7 +254,7 @@ RB_SurfaceSprite
 static void RB_SurfaceSprite() {
 	vec3_t		left, up;
 	float		radius;
-	float			colors[4];
+	float			colors[4]{};
 	trRefEntity_t* ent = backEnd.currentEntity;
 
 	// calculate the xyz locations for the four corners
@@ -295,7 +295,7 @@ static void RB_SurfaceOrientedQuad(void)
 {
 	vec3_t	left, up;
 	float	radius;
-	float	color[4];
+	float	color[4]{};
 
 	// calculate the xyz locations for the four corners
 	radius = backEnd.currentEntity->e.radius;
@@ -606,9 +606,9 @@ static void RB_SurfaceBeam(void)
 	shaderProgram_t* sp = &tr.textureColorShader;
 	int	i;
 	vec3_t perpvec;
-	vec3_t direction, normalized_direction;
-	vec3_t	start_points[NUM_BEAM_SEGS], end_points[NUM_BEAM_SEGS];
-	vec3_t oldorigin, origin;
+	vec3_t direction{}, normalized_direction{};
+	vec3_t	start_points[NUM_BEAM_SEGS]{}, end_points[NUM_BEAM_SEGS]{};
+	vec3_t oldorigin{}, origin{};
 
 	e = &backEnd.currentEntity->e;
 
@@ -698,7 +698,7 @@ static void DoSprite(vec3_t origin, const float radius, const float rotation)
 	float	s, c;
 	float	ang;
 	vec3_t	left, up;
-	float	color[4];
+	float	color[4]{};
 
 	ang = M_PI * rotation / 180.0f;
 	s = sin(ang);
@@ -1083,36 +1083,11 @@ static vec3_t sh1, sh2;
 static float f_count;
 
 #define LIGHTNING_RECURSION_LEVEL 1 // was 2
-
-// these functions are pretty crappy in terms of returning a nice range of rnd numbers, but it's probably good enough?
-/*static int Q_rand( int *seed ) {
-	*seed = (69069 * *seed + 1);
-	return *seed;
-}
-
-static float Q_random( int *seed ) {
-	return ( Q_rand( seed ) & 0xffff ) / (float)0x10000;
-}
-
-static float Q_crandom( int *seed ) {
-	return 2.0F * ( Q_random( seed ) - 0.5f );
-}
-*/
 // Up front, we create a random "shape", then apply that to each line segment...and then again to each of those segments...kind of like a fractal
 //----------------------------------------------------------------------------
 static void CreateShape()
 //----------------------------------------------------------------------------
 {
-#ifndef REND2_SP
-	VectorSet(sh1, 0.66f + Q_flrand(-1.0f, 1.0f) * 0.1f,	// fwd
-		0.07f + Q_flrand(-1.0f, 1.0f) * 0.025f,
-		0.07f + Q_flrand(-1.0f, 1.0f) * 0.025f);
-
-	// it seems to look best to have a point on one side of the ideal line, then the other point on the other side.
-	VectorSet(sh2, 0.33f + Q_flrand(-1.0f, 1.0f) * 0.1f,	// fwd
-		-sh1[1] + Q_flrand(-1.0f, 1.0f) * 0.02f,	// forcing point to be on the opposite side of the line -- right
-		-sh1[2] + Q_flrand(-1.0f, 1.0f) * 0.02f);// up
-#else
 	VectorSet(sh1, 0.66f,// + Q_flrand(-1.0f, 1.0f) * 0.1f,	// fwd
 		0.08f + Q_flrand(-1.0f, 1.0f) * 0.02f,
 		0.08f + Q_flrand(-1.0f, 1.0f) * 0.02f);
@@ -1121,16 +1096,14 @@ static void CreateShape()
 	VectorSet(sh2, 0.33f,// + Q_flrand(-1.0f, 1.0f) * 0.1f,	// fwd
 		-sh1[1] + Q_flrand(-1.0f, 1.0f) * 0.02f,	// forcing point to be on the opposite side of the line -- right
 		-sh1[2] + Q_flrand(-1.0f, 1.0f) * 0.02f);// up
-#endif
 }
 
 //----------------------------------------------------------------------------
-static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, const float sradius, const float eradius, const int count, const float start_perc = 0.0f, const float end_perc = 1.0f)
+static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, const float sradius, const float eradius, const int count, const float start_perc, const float end_perc)
 //----------------------------------------------------------------------------
 {
 	vec3_t	point1, point2, fwd;
 	vec3_t	rt, up;
-	float	perc, dis;
 
 	if (count < 1)
 	{
@@ -1142,28 +1115,21 @@ static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, const float sradi
 	CreateShape();
 
 	VectorSubtract(end, start, fwd);
-	dis = VectorNormalize(fwd) * 0.7f;
+	const float dis = VectorNormalize(fwd) * 0.7f;
 	MakeNormalVectors(fwd, rt, up);
 
-	perc = sh1[0];
+	float perc = sh1[0];
 
 	VectorScale(start, perc, point1);
 	VectorMA(point1, 1.0f - perc, end, point1);
 	VectorMA(point1, dis * sh1[1], rt, point1);
 	VectorMA(point1, dis * sh1[2], up, point1);
 
-	// do a quick and dirty interpolation of the radius at that point
-	float rads1, rads2;
-
-	rads1 = sradius * 0.666f + eradius * 0.333f;
-	rads2 = sradius * 0.333f + eradius * 0.666f;
+	const float rads1 = sradius * 0.666f + eradius * 0.333f;
+	const float rads2 = sradius * 0.333f + eradius * 0.666f;
 
 	// recursion
-#ifndef REND2_SP
-	ApplyShape(start, point1, right, sradius, rads1, count - 1);
-#else
 	ApplyShape(start, point1, right, sradius, rads1, count - 1, start_perc, start_perc * 0.666f + end_perc * 0.333f);
-#endif
 
 	perc = sh2[0];
 
@@ -1173,75 +1139,54 @@ static void ApplyShape(vec3_t start, vec3_t end, vec3_t right, const float sradi
 	VectorMA(point2, dis * sh2[2], up, point2);
 
 	// recursion
-#ifndef REND2_SP
-	ApplyShape(point2, point1, right, rads1, rads2, count - 1);
-	ApplyShape(point2, end, right, rads2, eradius, count - 1);
-#else
 	ApplyShape(point2, point1, right, rads1, rads2, count - 1, start_perc * 0.333f + end_perc * 0.666f, start_perc * 0.666f + end_perc * 0.333f);
 	ApplyShape(point2, end, right, rads2, eradius, count - 1, start_perc * 0.333f + end_perc * 0.666f, end_perc);
-#endif
 }
 
 //----------------------------------------------------------------------------
 static void DoBoltSeg(vec3_t start, vec3_t end, vec3_t right, const float radius)
 //----------------------------------------------------------------------------
 {
-	refEntity_t* e;
 	vec3_t fwd, old;
-	vec3_t cur, off = { 10,10,10 };
+	vec3_t off = { 10,10,10 };
 	vec3_t rt, up;
-	vec3_t temp;
-	int		i;
-	float dis, oldPerc = 0.0f, perc, oldRadius, newRadius;
+	float oldPerc = 0.0f, perc, oldRadius;
 
-	e = &backEnd.currentEntity->e;
+	refEntity_t* e = &backEnd.currentEntity->e;
 
 	VectorSubtract(end, start, fwd);
-	dis = VectorNormalize(fwd);
+	float dis = VectorNormalize(fwd);
 
-#ifdef REND2_SP
 	if (dis > 2000)	//freaky long
 	{
 		//		ri.Printf( PRINT_WARNING, "DoBoltSeg: insane distance.\n" );
 		dis = 2000;
 	}
-#endif
-
 	MakeNormalVectors(fwd, rt, up);
 
 	VectorCopy(start, old);
 
-#ifndef REND2_SP
-	oldRadius = newRadius = radius;
-	for (i = 20; i <= dis; i += 20)
+	float newRadius = oldRadius = radius;
+
+	for (int i = 16; i <= dis; i += 16)
 	{
-		// because of our large step size, we may not actually draw to the end.  In this case, fudge our percent so that we are basically complete
-		if (i + 20 > dis)
-#else
-	newRadius = oldRadius = radius;
-	for (i = 16; i <= dis; i += 16)
-	{
+		vec3_t temp;
+		vec3_t cur;
 		// because of our large step size, we may not actually draw to the end.  In this case, fudge our percent so that we are basically complete
 		if (i + 16 > dis)
-#endif
 		{
 			perc = 1.0f;
 		}
 		else
 		{
 			// percentage of the amount of line completed
-			perc = (float)i / dis;
+			perc = static_cast<float>(i) / dis;
 		}
 
 		// create our level of deviation for this point
 		VectorScale(fwd, Q_crandom(&e->frame) * 3.0f, temp);				// move less in fwd direction, chaos also does not affect this
-#ifndef REND2_SP
-		VectorMA(temp, Q_crandom(&e->frame) * 7.0f * e->axis[0][0], rt, temp);	// move more in direction perpendicular to line, angles is really the chaos
-		VectorMA(temp, Q_crandom(&e->frame) * 7.0f * e->axis[0][0], up, temp);	// move more in direction perpendicular to line
-#else
 		VectorMA(temp, Q_crandom(&e->frame) * 7.0f * e->angles[0], rt, temp);	// move more in direction perpendicular to line, angles is really the chaos
 		VectorMA(temp, Q_crandom(&e->frame) * 7.0f * e->angles[0], up, temp);	// move more in direction perpendicular to line
-#endif
 
 		// track our total level of offset from the ideal line
 		VectorAdd(off, temp, off);
@@ -1261,38 +1206,34 @@ static void DoBoltSeg(vec3_t start, vec3_t end, vec3_t right, const float radius
 		}
 
 		// Apply the random shape to our line seg to give it some micro-detail-jaggy-coolness.
-#ifndef REND2_SP
-		ApplyShape(cur, old, right, newRadius, oldRadius, LIGHTNING_RECURSION_LEVEL);
-#else
 		ApplyShape(cur, old, right, newRadius, oldRadius, 2 - r_lodbias->integer, 0, 1);
-#endif
 
 		// randomly split off to create little tendrils, but don't do it too close to the end and especially if we are not even of the forked variety
-		if ((e->renderfx & RF_FORKED) && f_count > 0 && Q_random(&e->frame) > 0.94f && radius * (1.0f - perc) > 0.2f)
+		if (e->renderfx & RF_FORKED && f_count > 0 && Q_random(&e->frame) > 0.93f && 1.0f - perc > 0.8f)
 		{
-			vec3_t newDest;
+			vec3_t new_dest;
 
 			f_count--;
 
 			// Pick a point somewhere between the current point and the final endpoint
-			VectorAdd(cur, e->oldorigin, newDest);
-			VectorScale(newDest, 0.5f, newDest);
+			VectorAdd(cur, e->oldorigin, new_dest);
+			VectorScale(new_dest, 0.5f, new_dest);
 
 			// And then add some crazy offset
-			for (int t = 0; t < 3; t++)
+			for (float& t : new_dest)
 			{
-				newDest[t] += Q_crandom(&e->frame) * 80;
+				t += Q_crandom(&e->frame) * 80;
 			}
 
 			// we could branch off using OLD and NEWDEST, but that would allow multiple forks...whereas, we just want simpler brancing
-			DoBoltSeg(cur, newDest, right, newRadius);
+			DoBoltSeg(cur, new_dest, right, newRadius);
 		}
 
 		// Current point along the line becomes our new old attach point
 		VectorCopy(cur, old);
 		oldPerc = perc;
 	}
-	}
+}
 
 static void DoRailCore(const vec3_t start, const vec3_t end, const vec3_t up, const float len, const float span_width)
 {
@@ -1395,7 +1336,7 @@ static void RB_SurfaceElectricity()
 	DoBoltSeg(start, end, right, radius);
 }
 
-void RB_SurfaceLightningBolt()
+static void RB_SurfaceLightningBolt()
 {
 	vec3_t		right;
 	vec3_t		vec;
@@ -1437,7 +1378,7 @@ void RB_SurfaceLightningBolt()
 * The inputs to this routing seem to always be close to length = 1.0 (about 0.6 to 2.0)
 * This means that we don't have to worry about zero length or enormously long vectors.
 */
-static void VectorArrayNormalize(vec4_t * normals, unsigned int count)
+static void VectorArrayNormalize(vec4_t* normals, unsigned int count)
 {
 	//    assert(count);
 
@@ -1492,7 +1433,7 @@ static void VectorArrayNormalize(vec4_t * normals, unsigned int count)
 */
 #if 0
 #if idppc_altivec
-static void LerpMeshVertexes_altivec(md3Surface_t * surf, float backlerp)
+static void LerpMeshVertexes_altivec(md3Surface_t* surf, float backlerp)
 {
 	short* oldXyz, * newXyz, * oldNormals, * newNormals;
 	float* outXyz, * outNormal;
@@ -1623,7 +1564,7 @@ static void LerpMeshVertexes_altivec(md3Surface_t * surf, float backlerp)
 #endif
 #endif
 
-static void LerpMeshVertexes_scalar(mdvSurface_t * surf, float backlerp)
+static void LerpMeshVertexes_scalar(mdvSurface_t* surf, float backlerp)
 {
 #if 0
 	short* oldXyz, * newXyz, * oldNormals, * newNormals;
@@ -1779,7 +1720,7 @@ static void LerpMeshVertexes_scalar(mdvSurface_t * surf, float backlerp)
 	}
 }
 
-static void LerpMeshVertexes(mdvSurface_t * surf, float backlerp)
+static void LerpMeshVertexes(mdvSurface_t* surf, float backlerp)
 {
 #if 0
 #if idppc_altivec
@@ -1798,7 +1739,7 @@ static void LerpMeshVertexes(mdvSurface_t * surf, float backlerp)
 RB_SurfaceMesh
 =============
 */
-static void RB_SurfaceMesh(mdvSurface_t * surface) {
+static void RB_SurfaceMesh(mdvSurface_t* surface) {
 	int				j;
 	float			backlerp;
 	mdvSt_t* texCoords;
@@ -1840,7 +1781,7 @@ static void RB_SurfaceMesh(mdvSurface_t * surface) {
 RB_SurfaceFace
 ==============
 */
-static void RB_SurfaceBSPFace(srfBspSurface_t * srf)
+static void RB_SurfaceBSPFace(srfBspSurface_t* srf)
 {
 	if (RB_SurfaceVbo(srf->vbo, srf->ibo, srf->numVerts, srf->numIndexes,
 		srf->firstIndex, srf->minIndex, srf->maxIndex, srf->dlightBits, srf->pshadowBits, qtrue))
@@ -1853,7 +1794,7 @@ static void RB_SurfaceBSPFace(srfBspSurface_t * srf)
 }
 
 static float	LodErrorForVolume(vec3_t local, float radius) {
-	vec3_t		world;
+	vec3_t		world{};
 	float		d;
 
 	// never let it go negative
@@ -1889,10 +1830,10 @@ RB_SurfaceGrid
 Just copy the grid of points and triangulate
 =============
 */
-static void RB_SurfaceBSPGrid(srfBspSurface_t * srf) {
+static void RB_SurfaceBSPGrid(srfBspSurface_t* srf) {
 	int		i, j;
 	float* xyz;
-	float* texCoords, * lightCoords[MAXLIGHTMAPS];
+	float* texCoords, * lightCoords[MAXLIGHTMAPS]{};
 	uint32_t* normal;
 	uint32_t* tangent;
 	float* color;
@@ -1900,8 +1841,8 @@ static void RB_SurfaceBSPGrid(srfBspSurface_t * srf) {
 	srfVert_t* dv;
 	int		rows, irows, vrows;
 	int		used;
-	int		widthTable[MAX_GRID_SIZE];
-	int		heightTable[MAX_GRID_SIZE];
+	int		widthTable[MAX_GRID_SIZE]{};
+	int		heightTable[MAX_GRID_SIZE]{};
 	float	lodError;
 	int		lodWidth, lodHeight;
 	int		numVertexes;
@@ -2085,8 +2026,8 @@ static void RB_SurfaceBSPGrid(srfBspSurface_t * srf) {
 static void RB_SurfaceLathe()
 {
 	refEntity_t* e;
-	vec2_t		pt, oldpt, l_oldpt;
-	vec2_t		pt2, oldpt2, l_oldpt2;
+	vec2_t		pt{}, oldpt{}, l_oldpt{};
+	vec2_t		pt2{}, oldpt2{}, l_oldpt2{};
 	float		bezierStep, latheStep;
 	float		temp, mu, mum1;
 	float		mum13, mu3, group1, group2;
@@ -2450,7 +2391,7 @@ RB_SurfaceEntity
 Entities that have a single procedurally generated surface
 ====================
 */
-static void RB_SurfaceEntity(surfaceType_t * surfType) {
+static void RB_SurfaceEntity(surfaceType_t* surfType) {
 	switch (backEnd.currentEntity->e.reType) {
 	case RT_SPRITE:
 		RB_SurfaceSprite();
@@ -2520,23 +2461,23 @@ static void RB_SurfaceEntity(surfaceType_t * surfType) {
 	tess.shader->entityMergable = qtrue;
 }
 
-static void RB_SurfaceBad(surfaceType_t * surfType) {
+static void RB_SurfaceBad(surfaceType_t* surfType) {
 	ri.Printf(PRINT_ALL, "Bad surface tesselated.\n");
 }
 
-static void RB_SurfaceFlare(srfFlare_t * surf)
+static void RB_SurfaceFlare(srfFlare_t* surf)
 {
 	if (r_flares->integer)
 		RB_AddFlare(surf, tess.fogNum, surf->origin, surf->color, surf->normal);
 }
 
-static void RB_SurfaceVBOMesh(srfBspSurface_t * srf)
+static void RB_SurfaceVBOMesh(srfBspSurface_t* srf)
 {
 	RB_SurfaceVbo(srf->vbo, srf->ibo, srf->numVerts, srf->numIndexes, srf->firstIndex,
 		srf->minIndex, srf->maxIndex, srf->dlightBits, srf->pshadowBits, qfalse);
 }
 
-void RB_SurfaceVBOMDVMesh(srfVBOMDVMesh_t * surface)
+static void RB_SurfaceVBOMDVMesh(srfVBOMDVMesh_t* surface)
 {
 	int i, mergeForward, mergeBack;
 	GLvoid* firstIndexOffset, * lastIndexOffset;
@@ -2650,7 +2591,7 @@ void RB_SurfaceVBOMDVMesh(srfVBOMDVMesh_t * surface)
 static void RB_SurfaceSkip(void* surf) {
 }
 
-static void RB_SurfaceSprites(srfSprites_t * surf)
+static void RB_SurfaceSprites(srfSprites_t* surf)
 {
 	if (!r_surfaceSprites->integer || surf->numSprites == 0)
 		return;

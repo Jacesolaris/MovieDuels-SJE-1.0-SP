@@ -100,17 +100,10 @@ extern void G_VehicleTrace(trace_t* results, const vec3_t start, const vec3_t tM
 
 extern qboolean BG_UnrestrainedPitchRoll(const playerState_t* ps, const Vehicle_t* p_veh);
 
-#ifdef _JK2MP
-
-#include "../namespace_begin.h"
-
-extern int BG_GetTime(void);
-#endif
-
 #include "b_local.h"
 
 //this stuff has got to be predicted, so..
-bool BG_FighterUpdate(Vehicle_t* p_veh, const usercmd_t* pUcmd, vec3_t trMins, vec3_t trMaxs, const float gravity,
+static bool BG_FighterUpdate(Vehicle_t* p_veh, const usercmd_t* pUcmd, vec3_t trMins, vec3_t trMaxs, const float gravity,
 	void (*traceFunc)(trace_t* results, const vec3_t start, const vec3_t lmins, const vec3_t lmaxs,
 		const vec3_t end, int passEntityNum, int content_mask))
 {
@@ -224,9 +217,9 @@ static bool Update(Vehicle_t* p_veh, const usercmd_t* p_ucmd)
 }
 
 // Board this Vehicle (get on). The first entity to board an empty vehicle becomes the Pilot.
-static bool Board(Vehicle_t* p_veh, bgEntity_t* p_ent)
+static bool Board(Vehicle_t* p_veh, bgEntity_t* pEnt)
 {
-	if (!g_vehicleInfo[VEHICLE_BASE].Board(p_veh, p_ent))
+	if (!g_vehicleInfo[VEHICLE_BASE].Board(p_veh, pEnt))
 		return false;
 
 	// Set the board wait time (they won't be able to do anything, including getting off, for this amount of time).
@@ -236,9 +229,9 @@ static bool Board(Vehicle_t* p_veh, bgEntity_t* p_ent)
 }
 
 // Eject an entity from the vehicle.
-static bool Eject(Vehicle_t* p_veh, bgEntity_t* p_ent, const qboolean force_eject)
+static bool Eject(Vehicle_t* p_veh, bgEntity_t* pEnt, const qboolean force_eject)
 {
-	if (g_vehicleInfo[VEHICLE_BASE].Eject(p_veh, p_ent, force_eject))
+	if (g_vehicleInfo[VEHICLE_BASE].Eject(p_veh, pEnt, force_eject))
 	{
 		if (p_veh->m_pVehicleInfo->soundOff)
 		{
@@ -296,7 +289,7 @@ static float PredictedAngularDecrement(const float scale, const float time_mod, 
 
 #ifdef QAGAME//only do this check on GAME side, because if it's CGAME, it's being predicted, and it's only predicted if the local client is the driver
 
-qboolean FighterIsInSpace(const gentity_t* g_parent)
+static qboolean FighterIsInSpace(const gentity_t* g_parent)
 {
 	if (g_parent
 		&& g_parent->client
@@ -309,7 +302,7 @@ qboolean FighterIsInSpace(const gentity_t* g_parent)
 }
 #endif
 
-qboolean FighterOverValidLandingSurface(const Vehicle_t* p_veh)
+static qboolean FighterOverValidLandingSurface(const Vehicle_t* p_veh)
 {
 	if (p_veh->m_LandTrace.fraction < 1.0f //ground present
 		&& p_veh->m_LandTrace.plane.normal[2] >= MIN_LANDING_SLOPE) //flat enough
@@ -331,7 +324,7 @@ qboolean FighterIsLanded(const Vehicle_t* p_veh, playerState_t* parent_ps)
 	return qfalse;
 }
 
-qboolean FighterIsLanding(Vehicle_t* p_veh, playerState_t* parent_ps)
+static qboolean FighterIsLanding(Vehicle_t* p_veh, playerState_t* parent_ps)
 {
 	if (FighterOverValidLandingSurface(p_veh)
 		&& p_veh->m_pVehicleInfo->Inhabited(p_veh) //has to have a driver in order to be capable of landing
@@ -345,7 +338,7 @@ qboolean FighterIsLanding(Vehicle_t* p_veh, playerState_t* parent_ps)
 	return qfalse;
 }
 
-qboolean FighterIsLaunching(Vehicle_t* p_veh, const playerState_t* parent_ps)
+static qboolean FighterIsLaunching(Vehicle_t* p_veh, const playerState_t* parent_ps)
 {
 	if (FighterOverValidLandingSurface(p_veh)
 #ifdef QAGAME//only do this check on GAME side, because if it's CGAME, it's being predicted, and it's only predicted if the local client is the driver
@@ -361,7 +354,7 @@ qboolean FighterIsLaunching(Vehicle_t* p_veh, const playerState_t* parent_ps)
 	return qfalse;
 }
 
-qboolean FighterSuspended(const Vehicle_t* p_veh, const playerState_t* parent_ps)
+static qboolean FighterSuspended(const Vehicle_t* p_veh, const playerState_t* parent_ps)
 {
 #ifdef QAGAME//only do this check on GAME side, because if it's CGAME, it's being predicted, and it's only predicted if the local client is the driver
 
@@ -378,11 +371,6 @@ qboolean FighterSuspended(const Vehicle_t* p_veh, const playerState_t* parent_ps
 	return qfalse;
 #endif
 }
-
-#ifdef CGAME
-extern void trap_S_StartSound(vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx); //cg_syscalls.c
-extern sfxHandle_t trap_S_RegisterSound(const char* sample); //cg_syscalls.c
-#endif
 //MP RULE - ALL PROCESSMOVECOMMANDS FUNCTIONS MUST BE BG-COMPATIBLE!!!
 //If you really need to violate this rule for SP, then use ifdefs.
 //By BG-compatible, I mean no use of game-specific data - ONLY use
@@ -1248,8 +1236,7 @@ static void FighterDamageRoutine(Vehicle_t* p_veh, const playerState_t* parent_p
 	}
 }
 
-#ifdef _JK2MP
-void FighterYawAdjust(Vehicle_t* p_veh, playerState_t* rider_ps, playerState_t* parent_ps)
+static void FighterYawAdjust(Vehicle_t* p_veh, playerState_t* rider_ps, playerState_t* parent_ps)
 {
 	float angDif = AngleSubtract(p_veh->m_vOrientation[YAW], rider_ps->viewangles[YAW]);
 
@@ -1275,7 +1262,7 @@ void FighterYawAdjust(Vehicle_t* p_veh, playerState_t* rider_ps, playerState_t* 
 	}
 }
 
-void FighterPitchAdjust(Vehicle_t* p_veh, playerState_t* rider_ps, playerState_t* parent_ps)
+static void FighterPitchAdjust(Vehicle_t* p_veh, playerState_t* rider_ps, playerState_t* parent_ps)
 {
 	float angDif = AngleSubtract(p_veh->m_vOrientation[PITCH], rider_ps->viewangles[PITCH]);
 
@@ -1300,7 +1287,6 @@ void FighterPitchAdjust(Vehicle_t* p_veh, playerState_t* rider_ps, playerState_t
 		p_veh->m_vOrientation[PITCH] = AngleNormalize360(p_veh->m_vOrientation[PITCH] - angDif * (p_veh->m_fTimeModifier * 0.2f));
 	}
 }
-#endif
 
 //MP RULE - ALL PROCESSORIENTCOMMANDS FUNCTIONS MUST BE BG-COMPATIBLE!!!
 //If you really need to violate this rule for SP, then use ifdefs.
@@ -1773,75 +1759,22 @@ static void AnimateRiders(Vehicle_t* p_veh)
 
 #endif //game-only
 
-#ifndef QAGAME
-void AttachRidersGeneric(Vehicle_t* p_veh);
-#endif
-
 void G_SetFighterVehicleFunctions(vehicleInfo_t* pVehInfo)
 {
 #ifdef QAGAME //ONLY in SP or on server, not cgame
 	pVehInfo->AnimateVehicle = AnimateVehicle;
 	pVehInfo->AnimateRiders = AnimateRiders;
-	//	pVehInfo->ValidateBoard				=		ValidateBoard;
-	//	pVehInfo->SetParent					=		SetParent;
-	//	pVehInfo->SetPilot					=		SetPilot;
-	//	pVehInfo->AddPassenger				=		AddPassenger;
-	//	pVehInfo->Animate					=		Animate;
 	pVehInfo->Board = Board;
 	pVehInfo->Eject = Eject;
-	//	pVehInfo->EjectAll					=		EjectAll;
-	//	pVehInfo->StartDeathDelay			=		StartDeathDelay;
-	//	pVehInfo->DeathUpdate				=		DeathUpdate;
-	//	pVehInfo->RegisterAssets			=		RegisterAssets;
-	//	pVehInfo->Initialize				=		Initialize;
 	pVehInfo->Update = Update;
-	//	pVehInfo->UpdateRider				=		UpdateRider;
 #endif //game-only
 	pVehInfo->ProcessMoveCommands = ProcessMoveCommands;
 	pVehInfo->ProcessOrientCommands = ProcessOrientCommands;
-
-#ifndef QAGAME //cgame prediction attachment func
-	pVehInfo->AttachRiders = AttachRidersGeneric;
-#endif
-	//	pVehInfo->AttachRiders				=		AttachRiders;
-	//	pVehInfo->Ghost						=		Ghost;
-	//	pVehInfo->UnGhost					=		UnGhost;
-	//	pVehInfo->Inhabited					=		Inhabited;
 }
-
-// Following is only in game, not in namespace
-#ifdef _JK2MP
-#include "../namespace_end.h"
-#endif
-
-#ifdef QAGAME
-extern void G_AllocateVehicleObject(Vehicle_t** p_veh);
-#endif
-
-#ifdef _JK2MP
-#include "../namespace_begin.h"
-#endif
-
 // Create/Allocate a new Animal Vehicle (initializing it as well).
 void G_CreateFighterNPC(Vehicle_t** p_veh, const char* str_type)
 {
-	// Allocate the Vehicle.
-#ifdef _JK2MP
-#ifdef QAGAME
-	//these will remain on entities on the client once allocated because the pointer is
-	//never stomped. on the server, however, when an ent is freed, the entity struct is
-	//memset to 0, so this memory would be lost..
-	G_AllocateVehicleObject(p_veh);
-#else
-	if (!*p_veh)
-	{ //only allocate a new one if we really have to
-		(*p_veh) = (Vehicle_t*)BG_Alloc(sizeof(Vehicle_t));
-	}
-#endif
-	memset(*p_veh, 0, sizeof(Vehicle_t));
-#else
-	* p_veh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
-#endif
+	*p_veh = static_cast<Vehicle_t*>(gi.Malloc(sizeof(Vehicle_t), TAG_G_ALLOC, qtrue));
 	(*p_veh)->m_pVehicleInfo = &g_vehicleInfo[BG_VehicleGetIndex(str_type)];
 }
 

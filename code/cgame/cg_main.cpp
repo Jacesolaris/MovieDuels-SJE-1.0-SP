@@ -36,7 +36,7 @@ using namePrecache_m = std::map<sstring_t, unsigned char>;
 extern namePrecache_m* as_preCacheMap;
 extern void CG_RegisterNPCCustomSounds(clientInfo_t* ci);
 
-extern Vehicle_t* G_IsRidingVehicle(const gentity_t* p_ent);
+extern Vehicle_t* G_IsRidingVehicle(const gentity_t* pEnt);
 extern int G_ParseAnimFileSet(const char* skeletonName, const char* model_name = nullptr);
 extern void CG_DrawDataPadInventorySelect();
 vmCvar_t cg_com_kotor;
@@ -3759,7 +3759,6 @@ qboolean CG_Asset_Parse(const char** p)
 			{
 				return qfalse;
 			}
-			//			cgDC.Assets.menuEnterSound = trap_S_RegisterSound( tempStr );
 			continue;
 		}
 
@@ -3770,7 +3769,6 @@ qboolean CG_Asset_Parse(const char** p)
 			{
 				return qfalse;
 			}
-			//			cgDC.Assets.menuExitSound = trap_S_RegisterSound( tempStr );
 			continue;
 		}
 
@@ -3781,7 +3779,6 @@ qboolean CG_Asset_Parse(const char** p)
 			{
 				return qfalse;
 			}
-			//			cgDC.Assets.itemFocusSound = trap_S_RegisterSound( tempStr );
 			continue;
 		}
 
@@ -3792,7 +3789,6 @@ qboolean CG_Asset_Parse(const char** p)
 			{
 				return qfalse;
 			}
-			//			cgDC.Assets.menuBuzzSound = trap_S_RegisterSound( tempStr );
 			continue;
 		}
 
